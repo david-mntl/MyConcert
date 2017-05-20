@@ -1,0 +1,9 @@
+{"festivales": [
+        {"name":"Blue Sky Fest","location":"Cartago,Costa Rica","date":"6 Mayo 2017","place":"Tecnológico de Costa Rica","image":"imgs/blue.png"},
+        {"name":"Life in Color","location":"San José,Costa Rica","date":"20 Mayo 2017","place":"Parque de Diversiones","image":"imgs/color.png"},
+        {"name":"Horizon Fest","location":"Heredia,Costa Rica","date":"7 Junio 2017","place":"Centro de Eventos Pedregal","image":"imgs/horizon.png"},
+        {"name":"SparkLand","location":"Heredia,Costa Rica","date":"10 Julio 2017","place":"Centro de Eventos Pedregal","image":"imgs/spark.png"},
+        {"name":"StreetFest","location":"Alajuela,Costa Rica","date":"17 Julio 2017","place":"Parque Viva","image":"imgs/street.png"},
+        {"name":"Jump & Dance","location":"San José,Costa Rica","date":"25 Julio 2017","place":"Estadio Nacional","image":"imgs/jump.png"}
+    ]
+}
