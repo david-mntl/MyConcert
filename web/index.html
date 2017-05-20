@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="mainModule">
+<head>
+    <meta charset="UTF-8">
+    <title>MyConcert by X-Fest</title>
+
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-spotify.js"></script>
+    <script src="js/interface.js"></script>
+    <script src="js/loading-bar.js"></script>
+    <script src="js/slides.js"></script>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+    <link href='styles/loading-bar.css' rel='stylesheet' />
+    <link rel="stylesheet" href="styles/basicStyles.css" />
+    <link rel="stylesheet" href="styles/slides.css" />
+    <link rel="stylesheet" href="styles/font-awesome.min.css" />
+
+</head>
+<body class="bodyall">
+    <div class="header">
+        <!-- <div class="header_left"></div> -->
+        <div class="header_center"><h1>MyConcert</h1></div>
+        <div class="header_right">
+            <div class="log-reg"><i class="fa fa-user fa-2x"></i>Ingresar</div>
+            <div class="log-reg"><i class="fa fa-user-plus fa-2x"></i>Registrarse</div>
+        </div>
+    </div>
+
+    <div class="bodycont">
+        <div class="bodycont_left">
+            <div class="slideshow-container">
+                <div class="mySlides">
+                    <div class="numbertext">1 / 4</div>
+                    <img src="imgs/c1.jpg" style="width: 600px; height:400px">
+                    <div class="text">SpeedSound Festival 2016</div>
+                </div>
+
+                <div class="mySlides">
+                    <div class="numbertext">2 / 4</div>
+                    <img src="imgs/c2.jpg" style="width: 600px; height:400px">
+                    <div class="text">Life in Color 2016</div>
+                </div>
+
+                <div class="mySlides">
+                    <div class="numbertext">3 / 4</div>
+                    <img src="imgs/c3.jpg" style="width: 600px; height:400px">
+                    <div class="text">Festival Imperial 2012</div>
+                </div>
+                <div class="mySlides">
+                    <div class="numbertext">4 / 4</div>
+                    <img src="imgs/c4.jpg" style="width: 600px; height:400px">
+                    <div class="text">Madness Fest 2015</div>
+                </div>
+
+                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            </div>
+            <br>
+
+            <div style="text-align:center">
+                <span class="dot" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+                <span class="dot" onclick="currentSlide(3)"></span>
+                <span class="dot" onclick="currentSlide(4)"></span>
+            </div>
+
+        </div>
+        <div class="bodycont_left_inner">
+            <h2>Mi festival, Mis Artistas</h2>
+            <p>
+                <h3>Porque votar por tus artistas favoritos,<br>
+                    y así formar festivales a tu manera, nunca<br>
+                    antes había sido tan fácil.</h3>
+            </p>
+        </div>
+        <div class="bodycont_right">
+            <h2>Noticias</h2>
+            <!--<a class="twitter-timeline" data-width="300" data-height="378" href="https://twitter.com/fasm22"></a>-->
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer">
+            <a class="socialicon-fb" href="#"><i class="fa fa-facebook-official fa-2x"></i></a>
+            <a class="socialicon-tw" href="#"><i class="fa fa-twitter-square fa-2x"></i></a>
+            <a class="socialicon-yt" href="#"><i class="fa fa-youtube-square fa-2x"></i></a>
+            <a class="socialicon-sp" href="#"><i class="fa fa-spotify fa-2x"></i></a><br>
+            <a style="color: white"> 2017 | MyConcert by X-Fest | Todos los derechos reservados.</a>
+        </div>
+    </footer>
+
+</body>
+</html>

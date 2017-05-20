@@ -1,0 +1,6 @@
+Speed Sound:Cartago, Costa Rica:5 días restantes:imgs/speed.png
+Festival Imperial:San José, Costa Rica:9 días restantes:imgs/imperial.png
+Jazz Fest:Cartago, Costa Rica:11 días restantes
+Picnic Fest:Heredia, Costa Rica:19 días restantes:imgs/picnic.png
+Jungle Jam:Heredia, Costa Rica:29 días restantes:imgs/jungle.png
+Blues Xtreme Fest:Alajuela, Costa Rica:45 días restantes
