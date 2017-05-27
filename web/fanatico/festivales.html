@@ -34,9 +34,9 @@
             <a href="#" class="navigation-button">Mi Perfil</a>
         </div>
 
-        <div class="body-carteleras" ng-repeat="month in months">
-            <div class="box-cartelera-monthTitle">{{month.name}}</div>
-            <div class="box-cartelera" ng-repeat="festival in month.festivales">
+        <div class="body-carteleras" >
+            <!--<div class="box-cartelera-monthTitle">{{festival.name}}</div>-->
+            <div class="box-cartelera" ng-repeat="festival in festivales">
                 <div class="box-cartelera-title">{{festival.name}}</div>
                 <div class="box-cartelera-image" ><image ng-src={{festival.image}}></image></div>
                 <div class="box-cartelera-info">
