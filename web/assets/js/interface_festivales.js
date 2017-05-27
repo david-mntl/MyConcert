@@ -1,11 +1,11 @@
 var app = angular.module('mainModule', ['spotify','angular-loading-bar']);
 
 
-app.controller('votarController',['$scope','$http','Spotify',function ($scope,$http,Spotify) {
-    $scope.festival = [];
+app.controller('festivalesController',['$scope','$http','Spotify',function ($scope,$http,Spotify) {
+    $scope.months = [];
 
     $scope.readFestivalesData = function() {
-        $http.get("files/currentCartelera.txt").success(function (response) {
+        $http.get("docs/festivales.txt").success(function (response) {
 
             if (response.months.length > 0) {
                 for (i = 0; i < response.months.length; i++) {

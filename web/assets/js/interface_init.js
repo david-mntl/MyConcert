@@ -10,7 +10,7 @@ app.controller('cartelerasController',['$scope','$http','$interval',function ($s
     $scope.currentFestivalIndex = 0;
 
     $scope.readCartelerasData = function() {
-        $http.get("files/carteleras.txt").success(function (response) {
+        $http.get("docs/carteleras.txt").success(function (response) {
             var data = response.split("\n");
 
             if (data.length > 0) {
@@ -29,7 +29,7 @@ app.controller('cartelerasController',['$scope','$http','$interval',function ($s
     };
 
     $scope.readFestivalesData = function() {
-        $http.get("files/festivales.txt").success(function (response) {
+        $http.get("docs/festivales.txt").success(function (response) {
 
             if (response.festivales.length > 0) {
                 for (j = 0; j < response.festivales.length; j++) {

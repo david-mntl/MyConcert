@@ -4,27 +4,23 @@
     <meta charset="UTF-8">
     <title>MyConcert by X-Fest</title>
 
-    <script src="js/angular.min.js"></script>
-    <script src="js/angular-spotify.js"></script>
-    <script src="js/interface.js"></script>
-    <script src="js/loading-bar.js"></script>
-    <script src="js/slides.js"></script>
+    <script src="assets/js/libs/angular.min.js"></script>
+    <script src="assets/js/libs/angular-spotify.js"></script>
+    <script src="assets/js/interface.js"></script>
+    <script src="assets/js/loading-bar.js"></script>
+    <script src="assets/js/libs/slides.js"></script>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-    <link href='styles/loading-bar.css' rel='stylesheet' />
-    <link rel="stylesheet" href="styles/basicStyles.css" />
-    <link rel="stylesheet" href="styles/slides.css" />
-    <link rel="stylesheet" href="styles/font-awesome.min.css" />
+    <link href='assets/styles/loading-bar.css' rel='stylesheet' />
+    <link rel="stylesheet" href="assets/styles/basicStyles.css" />
+    <link rel="stylesheet" href="assets/styles/slides.css" />
+    <link rel="stylesheet" href="assets/styles/font-awesome.min.css" />
 
 </head>
 <body class="bodyall">
     <div class="header">
-        <!-- <div class="header_left"></div> -->
-        <div class="header_center"><h1>MyConcert</h1></div>
-        <div class="header_right">
-            <div class="log-reg"><i class="fa fa-user fa-2x"></i>Ingresar</div>
-            <div class="log-reg"><i class="fa fa-user-plus fa-2x"></i>Registrarse</div>
-        </div>
+        <h1>MyConcert</h1>
+
     </div>
 
     <div class="bodycont">
@@ -32,24 +28,24 @@
             <div class="slideshow-container">
                 <div class="mySlides">
                     <div class="numbertext">1 / 4</div>
-                    <img src="imgs/c1.jpg" style="width: 600px; height:400px">
+                    <img src="assets/imgs/c1.jpg" style="width: 600px; height:400px">
                     <div class="text">SpeedSound Festival 2016</div>
                 </div>
 
                 <div class="mySlides">
                     <div class="numbertext">2 / 4</div>
-                    <img src="imgs/c2.jpg" style="width: 600px; height:400px">
+                    <img src="assets/imgs/c2.jpg" style="width: 600px; height:400px">
                     <div class="text">Life in Color 2016</div>
                 </div>
 
                 <div class="mySlides">
                     <div class="numbertext">3 / 4</div>
-                    <img src="imgs/c3.jpg" style="width: 600px; height:400px">
+                    <img src="assets/imgs/c3.jpg" style="width: 600px; height:400px">
                     <div class="text">Festival Imperial 2012</div>
                 </div>
                 <div class="mySlides">
                     <div class="numbertext">4 / 4</div>
-                    <img src="imgs/c4.jpg" style="width: 600px; height:400px">
+                    <img src="assets/imgs/c4.jpg" style="width: 600px; height:400px">
                     <div class="text">Madness Fest 2015</div>
                 </div>
 
@@ -75,7 +71,14 @@
             </p>
         </div>
         <div class="bodycont_right">
-            <h2>Noticias</h2>
+            <h2>Ingresar</h2>
+            <img src="assets/imgs/logo.png" style="width: 100px; height:100px">
+            <h4>Usuario</h4>
+            <input class="pInput" type="email">
+            <h4>Contraseña</h4>
+            <input class="pInput" type="password">
+            <a class="helpLetter" href="newpassword.html">¿Olvidaste tu contraseña?</a>
+            <a class="helpLetter" href="fanatico/register.html">Registrarse</a>
             <!--<a class="twitter-timeline" data-width="300" data-height="378" href="https://twitter.com/fasm22"></a>-->
         </div>
     </div>

@@ -5,7 +5,7 @@ app.controller('cartelerasController',['$scope','$http','Spotify',function ($sco
     $scope.carteleras = [];
 
     $scope.readCartelerasData = function() {
-        $http.get("files/carteleras.txt").success(function (response) {
+        $http.get("docs/carteleras.txt").success(function (response) {
             var data = response.split("\n");
 
             if (data.length > 0) {
