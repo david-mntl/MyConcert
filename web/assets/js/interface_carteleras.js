@@ -5,7 +5,7 @@ app.controller('cartelerasController',['$scope','$http','Spotify',function ($sco
     $scope.carteleras = [];
 
     $scope.readCartelerasData = function() {
-        $http.get("docs/carteleras.txt").success(function (response) {
+        $http.get("../assets/docs/carteleras.txt").success(function (response) {
             var data = response.split("\n");
 
             if (data.length > 0) {
@@ -15,7 +15,7 @@ app.controller('cartelerasController',['$scope','$http','Spotify',function ($sco
                     cartelera.name = carteleraData[0];
                     cartelera.location = carteleraData[1];
                     cartelera.leftTime = carteleraData[2];
-                    cartelera.image = carteleraData[3];
+                    cartelera.image = "../assets/"+carteleraData[3];
                     $scope.carteleras.push(cartelera);
                 }
             }

@@ -9,8 +9,14 @@ app.controller('cartelerasController',['$scope','$http','$interval',function ($s
     $scope.currentFestivales = [];
     $scope.currentFestivalIndex = 0;
 
+    $scope.state = false;
+    
+    $scope.showModal = function () {
+        $scope.state = !$scope.state;
+    };
+    
     $scope.readCartelerasData = function() {
-        $http.get("docs/carteleras.txt").success(function (response) {
+        $http.get("../assets/docs/carteleras.txt").success(function (response) {
             var data = response.split("\n");
 
             if (data.length > 0) {
@@ -20,7 +26,7 @@ app.controller('cartelerasController',['$scope','$http','$interval',function ($s
                     cartelera.name = carteleraData[0];
                     cartelera.location = carteleraData[1];
                     cartelera.leftTime = carteleraData[2];
-                    cartelera.image = carteleraData[3];
+                    cartelera.image = "../assets/"+carteleraData[3];
                     $scope.carteleras.push(cartelera);
                 }
             }
@@ -29,7 +35,7 @@ app.controller('cartelerasController',['$scope','$http','$interval',function ($s
     };
 
     $scope.readFestivalesData = function() {
-        $http.get("docs/festivales.txt").success(function (response) {
+        $http.get("../assets/docs/festivales.txt").success(function (response) {
 
             if (response.festivales.length > 0) {
                 for (j = 0; j < response.festivales.length; j++) {
@@ -39,7 +45,7 @@ app.controller('cartelerasController',['$scope','$http','$interval',function ($s
                     festival.location = response.festivales[j].location;
                     festival.date = response.festivales[j].date;
                     festival.place = response.festivales[j].place;
-                    festival.image = response.festivales[j].image;
+                    festival.image = "../assets/"+response.festivales[j].image;
                     $scope.festivales.push(festival);
                 }
             }
