@@ -1,40 +1,54 @@
-var app = angular.module('mainModule', ['spotify','angular-loading-bar']);
-//https://api.spotify.com/v1/artists/0OdUWJ0sBjDrqHygGUXeCF
+var app = angular.module('mainModule', ['angular-loading-bar','angularNotify']);
 
-var twitterKey = 'STORAGE.TWITTER.KEY';
-var clientId = 'zNDXWJkUSF5Dkua9TKggKwxzh';
-var clientSecret = 'TpQ3wYSEnjLUXogeRHLMphxQHstxcjEexxz2KzaQZtM2ZpCSzy';
-var myToken = '859172498277117953-k776EcH3gjeaHZwTth2e7GiIUpxHlqI';
+app.controller('mainController',['$scope','$http',function ($scope,$http) {
+
+    $scope.data = [];
+
+    //http://myconcert1.azurewebsites.net/api/Country
+    $scope.login = function () {
+        console.log($scope.data.Username);
+        console.log($scope.data.Password);
+
+        if($scope.isValid($scope.data.Username)) {
+            $scope.showMessage('error','Error','Por favor ingrese un nombre de usuario válido.',2000);
+        }
+        else if ($scope.isValid($scope.data.Password)) {
+            $scope.showMessage('error','Error','Por favor ingrese una contraseña válida.',2000);
+        }
+        else{
+            $scope.showMessage('success','Iniciando sesión...','',2000);
+        }
 
 
-app.controller('mainController',['$scope','$http','Spotify',function ($scope,$http,Spotify) {
-    $scope.artists = [];
-    $scope.tweet = [];
-    $scope.currentArtist = new Object();
+        /*$http.get('http://myconcert1.azurewebsites.net/api/Country').
+        success(function(data, status, headers, config) {
+            // this callback will be called asynchronously
+            // when the response is available
 
-    $scope.getArtistInformation = function (pID) {
-        Spotify.getArtist(pID).then(function (data) {
-            $scope.currentArtist.name = data.data.name;
-            $scope.currentArtist.image = data.data.images[0].url;
-            $scope.currentArtist.followers = data.data.followers.total;
-            $scope.currentArtist.popularity = data.data.popularity;
-        });
+            console.log("status " + status);
+            console.log("config " + data);
+
+        }).
+        error(function(data, status, headers, config) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            console.log(data);
+            console.log(status);
+        });*/
     };
 
-    $scope.searchArtist = function() {
-        var url = 'https://api.spotify.com/v1/search?q='+$scope.artist_name+'&type=artist';
-        $scope.artists = [];
-        $http.get(url).success(function (data, status, headers, config) {
-            for(i = 0; i < data.artists.items.length; i++){
-                var artist = new Object();
-                artist.name = data.artists.items[i].name;
-                artist.id = data.artists.items[i].id;
-                $scope.artists.push(artist);
-            }
-
-
-        }).error(function (data, status, headers, config) {
-            console.log("Error retrieving data from Spotify...");
-        });
+    $scope.isValid = function(value) {
+        return !value
     }
+
+    $scope.showMessage = function (pType,pTitle,pMessage,pTimeout) {
+        var notify = {
+            type: pType,
+            title: pTitle,
+            content: pMessage,
+            timeout: pTimeout //time in ms
+        };
+        $scope.$emit('notify', notify);
+    }
+
 }]);

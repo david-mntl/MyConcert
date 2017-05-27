@@ -9,21 +9,25 @@
     <script src="assets/js/interface.js"></script>
     <script src="assets/js/loading-bar.js"></script>
     <script src="assets/js/libs/slides.js"></script>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <script src="assets/js/libs/angular-notify.js"></script>
+    <script src="assets/js/jquery/jquery-1.11.1.min.js"></script>
 
     <link href='assets/styles/loading-bar.css' rel='stylesheet' />
     <link rel="stylesheet" href="assets/styles/basicStyles.css" />
     <link rel="stylesheet" href="assets/styles/slides.css" />
     <link rel="stylesheet" href="assets/styles/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/styles/angular-notify-texture.min.css" />
 
 </head>
-<body class="bodyall">
+<body class="bodyall" ng-controller="mainController">
     <div class="header">
         <h1>MyConcert</h1>
 
     </div>
 
     <div class="bodycont">
+        <div notifybar style="position:absolute;top:0;right:0"></div>
+
         <div class="bodycont_left">
             <div class="slideshow-container">
                 <div class="mySlides">
@@ -71,15 +75,14 @@
             </p>
         </div>
         <div class="bodycont_right">
-            <h2>Ingresar</h2>
             <img src="assets/imgs/logo.png" style="width: 100px; height:100px">
-            <h4>Usuario</h4>
-            <input class="pInput" type="email">
-            <h4>Contraseña</h4>
-            <input class="pInput" type="password">
+            <h4 style="margin-top: 8px; margin-bottom: 8px">Usuario</h4>
+            <input class="pInput" type="text" ng-model="data.Username">
+            <h4 style="margin-top: 8px; margin-bottom: 8px">Contraseña</h4>
+            <input class="pInput" type="password" style="margin-bottom: 10px" ng-model="data.Password">
+            <a ng-click="login()" class="box-cartelera-button">Ingresar</a>
             <a class="helpLetter" href="newpassword.html">¿Olvidaste tu contraseña?</a>
             <a class="helpLetter" href="fanatico/register.html">Registrarse</a>
-            <!--<a class="twitter-timeline" data-width="300" data-height="378" href="https://twitter.com/fasm22"></a>-->
         </div>
     </div>
 

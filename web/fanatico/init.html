@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../assets/styles/basicStyles.css" />
     <link rel="stylesheet" href="../assets/styles/slides.css" />
     <link rel="stylesheet" href="../assets/styles/font-awesome.min.css" />
+    <link rel="stylesheet" href="../assets/styles/modalStyle.css" />
 
 </head>
 <body ng-controller="cartelerasController" class="bodyall" >
@@ -33,6 +34,17 @@
             <a href="#" class="navigation-button">Mi Perfil</a>
         </div>
 
+
+        <div id="myModal" class="modal" ng-show="state">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span ng-click="showModal()" class="close">&times;</span>
+                <p>Some text in the Modal..</p>
+            </div>
+
+        </div>
+
         <div class="body-carteleras">
             <div><h2>Carteleras</h2></div>
             <div class="navigation-buton-carteleras-left" ng-click="backwardCurrentSelection(1)"><i class="fa fa-caret-left fa-2x"></i></div>
@@ -49,7 +61,7 @@
                         <div class="box-cartelera-info-text">{{cartelera.leftTime}}</div>
                     </div>
                 </div>
-                <a href="#" class="box-cartelera-button">Votar</a>
+                <a  class="box-cartelera-button">Votar</a>
             </div>
             <div class="navigation-buton-carteleras-right" ng-click="forwardCurrentSelection(1)"><i class="fa fa-caret-right fa-2x"></i></div>
         </div>
@@ -70,7 +82,7 @@
                         <div class="box-cartelera-info-text">{{festival.leftTime}}</div>
                     </div>
                 </div>
-                <a href="#" class="box-cartelera-button">Votar</a>
+                <a ng-click="showModal()" class="box-cartelera-button">Ver más</a>
             </div>
             <div class="navigation-buton-carteleras-right" ng-click="forwardCurrentSelection(2)"><i class="fa fa-caret-right fa-2x"></i></div>
         </div>

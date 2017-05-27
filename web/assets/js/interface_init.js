@@ -9,6 +9,12 @@ app.controller('cartelerasController',['$scope','$http','$interval',function ($s
     $scope.currentFestivales = [];
     $scope.currentFestivalIndex = 0;
 
+    $scope.state = false;
+    
+    $scope.showModal = function () {
+        $scope.state = !$scope.state;
+    };
+    
     $scope.readCartelerasData = function() {
         $http.get("../assets/docs/carteleras.txt").success(function (response) {
             var data = response.split("\n");
