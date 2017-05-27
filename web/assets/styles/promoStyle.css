@@ -1,0 +1,59 @@
+.contenedor1 {
+    height: 440px;
+    width: 70%;
+    border-style: solid;
+    border-width: 4px;
+    background-color: ghostwhite;
+    opacity: 0.7;
+}
+.contenedorBandas {
+    height: 390px;
+    width: 100%;
+    overflow: scroll;
+}
+.contenedorCategorias {
+    height: 390px;
+    width: 100%;
+    overflow: scroll;
+}
+.buttonBandas{
+     background-color: #b1b1b1;
+         color: #0f49a8;
+    font-weight: bold;
+     font-size: 16px;
+     border-radius: 10px;
+     width: 50%;
+     text-align: left;
+ }
+.buttonAdd{
+    background-color: #b1b1b1;
+    color: black;
+    font-size: 20px;
+    border-radius: 10px;
+    float: right;
+
+}
+.divImage{
+    text-align: center;
+    margin-right: 55px;
+    float: right;
+
+}
+.titulo{
+    color: #0f49a8;
+    font-weight: bold;
+    display: block;
+
+}
+.ImageS{
+    display: block;
+}
+.buttonEdit{
+    background-color: #b1b1b1;
+    color: black;
+    font-size: 23px;
+    border-radius: 10px;
+    margin-right: 1 0px;
+    margin-top: 50px;
+    float: right;
+}
