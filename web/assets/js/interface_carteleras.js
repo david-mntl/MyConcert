@@ -3,8 +3,17 @@ var app = angular.module('mainModule', ['spotify','angular-loading-bar']);
 
 app.controller('cartelerasController',['$scope','$http','Spotify',function ($scope,$http,Spotify) {
     $scope.carteleras = [];
+    $scope.userType = "admin";
+    $scope.userTypeUse = "Votar";
+    if ($scope.userType == "fanatico"){
+        $scope.userTypeUse = "Votar";
+    }else{
+        $scope.userTypeUse = "Crear festival";
+    }
+
 
     $scope.readCartelerasData = function() {
+        console.log($scope.userType);
         $http.get("../assets/docs/carteleras.txt").success(function (response) {
             var data = response.split("\n");
 
@@ -20,7 +29,9 @@ app.controller('cartelerasController',['$scope','$http','Spotify',function ($sco
                 }
             }
         });
-    }
+    };
+
+
 
     $scope.readCartelerasData();
 }]);

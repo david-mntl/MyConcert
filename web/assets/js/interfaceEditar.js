@@ -97,8 +97,13 @@ app.controller('mainController',['$scope','$http','Spotify',function ($scope,$ht
     }
 
     $scope.getCategoria = function () {
-        console.log($scope.inputVal);
-
+        console.log(JSON.stringify({name:$scope.inputVal},null,"    "));
+    }
+    $scope.postArtista = function () {
+        console.log(JSON.stringify({name:$scope.inputName,miembros:$scope.inputMiembros,canciones:$scope.inputCanciones,generos:$scope.inputGeneros},null,"    "));
+    }
+    $scope.postEditArtista = function () {
+        console.log(JSON.stringify({name:$scope.inputEditName,miembros:$scope.inputEditMiembros,canciones:$scope.inputEditCanciones,generos:$scope.inputEditGeneros},null,"    "));
     }
     $scope.selectCategoria = function (nameCategory) {
         $scope.selectedCategory = nameCategory;
