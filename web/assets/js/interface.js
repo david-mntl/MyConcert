@@ -1,6 +1,6 @@
-var app = angular.module('mainModule', ['angular-loading-bar','angularNotify']);
+var app = angular.module('mainModule', ['angular-loading-bar','angularNotify','ngCookies']);
 
-app.controller('mainController',['$scope','$http',function ($scope,$http) {
+app.controller('mainController',['$scope','$http','$cookies','$window',function ($scope,$http,$cookies,$window) {
 
     $scope.data = [];
 
@@ -17,6 +17,30 @@ app.controller('mainController',['$scope','$http',function ($scope,$http) {
         }
         else{
             $scope.showMessage('success','Iniciando sesión...','',2000);
+
+            var parameter = JSON.stringify({
+                Email: $scope.data.Username.toString(),
+                Password: $scope.data.Password.toString()
+            });
+
+            $http.post('http://myconcert1.azurewebsites.net/api/Verify/Login', parameter).success(function (data, status, headers, config) {
+                var response = JSON.parse(data);
+                if(response.State == 0){
+                    $scope.showMessage('error','Error','Credenciales Inválidas',2000);
+                }
+                else if(response.State == 1){
+                    $cookies.put('zUserType',1);
+                    $cookies.put('zUserName',$scope.data.Username.toString()) ;
+                    $window.location.href = 'fanatico/init.html';
+                }
+                else if(response.State == 2){
+                    $cookies.put('zUserType',2);
+                    $cookies.put('zUserName',$scope.data.Username.toString()) ;
+                    $window.location.href = 'fanatico/init.html';
+                }
+            }).error(function (data, status, headers, config) {
+                console.log(data);
+            });
         }
 
 
@@ -37,9 +61,12 @@ app.controller('mainController',['$scope','$http',function ($scope,$http) {
         });*/
     };
 
+
+
+
     $scope.isValid = function(value) {
         return !value
-    }
+    };
 
     $scope.showMessage = function (pType,pTitle,pMessage,pTimeout) {
         var notify = {
@@ -49,6 +76,6 @@ app.controller('mainController',['$scope','$http',function ($scope,$http) {
             timeout: pTimeout //time in ms
         };
         $scope.$emit('notify', notify);
-    }
+    };
 
 }]);

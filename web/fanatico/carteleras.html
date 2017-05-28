@@ -9,6 +9,7 @@
     <script src="../assets/js/interface_carteleras.js"></script>
     <script src="../assets/js/loading-bar.js"></script>
     <script src="../assets/js/libs/slides.js"></script>
+    <script src="../assets/js/libs/angular-cookies.js"></script>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -53,9 +54,9 @@
                         <div class="box-cartelera-info-text">{{cartelera.leftTime}}</div>
                     </div>
                 </div>
-                <a ng-if="userType == 'fanatico'" href="#" class="box-cartelera-button">Votar</a>
-                <a ng-if="userType == 'admin'" href="#" class="box-cartelera-button" style="width: 120px ">Crear festival</a>
-                <a ng-if="userType == 'admin'" href="#" class="box-cartelera-button">Cancelar</a>
+                <a ng-if="userType == 2" href="#" class="box-cartelera-button">Votar</a>
+                <a ng-if="userType == 1" href="#" class="box-cartelera-button" style="width: 120px ">Crear festival</a>
+                <a ng-if="userType == 1" href="#" class="box-cartelera-button">Cancelar</a>
             </div>
         </div>
         <div class="container"ng-include="'add_Cartelera.html'"></div>

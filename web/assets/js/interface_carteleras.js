@@ -1,9 +1,10 @@
-var app = angular.module('mainModule', ['spotify','angular-loading-bar']);
+var app = angular.module('mainModule', ['spotify','angular-loading-bar','ngCookies']);
 
 
-app.controller('cartelerasController',['$scope','$http','Spotify',function ($scope,$http,Spotify) {
+app.controller('cartelerasController',['$scope','$http','$cookies','Spotify',function ($scope,$http,$cookies,Spotify) {
     $scope.carteleras = [];
-    $scope.userType = "admin";
+    console.log($cookies.get('zUserType'))
+    $scope.userType = $cookies.get('zUserType');
     $scope.userTypeUse = "Votar";
     if ($scope.userType == "fanatico"){
         $scope.userTypeUse = "Votar";
