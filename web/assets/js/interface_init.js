@@ -1,7 +1,7 @@
-var app = angular.module('mainModule', ['angular-loading-bar']);
+var app = angular.module('mainModule', ['spotify','angular-loading-bar']);
 
 
-app.controller('cartelerasController',['$scope','$http','$interval',function ($scope,$http,$interval) {
+app.controller('cartelerasController',['$scope','$http','$interval','Spotify',function ($scope,$http,$interval,Spotify) {
     $scope.carteleras = [];
     $scope.festivales = [];
     $scope.currentCarteleras = [];
@@ -9,11 +9,22 @@ app.controller('cartelerasController',['$scope','$http','$interval',function ($s
     $scope.currentFestivales = [];
     $scope.currentFestivalIndex = 0;
 
-    $scope.state = false;
-    
-    $scope.showModal = function () {
-        $scope.state = !$scope.state;
-    };
+    $scope.visibleFestivalModal = false;
+    $scope.visibleBandModal = false;
+
+    $scope.selectedFestival = [];
+    $scope.currentFestivalCategory = -1;
+    $scope.categories = [];
+
+    $scope.selectedBand = [];
+    $scope.completeStars = [];
+    $scope.blankStars = [];
+    $scope.cBand = [];
+    $scope.currentComment = [];
+    $scope.currentComment.rating = 0;
+    $scope.currentComment.prevrating = 0;
+    $scope.currentComment.data = "";
+    $scope.currentComment.title = "";
     
     $scope.readCartelerasData = function() {
         $http.get("../assets/docs/carteleras.txt").success(function (response) {
@@ -41,7 +52,10 @@ app.controller('cartelerasController',['$scope','$http','$interval',function ($s
                 for (j = 0; j < response.festivales.length; j++) {
                     var festival = new Object();
 
+                    festival.localIndex = j;
+                    festival.id = response.festivales[j].id;
                     festival.name = response.festivales[j].name;
+                    festival.description = response.festivales[j].description;
                     festival.location = response.festivales[j].location;
                     festival.date = response.festivales[j].date;
                     festival.place = response.festivales[j].place;
@@ -54,7 +68,136 @@ app.controller('cartelerasController',['$scope','$http','$interval',function ($s
     };
 
 
+    $scope.readCategoriesData = function() {
+        $http.get("../assets/docs/festival.txt").success(function (response) {
+            $scope.categories = [];
+            $scope.currentFestivalCategory = -1;
+            if (response.categories.length > 0) {
+                for (j = 0; j < response.categories.length; j++) {
+                    var category = new Object();
+                    var bands = [];
 
+                    category.localID = j;
+                    category.name = response.categories[j].name;
+
+                    for(k = 0; k < response.categories[j].bands.length; k++){
+                        var band = new Object();
+                        band.localID = k;
+                        band.name = response.categories[j].bands[k].name;
+                        band.spotifyID = response.categories[j].bands[k].spotifyID;
+                        band.rating = response.categories[j].bands[k].rating;
+                        band.members = response.categories[j].bands[k].members;
+                        band.genders = response.categories[j].bands[k].genders;
+                        band.comments = response.categories[j].bands[k].comments;
+                        bands.push(band);
+                    }
+                    category.bands = bands;
+
+                    $scope.categories.push(category);
+                }
+            }
+        });
+    };
+
+
+    $scope.getArtistInformation = function (pID) {
+        Spotify.getArtist(pID).then(function (data) {
+            $scope.selectedBand.image = data.data.images[0].url;
+            $scope.selectedBand.followers = data.data.followers.total;
+            $scope.selectedBand.popularity = data.data.popularity;
+        });
+    };
+
+    $scope.closeFestivalModal = function () {
+        $scope.visibleFestivalModal = false;
+        $scope.categories = [];
+        $scope.currentFestivalCategory = -1;
+    };
+
+    $scope.showFestivalModal = function (pFestivalIndex) {
+        $scope.selectedFestival = $scope.festivales[pFestivalIndex];
+        $scope.visibleFestivalModal = true;
+        $scope.readCategoriesData();
+
+    };
+
+    $scope.closeBandModal = function () {
+        $scope.visibleBandModal = false;
+        $scope.selectedBand = [];
+        $scope.completeStars = [];
+        $scope.blankStars = [];
+        $scope.cBand = [];
+        $scope.selectedBand.image = "";
+        $scope.currentComment = [];
+        $scope.currentComment.rating = 0;
+        $scope.currentComment.prevrating = 0;
+        $scope.currentComment.data = "";
+        $scope.currentComment.title = "";
+    };
+
+    $scope.showBandModal = function (pBandIndex,pCategoryIndex) {
+
+        //$scope.selectedFestival = $scope.festivales[pFestivalIndex];
+        $scope.visibleBandModal = true;
+        //$scope.readCategoriesData();
+        $scope.selectedBand = $scope.categories[pCategoryIndex].bands[pBandIndex];
+        $scope.selectedBand.image = "";
+        $scope.selectedBand.followers = 0;
+        $scope.selectedBand.popularity = 0;
+
+        for(i = 0; i< $scope.selectedBand.rating; i++){
+            $scope.completeStars.push(i);
+        }
+        for(i = 0; i< 5-$scope.completeStars.length; i++){
+            $scope.blankStars.push(i);
+        }
+        $scope.getArtistInformation($scope.selectedBand.spotifyID);
+    };
+
+
+    $scope.sendNewComment = function () {
+        console.log("Calificación: " + $scope.currentComment.rating);
+        console.log("Titulo: " + $scope.currentComment.title);
+        console.log("Datos: " + $scope.currentComment.data);
+    };
+
+    $scope.changeCurrentFestivalCategory = function (pCurrentCategoryID) {
+        $scope.currentFestivalCategory = pCurrentCategoryID;
+    };
+
+    $scope.restoreCommentRating = function (pRating) {
+        $scope.currentComment.rating = $scope.currentComment.prevrating;
+    };
+    $scope.updateCommentRating = function (pRating) {
+        $scope.currentComment.rating = pRating;
+    };
+    $scope.selectCommentRating = function (pRating) {
+        $scope.currentComment.rating = pRating;
+        $scope.currentComment.prevrating = pRating;
+    };
+
+    /************** AUX FUNCTIONS ****************/
+    $scope.getNumber = function(num) {
+        var obj = [];
+        for(i = 0; i < num; i++)
+            obj.push(i);
+        return obj;
+    };
+
+    /*$scope.getNumber = function(num) {
+        var obj = new Array;
+        for(i = 0; i < num; i++) {
+            var holder = new Object();
+            holder.i = i;
+            holder.id = i + 1;
+            obj.push(holder);
+        }
+        return obj;
+    };*/
+
+
+
+    /************************** Festivales/Carteleras Carrousel *********************************/
     $scope.changeCurrentCartelerasAuto = function () { $scope.changeCurrentCarteleras(1); };
     $scope.changeCurrentCarteleras = function(mode){
 

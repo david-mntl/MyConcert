@@ -15,7 +15,13 @@
     <link rel="stylesheet" href="../assets/styles/slides.css" />
     <link rel="stylesheet" href="../assets/styles/font-awesome.min.css" />
     <link rel="stylesheet" href="../assets/styles/modalStyle.css" />
-
+    <script>
+        var counter = 0;
+        function textCounter( field, maxlimit, text) {
+            counter = maxlimit - text.value.length;
+            field.value = counter;
+        }
+    </script>
 </head>
 <body ng-controller="cartelerasController" class="bodyall" >
     <div class="header">
@@ -35,20 +41,13 @@
         </div>
 
 
-        <div id="myModal" class="modal" ng-show="state">
-
-            <!-- Modal content -->
-            <div class="modal-content">
-                <span ng-click="showModal()" class="close">&times;</span>
-                <p>Some text in the Modal..</p>
-            </div>
-
-        </div>
+        <div ng-include="'festival_modal.html'"></div>
+        <div ng-include="'band_modal.html'"></div>
 
         <div class="body-carteleras">
             <div><h2>Carteleras</h2></div>
             <div class="navigation-buton-carteleras-left" ng-click="backwardCurrentSelection(1)"><i class="fa fa-caret-left fa-2x"></i></div>
-            <div class="box-cartelera" ng-repeat="cartelera in currentCarteleras">
+            <div class="box-cartelera" style="height: 445px" ng-repeat="cartelera in currentCarteleras">
                 <div class="box-cartelera-title">{{cartelera.name}}</div>
                 <div class="box-cartelera-image" ><image ng-src={{cartelera.image}}></image></div>
                 <div class="box-cartelera-info">
@@ -61,7 +60,7 @@
                         <div class="box-cartelera-info-text">{{cartelera.leftTime}}</div>
                     </div>
                 </div>
-                <a  class="box-cartelera-button">Votar</a>
+                <a style="margin-top: 15px" class="box-cartelera-button">Votar</a>
             </div>
             <div class="navigation-buton-carteleras-right" ng-click="forwardCurrentSelection(1)"><i class="fa fa-caret-right fa-2x"></i></div>
         </div>
@@ -69,20 +68,24 @@
         <div class="body-festivales">
             <div><h2>Festivales</h2></div>
             <div class="navigation-buton-carteleras-left" ng-click="backwardCurrentSelection(2)"><i class="fa fa-caret-left fa-2x"></i></div>
-            <div class="box-cartelera" ng-repeat="festival in currentFestivales">
+            <div class="box-cartelera" style="height: 445px" ng-repeat="festival in currentFestivales">
                 <div class="box-cartelera-title">{{festival.name}}</div>
-                <div class="box-cartelera-image" ><image ng-src={{festival.image}}></image></div>
+                <div class="box-cartelera-image" ><image ng-if="festival.image" ng-src={{festival.image}}></image></div>
                 <div class="box-cartelera-info">
                     <div class="box-cartelera-info-icon">
                         <i class="fa fa-globe fa-2x"></i>
                         <div class="box-cartelera-info-text">{{festival.location}}</div>
                     </div>
                     <div class="box-cartelera-info-icon">
-                        <i class="fa fa-clock-o fa-2x"></i>
-                        <div class="box-cartelera-info-text">{{festival.leftTime}}</div>
+                        <i class="fa fa-calendar fa-2x"></i>
+                        <div class="box-cartelera-info-text">{{festival.date}}</div>
+                    </div>
+                    <div class="box-cartelera-info-icon">
+                        <i class="fa fa-map-marker fa-2x"></i>
+                        <div class="box-cartelera-info-text">{{festival.place}}</div>
                     </div>
                 </div>
-                <a ng-click="showModal()" class="box-cartelera-button">Ver más</a>
+                <a ng-click="showFestivalModal(festival.localIndex)" class="box-cartelera-button">Ver más</a>
             </div>
             <div class="navigation-buton-carteleras-right" ng-click="forwardCurrentSelection(2)"><i class="fa fa-caret-right fa-2x"></i></div>
         </div>

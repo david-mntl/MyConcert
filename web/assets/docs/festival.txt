@@ -1,0 +1,27 @@
+{
+"id":"51",
+"name":"Blue Sky Fest",
+"description":"Este festival es muy bonito.",
+"location":"Cartago,Costa Rica",
+"date":"6 Mayo 2017",
+"place":"Tecnológico de Costa Rica",
+"image":"imgs/blue.png",
+"categories": [
+        {"id":"90",
+        "name":"Headliners",
+        "bands": [
+            {"id":"1","name":"Red Hot Chilli Peppers","spotifyID":"0L8ExT028jH3ddEcZwqJJ5","rating":"4","members":[{"name":"Anthony Kiedis"},{"name":"Flea"},{"name":"Chad Smith"},{"name":"Josh Klinghoffer"}],"genders":[{"name":"Funk Rock"},{"name":"Funk Metal"},{"name":"Rock Alternativo"}],"comments":[{"user":"fasm22","title":"Increíble banda","rating":"4","data":"Es una banda genial"},{"user":"abrahamon","title":"Fantástico","rating":"4","data":"Muy buena banda"},{"user":"tvlenin","title":"Muy buena","rating":"3","data":"Es una buena banda en crecimiento."}]},
+            {"id":"2","name":"Metallica","spotifyID":"2ye2Wgw4gimLv2eAKyk1NB","rating":"4","members":[{"name":"James Hetfield"},{"name":"Lars Ulrich"},{"name":"Kirk Hammet"},{"name":"Robert Trujillo"}],"genders":[{"name":"Heavy Metal"},{"name":"Trash Metal"},{"name":"Rock"}]},
+            {"id":"3","name":"Against The Current","spotifyID":"6yhD1KjhLxIETFF7vIRf8B","rating":"5","members":[{"name":"Chrissy Costanza"},{"name":"Will Ferri"},{"name":"Dan Gow"}],"genders":[{"name":"Rock"},{"name":"RockPop"},{"name":"Alternative"}]}
+            ]
+        },
+        {"id":"91",
+        "name":"Locales",
+        "bands": [
+            {"id":"1","name":"Querubines Negros","spotifyID":"5jyynX7CeswWOwZ3Bw9mdX","rating":"3","members":[{"name":"Chrissy Costanza"},{"name":"Will Ferri"},{"name":"Dan Gow"}],"genders":[{"name":"Rock"},{"name":"RockPop"},{"name":"Alternative"}]},
+            {"id":"2","name":"Los Ajenos","spotifyID":"5fuNZSA3i1xjoPbHZVRogr","rating":"3","members":[{"name":"Chrissy Costanza"},{"name":"Will Ferri"},{"name":"Dan Gow"}],"genders":[{"name":"Rock"},{"name":"RockPop"},{"name":"Alternative"}]},
+            {"id":"3","name":"Un rojo","spotifyID":"0be2ng4eQ9GU8UbaGaH3jX","rating":"3","members":[{"name":"Chrissy Costanza"},{"name":"Will Ferri"},{"name":"Dan Gow"}],"genders":[{"name":"Rock"},{"name":"RockPop"},{"name":"Alternative"}]}
+            ]
+        }
+    ]
+}
