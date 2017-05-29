@@ -9,7 +9,11 @@
     <script src="../assets/js/interface_carteleras.js"></script>
     <script src="../assets/js/loading-bar.js"></script>
     <script src="../assets/js/libs/slides.js"></script>
+    <script src="../assets/js/libs/angular-cookies.js"></script>
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <link href='../assets/styles/loading-bar.css' rel='stylesheet' />
     <link rel="stylesheet" href="../assets/styles/basicStyles.css" />
@@ -32,11 +36,13 @@
             <a href="#" class="navigation-button">Carteleras</a>
             <a href="#" class="navigation-button">Festivales</a>
             <a href="#" class="navigation-button">Mi Perfil</a>
+            <a data-toggle="modal" data-target="#addCartelera" style="width: 130px; float: right; margin-right:3px " href="#" class="navigation-button">Agregar Cartelera</a>
         </div>
 
         <div class="body-carteleras">
             <div class="box-cartelera" ng-repeat="cartelera in carteleras">
                 <div class="box-cartelera-title">{{cartelera.name}}</div>
+
                 <div class="box-cartelera-image" ><image ng-src={{cartelera.image}}></image></div>
                 <div class="box-cartelera-info">
                     <div class="box-cartelera-info-icon">
@@ -48,9 +54,13 @@
                         <div class="box-cartelera-info-text">{{cartelera.leftTime}}</div>
                     </div>
                 </div>
-                <a href="#" class="box-cartelera-button">Votar</a>
+                <a ng-if="userType == 2" href="#" class="box-cartelera-button">Votar</a>
+                <a ng-if="userType == 1" href="#" class="box-cartelera-button" style="width: 120px ">Crear festival</a>
+                <a ng-if="userType == 1" href="#" class="box-cartelera-button">Cancelar</a>
             </div>
         </div>
+        <div class="container"ng-include="'add_Cartelera.html'"></div>
+
     </div>
 
     <footer>

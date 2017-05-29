@@ -1,7 +1,6 @@
-var app = angular.module('mainModule', ['spotify','angular-loading-bar']);
+var app = angular.module('mainModule', ['spotify','angular-loading-bar','ui-notification']);
 
-
-app.controller('cartelerasController',['$scope','$http','$interval','Spotify',function ($scope,$http,$interval,Spotify) {
+app.controller('cartelerasController',['$scope','$http','$interval','Spotify','Notification',function ($scope,$http,$interval,Spotify,Notification) {
     $scope.carteleras = [];
     $scope.festivales = [];
     $scope.currentCarteleras = [];
@@ -156,9 +155,25 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify',fu
 
 
     $scope.sendNewComment = function () {
-        console.log("Calificación: " + $scope.currentComment.rating);
-        console.log("Titulo: " + $scope.currentComment.title);
-        console.log("Datos: " + $scope.currentComment.data);
+        if($scope.currentComment.rating != 0){
+            if($scope.currentComment.title){
+                if($scope.currentComment.title) {
+                    console.log("Calificación: " + $scope.currentComment.rating);
+                    console.log("Titulo: " + $scope.currentComment.title);
+                    console.log("Datos: " + $scope.currentComment.data);
+                    $scope.closeBandModal();
+                    Notification.success({message: 'Comentario enviado...', delay: 2000});
+                }
+                else
+                    Notification.error({message: 'Ingrese un comentario', delay: 2000});
+            }
+            else
+                Notification.error({message: 'Ingrese un título', delay: 2000});
+        }
+        else
+            Notification.error({message: 'Ingrese una calificación', delay: 2000});
+
+
     };
 
     $scope.changeCurrentFestivalCategory = function (pCurrentCategoryID) {

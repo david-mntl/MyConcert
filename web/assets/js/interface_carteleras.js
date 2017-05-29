@@ -1,10 +1,20 @@
-var app = angular.module('mainModule', ['spotify','angular-loading-bar']);
+var app = angular.module('mainModule', ['spotify','angular-loading-bar','ngCookies']);
 
 
-app.controller('cartelerasController',['$scope','$http','Spotify',function ($scope,$http,Spotify) {
+app.controller('cartelerasController',['$scope','$http','$cookies','Spotify',function ($scope,$http,$cookies,Spotify) {
     $scope.carteleras = [];
+    console.log($cookies.get('zUserType'))
+    $scope.userType = $cookies.get('zUserType');
+    $scope.userTypeUse = "Votar";
+    if ($scope.userType == "fanatico"){
+        $scope.userTypeUse = "Votar";
+    }else{
+        $scope.userTypeUse = "Crear festival";
+    }
+
 
     $scope.readCartelerasData = function() {
+        console.log($scope.userType);
         $http.get("../assets/docs/carteleras.txt").success(function (response) {
             var data = response.split("\n");
 
@@ -20,7 +30,9 @@ app.controller('cartelerasController',['$scope','$http','Spotify',function ($sco
                 }
             }
         });
-    }
+    };
+
+
 
     $scope.readCartelerasData();
 }]);
