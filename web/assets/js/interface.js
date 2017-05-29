@@ -6,9 +6,6 @@ app.controller('mainController',['$scope','$http','$cookies','$window',function 
 
     //http://myconcert1.azurewebsites.net/api/Country
     $scope.login = function () {
-        console.log($scope.data.Username);
-        console.log($scope.data.Password);
-
         if($scope.isValid($scope.data.Username)) {
             $scope.showMessage('error','Error','Por favor ingrese un nombre de usuario válido.',2000);
         }

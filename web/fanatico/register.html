@@ -9,11 +9,11 @@
     <script src="../assets/js/loading-bar.js"></script>
     <script src="../assets/js/libs/angular-datepicker.js"></script>
     <script src="../assets/js/upload/angular-file-upload.min.js"></script>
+    <script src="../assets/js/libs/angular-ui-notification.min.js"></script>
+    <script src="../assets/js/jquery/jquery-1.11.1.min.js"></script>
+    <script src="../assets/js/libs/angular-cookies.js"></script>
 
-    <script src="../assets/js/upload/directives.js"></script>
-    <script src="../assets/js/upload/controllers.js"></script>
-    <script src="../assets/js/upload/angular-file-upload.min.js"></script>
-    <script src="../assets/js/upload/console-sham.js"></script>
+    <link rel="stylesheet" href="../assets/styles/angular-ui-notification.min.css" />
 
     <script>
         var counter = 0;
@@ -67,7 +67,7 @@
             <div class="user_info_holder">
                 <div class="user_info_holder_name"><a class="txt_c">País:</a></div>
                 <div class="user_info_holder_input">
-                <select id="country-selector" autofocus="autofocus" autocorrect="off" autocomplete="off" class="pInput" style="width: 178px">
+                <select ng-model="data.Country" id="country-selector" autofocus="autofocus" autocorrect="off" autocomplete="off" class="pInput" style="width: 178px">
                     <option value="" selected="selected">País</option>
                     <option value="Afghanistan" data-alternative-spellings="AF افغانستان">Afghanistan</option>
                     <option value="Åland Islands" data-alternative-spellings="AX Aaland Aland" data-relevancy-booster="0.5">Åland Islands</option>
@@ -335,7 +335,7 @@
             <div class="user_info_holder">
                 <div class="user_info_holder_name"><a class="txt_c">Universidad:</a></div>
                 <div class="user_info_holder_input">
-                    <select class="pInput" style="width: 178px" ng-model="data.University" ng-options="university.label for university in universities track by university.value">
+                    <select class="pInput" style="width: 178px" ng-model="data.University" ng-options="university.name for university in universities track by university.id">
                         <option value="">Universidad</option>
                     </select>
                 </div>
@@ -343,33 +343,36 @@
             <div class="user_info_holder">
                 <div class="user_info_holder_name"><a class="txt_c">Tipo Usuario:</a></div>
                 <div class="user_info_holder_input">
-                    <select class="pInput" style="width: 178px" ng-model="data.ProfileType" ng-options="profile.label for profile in profiles track by profile.value">
+                    <select class="pInput" style="width: 178px" ng-model="data.ProfileType" ng-options="profile.name for profile in profiles track by profile.id">
                         <option value="">Perfil</option>
                     </select>
                 </div>
             </div>
             <div class="user_info_holder">
                 <div class="user_info_holder_name"><a class="txt_c">Correo Electrónico:</a></div>
-                <div class="user_info_holder_input"> <input class="pInput" type="email"> </div>
+                <div class="user_info_holder_input"> <input ng-model="data.Email"  class="pInput" type="text"> </div>
             </div>
             <div class="user_info_holder">
                 <div class="user_info_holder_name"><a class="txt_c">Contraseña:</a></div>
-                <div class="user_info_holder_input"> <input class="pInput" type="password"> </div>
+                <div class="user_info_holder_input"> <input ng-model="data.Password" class="pInput" type="password"> </div>
             </div>
             <div class="user_info_holder">
-                <div class="user_info_holder_name"><a class="txt_c">Confirmar Contraseña:</a></div>
-                <div class="user_info_holder_input"> <input class="pInput" type="password"> </div>
+                <div class="user_info_holder_name"><a class="txt_c">Ubicación:</a></div>
+                <div class="user_info_holder_input"> <input ng-model="data.Place" class="pInput" type="text"> </div>
             </div>
         </div>
         <div class="bodyreg_column">
             <div class="user_info_holder2">
                 <div class="user_info_holder_name"><a class="txt_c">Géneros Musicales Favoritos:</a></div>
                 <div class="user_info_holder_input">
-                        <select class="pInput" style="width: 178px; float:left;" ng-model="data.Genre" ng-options="genre.label for genre in genres track by genre.value">
+                        <select class="pInput" style="width: 178px; float:left;" ng-model="data.Genre" ng-options="genre.name for genre in genres track by genre.id">
                             <option value="">Género</option>
                         </select>
                         <div style="margin-top: 4px; float: left; color: #0E8012; margin-left: 5px; cursor:pointer;" ng-click="addGenre()">
                             <i class="fa fa-plus-circle fa-2x" style="display: inline-flex;"></i>
+                        </div>
+                        <div style="margin-top: 4px; float: left; color: #0E8012; margin-left: 5px; cursor:pointer;" ng-click="removeGenre()">
+                            <i class="fa fa-minus-circle fa-2x" style="display: inline-flex;"></i>
                         </div>
                         <input ng-model="data.GenresList" class="pInput" type="text" style="width: 200px; margin-top: 5px;" aria-readonly="true" readonly>
                 </div>
@@ -378,7 +381,7 @@
                 <div class="user_info_holder_name"><a class="txt_c">Descripción Personal:</a></div>
                 <div class="user_info_holder_input">
                     <form>
-                        <textarea class="pInput" maxlength="300" onblur="textCounter(this.form.counter_txt,300,this.form.message);" onkeyup="textCounter(this.form.counter_txt,300,this.form.message);" style="width: 100%; height: 90px; resize:none;" name="message" rows="1" cols="15" ></textarea>
+                        <textarea ng-model="data.Description" class="pInput" maxlength="300" onblur="textCounter(this.form.counter_txt,300,this.form.message);" onkeyup="textCounter(this.form.counter_txt,300,this.form.message);" style="width: 100%; height: 90px; resize:none;" name="message" rows="1" cols="15" ></textarea>
                         <input onblur="textCounter(this.form.counter_txt,300,this.form.message);" disabled  onfocus="this.blur();" tabindex="999" maxlength="3" size="3" value="300" name="counter_txt">
                     </form>
                 </div>

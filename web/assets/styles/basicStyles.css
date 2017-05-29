@@ -687,6 +687,195 @@
 }
 
 /******************* Votar *****************************/
+.howto-button{
+    width: 170px;
+    background: #d2cdc4;
+    margin-left: 30px;
+    margin-top: 15px;
+    border: solid black;
+    border-width: 1px;
+    border-radius: 4px;
+    display: block;
+    cursor: pointer;
+}
+.howto-button:hover{
+    border: solid #0f49a8;
+}
+.categorymenu-box{
+    width: 75%;
+    float: left;
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.categorymoney-box{
+    float: right;
+    background: #d2cdc4;
+    margin-left: 5px;
+    border: solid black;
+    border-width: 2px;
+    border-radius: 12px;
+    padding: 5px;
+}
+
+.sendVoteButton{
+    float: right;
+    background: #d2cdc4;
+    margin-left: 5px;
+    border: solid black;
+    border-width: 2px;
+    border-radius: 12px;
+    padding: 5px;
+}
+.sendVoteButton:hover{
+    border: solid #0f49a8;
+}
+
+
+.categories-vote-panel{
+    padding: 5px;
+    background: whitesmoke;
+    width: 74%;
+    height: auto;
+    display: block;
+    margin-left: 10px;
+    float: left;
+}
+.categories-box-left{
+    float: left;
+    display: block;
+    width: 255px;
+}
+.categories-box-right{
+    min-width: 600px;
+}
+
+/* Style the buttons that are used to open and close the accordion panel */
+.categories-accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    width: 75%;
+    padding: 12px;
+    margin-left: 10px;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+}
+
+
+.cartelera-bandbox {
+    float: left;
+    margin-left: 8px;
+    padding: 5px;
+    text-align: center;
+    border: solid #99948c;
+    border-width: 3px;
+    border-radius: 12px;
+
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px transparent;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-property: transform;
+    transition-property: transform;
+}
+.cartelera-bandbox:hover, .cartelera-bandbox:focus, .cartelera-bandbox:active {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    border: solid #d2ca1f;
+}
+
+
+.cartelera-bandbox-title{
+    padding: 3px;
+    border: solid #99948c;
+    border-width: 3px;
+    border-radius: 12px;
+    text-align: center;
+    word-wrap: break-word;
+    max-width: 150px;
+}
+
+.bandimage-box{
+    width: 150px;
+    height: 150px;
+    display: block;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.cartelera-bandbox-link{
+    float: left;
+    padding-left: 1px;
+    margin-top: 5px;
+}
+.hasPointer{
+    cursor: pointer;
+}
+.cartelera-moneyholder{
+    float: right;
+    padding-left: 1px;
+    padding-right: 1px;
+    border: solid #99948c;
+    border-width: 2px;
+}
+
+.colorHoverGreen{
+    color: black;
+}
+.colorHoverGreen:hover{
+    color:#2ea628;
+}
+
+.colorHoverRed{
+    color: black;
+}
+.colorHoverRed:hover{
+    color:red;
+}
+
+
+.bandname-box {
+    background: #5c8dff;
+    float: left;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    border: 0px solid #000000;
+    -webkit-box-shadow: 8px 9px 19px -3px rgba(0,0,0,0.67);
+    -moz-box-shadow: 8px 9px 19px -3px rgba(0,0,0,0.67);
+    box-shadow: 8px 9px 19px -3px rgba(0,0,0,0.67);
+    cursor: pointer;
+
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-property: box-shadow, transform;
+    transition-property: box-shadow, transform;
+}
+.bandname-box:hover, .bandname-box:focus, .bandname-box:active {
+    box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.categories-accordion.active, .categories-accordion:hover {
+    background-color: #ddd;
+}
+
+
+
 .votar_leftBox{
     width: 325px;
     height: 410px;
@@ -796,6 +985,10 @@
     -webkit-animation-iteration-count: 1;
     animation-iteration-count: 1;
 }
+
+
+
+
 
 /**************************** INIT **********************************/
 /* Put your css in here */
