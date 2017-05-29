@@ -1,0 +1,85 @@
+
+<div id="myModal" class="modal" ng-show="visibleBandModal">
+    <div class="modal-content">
+
+        <div class="modal-header blue">
+            <span ng-click="closeBandModal()" class="close">&times;</span>
+            <div style="float: left; margin-top: 3px; display: inline-block; font-size: 22px; margin-right: 15px;">{{selectedBand.name}}</div>
+            <i ng-repeat="star in completeStars" class="fa fa-star fa-2x" style="color: yellow"></i><i ng-repeat="star in blankStars" class="fa fa-star-o fa-2x" style="color: yellow"></i>
+        </div>
+        <div class="modal-body">
+            <div class="modal-band-image" ><image style="width: 250px; height: 250px" ng-show="selectedBand.image" ng-src={{selectedBand.image}}></image></div>
+            <div class="modal-band-image" ><image style="width: 250px; height: 250px" ng-show="!selectedBand.image" src="../assets/imgs/not_image.png"></image></div>
+            <div style="margin-left: 15px" class="modal-info-box">
+                <div style="padding: 5px" class="box-cartelera-info-icon">
+                    <i class="fa fa-line-chart fa-2x"></i>
+                    <div class="modal-info-text">Seguidores: {{selectedBand.followers}}</div>
+                </div>
+                <div style="padding: 5px" class="box-cartelera-info-icon">
+                    <i class="fa fa-thumbs-up fa-2x"></i>
+                    <div class="modal-info-text">Popularidad: {{selectedBand.popularity}}</div>
+                </div>
+                <div style="padding: 5px" class="box-cartelera-info-icon">
+                    <i class="fa fa-users fa-2x"></i>
+                    <div class="modal-info-text">Miembros:</div>
+
+                </div>
+                <div class="modal-members-holder">
+                    <div class="modal-info-text-member" ng-repeat="member in selectedBand.members">{{member.name}}</div>
+                </div>
+                <!--<div style="padding: 5px" class="box-cartelera-info-icon">
+                    <i class="fa fa-map-marker fa-3x"></i>
+                    <div class="modal-info-text">{{selectedFestival.place}}</div>
+                </div>-->
+            </div>
+
+            <div style="margin-left: 15px" class="modal-info-box">
+                <div style="padding: 5px" class="box-cartelera-info-icon">
+                    <i class="fa fa-music fa-2x"></i>
+                    <div class="modal-info-text">Géneros Musicales:</div>
+
+                </div>
+                <div class="modal-members-holder">
+                    <div class="modal-info-text-member" ng-repeat="gender in selectedBand.genders">{{gender.name}}</div>
+                </div>
+            </div>
+
+            <div class="comments-box-holder">
+                <div class="comment-box" ng-repeat="comment in selectedBand.comments">
+                    <div class="comment-box-title">{{comment.title}} |
+                        <i ng-repeat="i in getNumber(comment.rating)" class="fa fa-star fa-1x" style="color: black"></i><i ng-repeat="i in getNumber(5-comment.rating)" class="fa fa-star-o fa-1x" style="color: black"></i> |
+                        {{comment.user}}
+                    </div>
+                    <div class="comment-box-data">
+                        {{comment.data}}
+                    </div>
+                </div>
+            </div>
+            <div class="newcomment-box-holder">
+                <h3 style="text-align: left">Agregar un comentario:</h3>
+                <div class="newcomment-box-inner">
+                    <div class="newcomment-box-rating-title" style="text-align: left">
+                        Calificación:<!--<i ng-if="currentComment.rating==0" ng-click="updateCommentRating(i+1)" ng-repeat="i in getNumber(5)" class="fa fa-star-o fa-1x" style="color: black; cursor: pointer;"></i>-->
+                        <i ng-click="selectCommentRating(holderA+1)" ng-mouseenter="updateCommentRating(holderA+1)" ng-mouseleave="restoreCommentRating()" ng-repeat="holderA in getNumber(currentComment.rating)" class="fa fa-star fa-1x stargrow" style="color: black; cursor: pointer;"></i><i ng-click="selectCommentRating(currentComment.rating+holderB+1)" ng-mouseover="updateCommentRating(currentComment.rating+holderB+1)" ng-mouseleave="restoreCommentRating()" ng-repeat="holderB in getNumber(5-currentComment.rating)" class="fa fa-star-o fa-1x stargrow" style="color: black; cursor: pointer;"></i>
+                    </div>
+                    <div class="newcomment-box-rating-title" style="text-align: left">
+                        Título:<!--<i ng-if="currentComment.rating==0" ng-click="updateCommentRating(i+1)" ng-repeat="i in getNumber(5)" class="fa fa-star-o fa-1x" style="color: black; cursor: pointer;"></i>-->
+                        <input ng-model="currentComment.title">
+                    </div>
+                    <!--<textarea ng-model="currentComment.data"></textarea>-->
+                    <form>
+                        <textarea  ng-model="currentComment.data" maxlength="300" onblur="textCounter(this.form.counter_txt,300,this.form.message);" onkeyup="textCounter(this.form.counter_txt,300,this.form.message);" style="width: 100%; height: 90px; resize:none;" name="message" rows="1" cols="15" ></textarea>
+                        <input style="float: left" onblur="textCounter(this.form.counter_txt,300,this.form.message);" disabled  onfocus="this.blur();" tabindex="999" maxlength="3" size="3" value="300" name="counter_txt">
+                    </form>
+                    <a ng-click="sendNewComment()" style="float: right" class="box-festival-button">Enviar</a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal-footer blue">
+            <a>-</a>
+        </div>
+
+    </div>
+</div>

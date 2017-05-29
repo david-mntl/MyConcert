@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="mainModule">
+<head>
+    <meta charset="UTF-8">
+    <title>MyConcert by X-Fest</title>
+
+    <script src="../assets/js/libs/angular.min.js"></script>
+    <script src="../assets/js/libs/angular-spotify.js"></script>
+    <script src="../assets/js/interfaceEditar.js"></script>
+    <script src="../assets/js/loading-bar.js"></script>
+    <script src="../assets/js/libs/slides.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href='../assets/styles/loading-bar.css' rel='stylesheet' />
+    <link rel="stylesheet" href="../assets/styles/basicStyles.css" />
+    <link rel="stylesheet" href="../assets/styles/promoStyle.css" />
+    <link rel="stylesheet" href="../assets/styles/slides.css" />
+    <link rel="stylesheet" href="../assets/styles/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+</head>
+<body class="bodyall">
+    <div class="header">
+        <div class="header_center"><h1>MyConcert</h1></div>
+        <div class="header_right-profile">
+            <div class="log-reg"><i class="fa fa-user fa-2x"></i>Mi Perfil</div>
+            <div class="log-reg"><i class="fa fa-sign-out fa-2x"></i></div>
+        </div>
+    </div>
+
+    <div class="bodycont1"  ng-controller="mainController">
+        <div class="navigation-menu" >
+            <a ng-click="selectEdit('bandas')" class="navigation-button">Bandas</a>
+            <a ng-click="selectEdit('categorias')" class="navigation-button">Categoría</a>
+            <a href="../fanatico/festivales.html" class="navigation-button">Festivales</a>
+            <a href="../fanatico/carteleras.html" class="navigation-button">Cartelera</a>
+        </div>
+        <div ng-if= "selectedEdit == 'bandas'"class="divImage">
+            <h3 class="titulo">{{selectedBanda}}</h3>
+            <img ng-if="selectedBanda != ''" height="300" width="300" class="ImageS"  ng-src={{currentArtist.image}}>
+            <!--<img src="../assets/imgs/queru.jpg" alt="Smiley face" height="300" width="300" class="ImageS" >-->
+        </div>
+        <div ng-if= "selectedEdit == 'categorias' && selectedCategory != ''"class="divCate">
+            <h1>{{selectedCategory}} <span class="label label-default"></span></h1>
+        </div>
+
+
+
+        <div class="contenedor1 ">
+            <div ng-if = "selectedEdit == 'bandas'" class="contenedorBandas ">
+                <ul >
+                    <li ng-repeat="x in bandas"><button ng-click="selectBanda(x.name)" class="buttonBandas" type="button">{{x.name}}</button></li>
+                </ul>
+            </div>
+            <div ng-if = "selectedEdit == 'categorias'" class="contenedorCategorias">
+                <ul >
+                    <li ng-repeat="x in categorias"><button ng-click="selectCategoria(x.name)" class="buttonBandas" type="button">{{x.name}}</button></li>
+                </ul>
+            </div>
+
+
+        </div>
+        <!--Popup para agregar nueva categoria-->
+        <div  class="container" >
+            <!-- Trigger the modal with a button -->
+            <button  ng-if = "selectedEdit == 'categorias'" type="button" class="buttonAdd1" data-toggle="modal" data-target="#myModal">Agregar Categoría</button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Agregar categoría</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="usr">Nombre:</label>
+                                <input  ng-model="inputVal" type="text" class="form-control" id="usr">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button ng-click="getCategoria()" type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!--Popup para agregar nueva Banda-->
+        <div  class="container" >
+            <!-- Trigger the modal with a button -->
+            <button  ng-if = "selectedEdit == 'bandas'" type="button" class="buttonAdd1" data-toggle="modal" data-target="#myModalArtist">Agregar Artista</button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModalArtist" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Agregar nuevo artista</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-6" style="background-color:#ffffff;">
+                                        <label for="nameArtist">Nombre:</label>
+                                        <input ng-model="inputName" type="text" class="form-control" id="nameArtist">
+                                        <label for="nameMiembros">Lista de miembros:</label>
+                                        <textarea rows="5" ng-model="inputMiembros" type="text" class="form-control" id="nameMiembros"></textarea>
+                                        <label for="nameCanciones">Canciones principales:</label>
+                                        <textarea rows="5" ng-model="inputCanciones" type="text" class="form-control" id="nameCanciones"></textarea>
+
+                                    </div>
+                                    <div class="col-sm-6" style="background-color:#ffffff;">
+                                        <label for="nameGeneros">Géneros musicales:</label>
+                                        <textarea rows="3" ng-model="inputGeneros" type="text" class="form-control" id="nameGeneros"></textarea>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button ng-click="postArtista()" type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!--Popup para Editar nueva Banda-->
+        <div  class="container" >
+            <!-- Trigger the modal with a button -->
+            <button  ng-if = "selectedEdit == 'bandas' && selectedBanda != '' " class="buttonEdit"  type="button"  data-toggle="modal" data-target="#myModalEditArtist">Editar</button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModalEditArtist" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Editar artista</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-6" style="background-color:#ffffff;">
+                                        <label for="nameArtist">Nombre:</label>
+                                        <input  ng-model="inputEditName" type="text" class="form-control" id="nameArtist">
+                                        <label for="nameMiembros">Lista de miembros:</label>
+                                        <textarea rows="5" ng-model="inputEditMiembros" type="text" class="form-control" id="nameMiembros"></textarea>
+                                        <label for="nameCanciones">Canciones principales:</label>
+                                        <textarea rows="5" ng-model="inputEditCanciones" type="text" class="form-control" id="nameCanciones"></textarea>
+
+                                    </div>
+                                    <div class="col-sm-6" style="background-color:#ffffff;">
+                                        <label for="nameGeneros">Géneros musicales:</label>
+                                        <textarea rows="3" ng-model="inputEditGeneros" type="text" class="form-control" id="nameGeneros"></textarea>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button ng-click="postEditArtista()" type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <footer>
+        <div class="footer">
+            <a class="socialicon-fb" href="#"><i class="fa fa-facebook-official fa-2x"></i></a>
+            <a class="socialicon-tw" href="#"><i class="fa fa-twitter-square fa-2x"></i></a>
+            <a class="socialicon-yt" href="#"><i class="fa fa-youtube-square fa-2x"></i></a>
+            <a class="socialicon-sp" href="#"><i class="fa fa-spotify fa-2x"></i></a><br>
+            <a style="color: white"> 2017 | MyConcert by X-Fest | Todos los derechos reservados.</a>
+        </div>
+    </footer>
+
+</body>
+</html>
