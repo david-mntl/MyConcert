@@ -153,6 +153,3 @@ DROP PROCEDURE spLogin;
 DROP PROCEDURE spRegisterUser;
 
 DROP PROCEDURE spRegisterAdmin;
-
-
-
