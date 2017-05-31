@@ -6,10 +6,12 @@
 
     <script src="../assets/js/libs/angular.min.js"></script>
     <script src="../assets/js/interface_vote.js"></script>
-    <script src="../assets/js/loading-bar.js"></script>
+    <script src="../assets/js/libs/loading-bar.js"></script>
     <script src="../assets/js/libs/angular-datepicker.js"></script>
     <script src="../assets/js/upload/angular-file-upload.min.js"></script>
+    <script src="../assets/js/libs/angular-route.min.js"></script>
     <script src="../assets/js/libs/angular-ui-notification.min.js"></script>
+    <script src="../assets/js/libs/angular-animate.js"></script>
     <script src="../assets/js/jquery/jquery-1.11.1.min.js"></script>
     <script src="../assets/js/libs/angular-cookies.js"></script>
     <script src="../assets/js/libs/angular-spotify.js"></script>
@@ -21,7 +23,6 @@
     <link rel="stylesheet" href="../assets/styles/basicStyles.css" />
     <link rel="stylesheet" href="../assets/styles/font-awesome.min.css" />
     <link rel="stylesheet" href="../assets/styles/modalStyle.css" />
-
 
 </head>
 <body class="bodyall" ng-controller="mainController">
@@ -47,6 +48,7 @@
                 <div ng-click="showHowVoteModal()" class="howto-button">
                     <i class="fa fa-question fa-2x"></i>
                     <div style="font-size: 18px; float: left; margin-top: 5px; margin-left: 15px"><b>¿Cómo votar?</b></div>
+                    <!--<div class="how_voteButton"><i class="fa fa-question-circle fa-1x"></i>¿Cómo votar?</div>-->
                 </div>
             </div>
         </div>
@@ -55,14 +57,12 @@
                 <div ng-click="sendVote()" class="sendVoteButton" style="cursor: pointer">
                     Enviar Voto
                 </div>
-                <div class="categorymoney-box">
+                <div id="moneybox" class="categorymoney-box">
                     <a style="margin-top: 1.5px; float: right">{{categories[currentCarteleraCategory].money}}</a>
                     <i class="fa fa-dollar fa-1x" style="margin-top: 4px;float: right;"></i>
                 </div>
-
             </div>
-            </div>
-            <div  ng-repeat="category in categories">
+            <div ng-repeat="category in categories">
                 <button ng-click="changeCurrentCarteleraCategory(category.localID)" class="categories-accordion">
                     {{category.name}}
                     <i ng-if="currentCarteleraCategory == category.localID" class="fa fa-caret-up fa-2x" style="float: right; margin-left: 5px;"></i>
@@ -72,18 +72,17 @@
                     <i ng-if="category.done == true" class="fa fa-check-circle fa-2x" style="float: right; color: #2ea628"></i>
                     <i ng-if="category.done == false" class="fa fa-times-circle fa-2x" style="float: right; color: red"></i>
                 </button>
-                <div class="categories-vote-panel" ng-if="currentCarteleraCategory == category.localID">
+                <div class="categories-vote-panel fade" ng-show="currentCarteleraCategory == category.localID">
                     <div class="cartelera-bandbox" ng-repeat="band in category.bands">
                         <div class="cartelera-bandbox-title">{{band.name}}</div>
                         <image class="bandimage-box"  ng-src={{band.image}}></image>
 
                         <div ng-click="showBandModal(band.localID,category.localID)" class="cartelera-bandbox-link hasPointer" style="margin-top: 8px"> <i class="fa fa-external-link fa-1x" style="float: left; margin-left: 5px; margin-top: 3px;"></i> <a style="margin-left: 5px">Perfil</a></div>
                         <div class="cartelera-bandbox-link" style="float: right;">
-                            <i ng-click="subMoneyFromCurrentBand(band.localID)" class="fa fa-minus-circle fa-1x colorHover colorHoverRed" style="margin-top: 5px; margin-left: 1px; float: right; cursor: pointer;"></i>
-                            <i ng-click="addMoneyToCurrentBand(band.localID)" class="fa fa-plus-circle fa-1x colorHover colorHoverGreen" style="margin-top: 5px;margin-left: 1px; float: right; cursor: pointer;"></i>
+                            <i ng-click="subMoneyFromCurrentBand(band.localID,1)" ng-mousedown="mouseDown(band.localID,1)" ng-mouseup="mouseUp()" class="fa fa-minus-circle fa-1x colorHover colorHoverRed" style="margin-top: 5px; margin-left: 1px; float: right; cursor: pointer;"></i>
+                            <i ng-click="addMoneyToCurrentBand(band.localID,1)" ng-mousedown="mouseDown(band.localID,0)" ng-mouseup="mouseUp()" class="fa fa-plus-circle fa-1x colorHover colorHoverGreen" style="margin-top: 5px;margin-left: 1px; float: right; cursor: pointer;"></i>
                             <div class="cartelera-moneyholder" style="float: right;">{{band.money}}</div>
                             <i class="fa fa-dollar fa-1x" style="margin-top: 5px;float: right;"></i>
-
                         </div>
                     </div>
                 </div>

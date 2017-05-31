@@ -3,7 +3,6 @@ var app = angular.module('mainModule', ['spotify','angular-loading-bar','ngCooki
 
 app.controller('cartelerasController',['$scope','$http','$cookies','Spotify',function ($scope,$http,$cookies,Spotify) {
     $scope.carteleras = [];
-    console.log($cookies.get('zUserType'))
     $scope.userType = $cookies.get('zUserType');
     $scope.userTypeUse = "Votar";
     if ($scope.userType == "fanatico"){
@@ -14,21 +13,21 @@ app.controller('cartelerasController',['$scope','$http','$cookies','Spotify',fun
 
 
     $scope.readCartelerasData = function() {
-        console.log($scope.userType);
         $http.get("../assets/docs/carteleras.txt").success(function (response) {
-            var data = response.split("\n");
-
-            if (data.length > 0) {
-                for (i = 0; i < data.length; i++) {
+            if (response.carteleras.length > 0) {
+                for (j = 0; j < response.carteleras.length; j++) {
                     var cartelera = new Object();
-                    var carteleraData = data[i].split(":");
-                    cartelera.name = carteleraData[0];
-                    cartelera.location = carteleraData[1];
-                    cartelera.leftTime = carteleraData[2];
-                    cartelera.image = "../assets/"+carteleraData[3];
+
+                    cartelera.localIndex = j;
+                    cartelera.id = response.carteleras[j].id;
+                    cartelera.name = response.carteleras[j].name;
+                    cartelera.location = response.carteleras[j].location;
+                    cartelera.leftTime = response.carteleras[j].timeLeft;
+                    cartelera.image = "../assets/"+response.carteleras[j].image;
                     $scope.carteleras.push(cartelera);
                 }
             }
+            $scope.changeCurrentCarteleras(2);
         });
     };
 

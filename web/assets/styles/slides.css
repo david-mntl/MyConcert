@@ -2,9 +2,13 @@
 
 /* Slideshow container */
 .slideshow-container {
-    max-width: 1000px;
+    width: 600px;
+    height: 400px;
     position: relative;
     margin: auto;
+    background-image: url("../imgs/c4.jpg");
+    background-size: 600px 400px;
+    background-repeat: no-repeat;
 }
 
 .mySlides {

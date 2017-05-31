@@ -20,19 +20,19 @@ app.controller('mainController',['$scope','$http','$cookies','$window',function 
                 Password: $scope.data.Password.toString()
             });
 
-            $http.post('http://myconcert1.azurewebsites.net/api/Verify/Login', parameter).success(function (data, status, headers, config) {
+            $http.post('https://myconcert1.azurewebsites.net/api/Verify/Login', parameter).success(function (data, status, headers, config) {
                 var response = JSON.parse(data);
                 if(response.State == 0){
                     $scope.showMessage('error','Error','Credenciales Inválidas',2000);
                 }
                 else if(response.State == 1){
-                    $cookies.put('zUserType',1);
-                    $cookies.put('zUserName',$scope.data.Username.toString()) ;
+                    $cookies.put('zUserType',1,{path: '/fanatico/'});
+                    $cookies.put('zUserName',$scope.data.Username.toString(),{path: '/fanatico/'});
                     $window.location.href = 'fanatico/init.html';
                 }
                 else if(response.State == 2){
-                    $cookies.put('zUserType',2);
-                    $cookies.put('zUserName',$scope.data.Username.toString()) ;
+                    $cookies.put('zUserType',2,{path: '/fanatico/'});
+                    $cookies.put('zUserName',$scope.data.Username.toString(),{path: '/fanatico/'});
                     $window.location.href = 'fanatico/init.html';
                 }
             }).error(function (data, status, headers, config) {

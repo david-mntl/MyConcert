@@ -8,8 +8,8 @@
             <i ng-repeat="star in completeStars" class="fa fa-star fa-2x" style="color: yellow"></i><i ng-repeat="star in blankStars" class="fa fa-star-o fa-2x" style="color: yellow"></i>
         </div>
         <div class="modal-body">
-            <div class="modal-band-image" ><image style="width: 250px; height: 250px" ng-show="selectedBand.image" ng-src={{selectedBand.image}}></image></div>
-            <div class="modal-band-image" ><image style="width: 250px; height: 250px" ng-show="!selectedBand.image" src="../assets/imgs/not_image.png"></image></div>
+            <div class="modal-band-image" ><image class="modal-band-image-inside" ng-if="selectedBand.image != ''" ng-src={{selectedBand.image}}></image></div>
+            <!--<div class="modal-band-image" ><image style="width: 250px; height: 250px" ng-show="selectedBand.image" ng-src={{selectedBand.image}}></image></div>-->
             <div style="margin-left: 15px" class="modal-info-box">
                 <div style="padding: 5px" class="box-cartelera-info-icon">
                     <i class="fa fa-line-chart fa-2x"></i>

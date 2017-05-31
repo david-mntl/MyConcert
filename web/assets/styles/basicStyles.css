@@ -701,10 +701,29 @@
 .howto-button:hover{
     border: solid #0f49a8;
 }
+
+.sendVoteButton:hover{
+    border: solid #0f49a8;
+}
+
+
+.categories-box-left{
+    float: left;
+    /*display: block;*/
+    width: 255px;
+    /*width: 20%;*/
+    height: auto;
+}
+.categories-box-right{
+    float: left;
+    width: 80%;
+}
+
 .categorymenu-box{
     width: 75%;
-    float: left;
+    float: right;
     margin-left: 10px;
+    margin-right: 10px;
     margin-top: 5px;
     margin-bottom: 5px;
 }
@@ -727,48 +746,80 @@
     border-radius: 12px;
     padding: 5px;
 }
-.sendVoteButton:hover{
-    border: solid #0f49a8;
-}
 
-
-.categories-vote-panel{
-    padding: 5px;
-    background: whitesmoke;
-    width: 74%;
-    height: auto;
-    display: block;
-    margin-left: 10px;
-    float: left;
-}
-.categories-box-left{
-    float: left;
-    display: block;
-    width: 255px;
-}
-.categories-box-right{
-    min-width: 600px;
-}
 
 /* Style the buttons that are used to open and close the accordion panel */
 .categories-accordion {
     background-color: #eee;
     color: #444;
     cursor: pointer;
-    width: 75%;
+    width: 95%;
     padding: 12px;
     margin-left: 10px;
     text-align: left;
     border: none;
     outline: none;
-    transition: 0.4s;
+}
+
+.categories-vote-panel{
+    padding: 5px;
+    background: whitesmoke;
+    width: 94%;
+    height: auto;
+    display: block;
+    margin-left: 10px;
+    float: left;
+    transition: 10s;
+}
+
+/*** Transition Effect .. Required: ngAnimate ***/
+.fade.ng-hide {
+    opacity: 0;
+}
+
+.fade.ng-hide-remove,
+.fade.ng-hide-add {
+    display: block !important;
+}
+.fade.ng-hide-remove {
+    /*transition: all linear 500ms;*/
+    -moz-transition-duration: 0.3s;
+    -webkit-transition-duration: 0.3s;
+    -o-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -moz-transition-timing-function: ease-in;
+    -webkit-transition-timing-function: ease-in;
+    -o-transition-timing-function: ease-in;
+    transition-timing-function: ease-in;
+    max-height: 1000px;
+    overflow: hidden;
+}
+.fade.ng-hide-add {
+    overflow: hidden;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    -moz-transition-duration: 0.3s;
+    -webkit-transition-duration: 0.3s;
+    -o-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -moz-transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+    -webkit-transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+    -o-transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+    transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
 }
 
 
 .cartelera-bandbox {
     float: left;
     margin-left: 8px;
+    margin-top: 8px;
     padding: 5px;
+
+    width: 165px;
+
     text-align: center;
     border: solid #99948c;
     border-width: 3px;
@@ -792,6 +843,9 @@
 
 
 .cartelera-bandbox-title{
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
     padding: 3px;
     border: solid #99948c;
     border-width: 3px;
@@ -805,8 +859,11 @@
     width: 150px;
     height: 150px;
     display: block;
+    margin-left:auto;
+    margin-right:auto;
     margin-top: 3px;
     margin-bottom: 3px;
+    background-image: url("../imgs/not_image_150x150.png");
 }
 
 .cartelera-bandbox-link{

@@ -10,7 +10,7 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
 
 
     $scope.getGenresFromServer = function () {
-        $http.get('http://myconcert1.azurewebsites.net/api/Main/GET/spGetGenres').success(function (data, status, headers, config) {
+        $http.get('https://myconcert1.azurewebsites.net/api/Main/GET/spGetGenres').success(function (data, status, headers, config) {
             var response = JSON.parse(data);
             for(i = 0; i < response.spGetGenres.length; i++){
                 var genre = {};
@@ -25,7 +25,7 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
     };
 
     $scope.getUniversitiesFromServer = function () {
-        $http.get('http://myconcert1.azurewebsites.net/api/Main/GET/spGetUniversities').success(function (data, status, headers, config) {
+        $http.get('https://myconcert1.azurewebsites.net/api/Main/GET/spGetUniversities').success(function (data, status, headers, config) {
             var response = JSON.parse(data);
             for(i = 0; i < response.spGetUniversities.length; i++){
                 var university = {};
@@ -55,19 +55,19 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
                 Birthdate: $scope.data.BirthDate.toString()
             });
 
-            $http.post('http://myconcert1.azurewebsites.net/api/Verify/RegisterUser', parameter).success(function (data, status, headers, config) {
+            $http.post('https://myconcert1.azurewebsites.net/api/Verify/RegisterUser', parameter).success(function (data, status, headers, config) {
                 var response = JSON.parse(data);
                 if(response.State == 0){
                     $scope.showMessage('error','Error','Credenciales Inválidas',2000);
                 }
                 else if(response.State == 1){
-                    $cookies.put('zUserType',1);
-                    $cookies.put('zUserName',$scope.data.Username.toString()) ;
+                    $cookies.put('zUserType',1,{path: '/fanatico/'});
+                    $cookies.put('zUserName',$scope.data.Username.toString(),{path: '/fanatico/'});
                     $window.location.href = 'fanatico/init.html';
                 }
                 else if(response.State == 2){
-                    $cookies.put('zUserType',2);
-                    $cookies.put('zUserName',$scope.data.Username.toString()) ;
+                    $cookies.put('zUserType',2,{path: '/fanatico/'});
+                    $cookies.put('zUserName',$scope.data.Username.toString(),{path: '/fanatico/'});
                     $window.location.href = 'fanatico/init.html';
                 }
             }).error(function (data, status, headers, config) {
@@ -178,7 +178,7 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
                 Email: $scope.data.Email.toString()
             });
 
-            $http.post('http://myconcert1.azurewebsites.net/api/Verify/User', parameter).success(function (data, status, headers, config) {
+            $http.post('https://myconcert1.azurewebsites.net/api/Verify/User', parameter).success(function (data, status, headers, config) {
                 var response = JSON.parse(data);
                 if(response.State == 0){
                     $cookies.put('userRegisterEmail',$scope.data.Email.toString());

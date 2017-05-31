@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.8.3.js"></script>
+
+
+    <style type="text/css">
+        button {
+            margin:10px;
+        }
+        .coin{
+            position:absolute;
+            width:20px;
+            height:20px;
+            border-radius:50%;
+            background-color:blue;
+            border:1px dotted #333;
+            -webkit-animation:1s animateOpacity;
+        }
+
+        @-webkit-keyframes animateOpacity {
+            from {opacity: 0;}
+            5% {opacity: 0.6;}
+            50% {opacity: 1;}
+            95% {opacity: 0.6;}
+            to {opacity: 0;}
+        }
+
+    </style>
+
+    <title></title>
+
+
+    <script type='text/javascript'>//<![CDATA[
+    $(window).load(function(){
+        $cart = $(".cart");
+        $("button").on("click", function(){
+            $btn = $(this);
+            var $coin = $('<div class="coin">')
+                    .insertAfter($btn)
+                    .css({
+                        "left": $btn .offset().left,
+                        "top": $btn .offset().top
+                    })
+                    .animate({
+                        "top": $cart.offset().top,
+                        "left": $cart.offset().left
+                    }, 1000, function() {
+                        $coin.remove();
+                    });
+        });
+    });//]]>
+
+    </script>
+
+
+</head>
+
+<body>
+<p><button>Click me</button></p>
+<br>
+<div class="cart"></div>
+
+
+</body>
+
+</html>
+

@@ -1,7 +1,7 @@
-var app = angular.module('mainModule', ['spotify','angular-loading-bar','ui-notification','ngCookies']);
+var app = angular.module('mainModule', ['spotify','angular-loading-bar','ui-notification','ngCookies','ngRoute','ngAnimate']);
 
 
-app.controller('mainController',['$scope','$http','$window','Notification','$cookies','Spotify',function ($scope,$http,$window,Notification,$cookies,Spotify,$timeout) {
+app.controller('mainController',['$scope','$http','$window','Notification','$cookies','Spotify','$location','$interval',function ($scope,$http,$window,Notification,$cookies,Spotify,$location,$interval) {
 
     $scope.cartelera = [];
     $scope.categories = [];
@@ -17,8 +17,18 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
     $scope.currentComment.data = "";
     $scope.currentComment.title = "";
 
-    $scope.readCategoriesData = function() {
-        $http.get("../assets/docs/festival.txt").success(function (response) {
+    $scope.readURLParams = function () {
+        //URL Example: https://myconcert.fun/web/fanatico/vote.html#?IDConcert=5050
+        var param = $location.search();
+        if(param.IDCartelera != ""){
+            $scope.readCategoriesData(param.IDCartelera);
+        }
+    };
+
+
+    $scope.readCategoriesData = function(pCarteleraID) {
+        //$http.get(pURL).success(function (response) {
+        $http.get("../assets/docs/cartelera.txt").success(function (response) {
             $scope.categories = [];
             $scope.currentCarteleraCategory = -1;
 
@@ -47,12 +57,12 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
                         band.rating = response.categories[j].bands[k].rating;
                         band.members = response.categories[j].bands[k].members;
                         band.genders = response.categories[j].bands[k].genders;
-                        band.image = response.categories[j].bands[k].image;
                         band.comments = response.categories[j].bands[k].comments;
+                        band.image = response.categories[j].bands[k].image;
+                        band.followers = response.categories[j].bands[k].followers;
+                        band.popularity = response.categories[j].bands[k].popularity;
                         band.money = 0;
                         bands.push(band);
-
-
                     }
                     category.bands = bands;
 
@@ -60,6 +70,23 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
                 }
             }
         });
+    };
+
+    var promise;
+    $scope.mouseDown = function (bandLocalID,pType) {
+        if(promise){
+            $interval.cancel(promise);
+        }
+        promise = $interval(function () {
+            if(pType == 0)
+                $scope.addMoneyToCurrentBand(bandLocalID,10);
+            else if(pType == 1)
+                $scope.subMoneyFromCurrentBand(bandLocalID,10);
+        }, 150);
+    };
+    $scope.mouseUp = function () {
+        $interval.cancel(promise);
+        promise = null;
     };
 
     $scope.sendVote = function () {
@@ -75,12 +102,18 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
             Notification.success({message: 'Enviando voto...' ,title:'¡Completado!', delay: 2000});
     };
     
-    $scope.addMoneyToCurrentBand = function (bandLocalID) {
+    $scope.addMoneyToCurrentBand = function (bandLocalID,pQuantity) {
         var category = $scope.categories[$scope.currentCarteleraCategory]
         var band = category.bands[bandLocalID];
         if(category.money > 0){
-            band.money+=10;
-            category.money-=10;
+            if(pQuantity < category.money) {
+                band.money += pQuantity;
+                category.money -= pQuantity;
+            }
+            else{
+                band.money = band.money + category.money;
+                category.money = 0;
+            }
         }
         else{
             Notification.warning({message: 'Ya ha utilizado todo el dinero de esta categoría.', title:'¡Atención!', delay: 2000});
@@ -91,12 +124,18 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
             category.done = false;
     };
 
-    $scope.subMoneyFromCurrentBand = function (bandLocalID) {
+    $scope.subMoneyFromCurrentBand = function (bandLocalID,pQuantity) {
         var category = $scope.categories[$scope.currentCarteleraCategory]
         var band = category.bands[bandLocalID];
         if(band.money > 0){
-            band.money-=10;
-            category.money+=10;
+            if(band.money > pQuantity) {
+                band.money -= pQuantity;
+                category.money += pQuantity;
+            }
+            else{
+                category.money += band.money;
+                band.money = 0;
+            }
         }
         if(category.money > 0)
             category.done = false;
@@ -111,7 +150,10 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
     };
 
     $scope.changeCurrentCarteleraCategory = function (pCurrentCategoryID) {
-        $scope.currentCarteleraCategory = pCurrentCategoryID;
+        if(pCurrentCategoryID == $scope.currentCarteleraCategory)
+            $scope.currentCarteleraCategory = -1;
+        else
+            $scope.currentCarteleraCategory = pCurrentCategoryID;
     };
 
 
@@ -123,14 +165,6 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
 
     $scope.showHowVoteModal = function () {
         $scope.visibleHowVoteModal = true;
-    };
-
-    $scope.getArtistInformation = function (pID) {
-        Spotify.getArtist(pID).then(function (data) {
-            $scope.selectedBand.image = data.data.images[0].url;
-            $scope.selectedBand.followers = data.data.followers.total;
-            $scope.selectedBand.popularity = data.data.popularity;
-        });
     };
 
     $scope.closeBandModal = function () {
@@ -148,22 +182,14 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
     };
 
     $scope.showBandModal = function (pBandIndex,pCategoryIndex) {
-
-        //$scope.selectedFestival = $scope.festivales[pFestivalIndex];
         $scope.visibleBandModal = true;
-        //$scope.readCategoriesData();
         $scope.selectedBand = $scope.categories[pCategoryIndex].bands[pBandIndex];
-        $scope.selectedBand.image = "";
-        $scope.selectedBand.followers = 0;
-        $scope.selectedBand.popularity = 0;
-
         for(i = 0; i< $scope.selectedBand.rating; i++){
             $scope.completeStars.push(i);
         }
         for(i = 0; i< 5-$scope.completeStars.length; i++){
             $scope.blankStars.push(i);
         }
-        $scope.getArtistInformation($scope.selectedBand.spotifyID);
     };
 
     $scope.sendNewComment = function () {
@@ -210,7 +236,6 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
         return obj;
     };
 
-    $scope.readCategoriesData();
-
+    //$scope.readCategoriesData();
+    $scope.readURLParams();
 }]);
-

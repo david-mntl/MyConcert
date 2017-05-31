@@ -1,6 +1,6 @@
-var app = angular.module('mainModule', ['spotify','angular-loading-bar','ui-notification']);
+var app = angular.module('mainModule', ['spotify','angular-loading-bar','ui-notification','ngSecurity']);
 
-app.controller('cartelerasController',['$scope','$http','$interval','Spotify','Notification',function ($scope,$http,$interval,Spotify,Notification) {
+app.controller('cartelerasController',['$scope','$http','$interval','Spotify','Notification','Security',function ($scope,$http,$interval,Spotify,Notification,Security) {
     $scope.carteleras = [];
     $scope.festivales = [];
     $scope.currentCarteleras = [];
@@ -27,16 +27,16 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
     
     $scope.readCartelerasData = function() {
         $http.get("../assets/docs/carteleras.txt").success(function (response) {
-            var data = response.split("\n");
-
-            if (data.length > 0) {
-                for (i = 0; i < data.length; i++) {
+            if (response.carteleras.length > 0) {
+                for (j = 0; j < response.carteleras.length; j++) {
                     var cartelera = new Object();
-                    var carteleraData = data[i].split(":");
-                    cartelera.name = carteleraData[0];
-                    cartelera.location = carteleraData[1];
-                    cartelera.leftTime = carteleraData[2];
-                    cartelera.image = "../assets/"+carteleraData[3];
+
+                    cartelera.localIndex = j;
+                    cartelera.id = response.carteleras[j].id;
+                    cartelera.name = response.carteleras[j].name;
+                    cartelera.location = response.carteleras[j].location;
+                    cartelera.leftTime = response.carteleras[j].timeLeft;
+                    cartelera.image = "../assets/"+response.carteleras[j].image;
                     $scope.carteleras.push(cartelera);
                 }
             }
@@ -68,7 +68,7 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
 
 
     $scope.readCategoriesData = function() {
-        $http.get("../assets/docs/festival.txt").success(function (response) {
+        $http.get("../assets/docs/festival2.txt").success(function (response) {
             $scope.categories = [];
             $scope.currentFestivalCategory = -1;
             if (response.categories.length > 0) {
@@ -88,6 +88,9 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
                         band.members = response.categories[j].bands[k].members;
                         band.genders = response.categories[j].bands[k].genders;
                         band.comments = response.categories[j].bands[k].comments;
+                        band.image = response.categories[j].bands[k].image;
+                        band.followers = response.categories[j].bands[k].followers;
+                        band.popularity = response.categories[j].bands[k].popularity;
                         bands.push(band);
                     }
                     category.bands = bands;
@@ -98,14 +101,11 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
         });
     };
 
-
-    $scope.getArtistInformation = function (pID) {
-        Spotify.getArtist(pID).then(function (data) {
-            $scope.selectedBand.image = data.data.images[0].url;
-            $scope.selectedBand.followers = data.data.followers.total;
-            $scope.selectedBand.popularity = data.data.popularity;
-        });
+    $scope.openVoteWindow = function (IDCartelera) {
+        console.log("ID",IDCartelera);
+        window.location = "vote.html#?IDCartelera="+IDCartelera;
     };
+
 
     $scope.closeFestivalModal = function () {
         $scope.visibleFestivalModal = false;
@@ -139,10 +139,8 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
         //$scope.selectedFestival = $scope.festivales[pFestivalIndex];
         $scope.visibleBandModal = true;
         //$scope.readCategoriesData();
+
         $scope.selectedBand = $scope.categories[pCategoryIndex].bands[pBandIndex];
-        $scope.selectedBand.image = "";
-        $scope.selectedBand.followers = 0;
-        $scope.selectedBand.popularity = 0;
 
         for(i = 0; i< $scope.selectedBand.rating; i++){
             $scope.completeStars.push(i);
@@ -150,7 +148,6 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
         for(i = 0; i< 5-$scope.completeStars.length; i++){
             $scope.blankStars.push(i);
         }
-        $scope.getArtistInformation($scope.selectedBand.spotifyID);
     };
 
 
@@ -198,18 +195,6 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
             obj.push(i);
         return obj;
     };
-
-    /*$scope.getNumber = function(num) {
-        var obj = new Array;
-        for(i = 0; i < num; i++) {
-            var holder = new Object();
-            holder.i = i;
-            holder.id = i + 1;
-            obj.push(holder);
-        }
-        return obj;
-    };*/
-
 
 
     /************************** Festivales/Carteleras Carrousel *********************************/
@@ -284,10 +269,15 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
         }
     };
 
+    $scope.exitSession = function () {
+        Security.exitSession();
+    };
 
 
     $interval($scope.changeCurrentCartelerasAuto, 5000);
     $interval($scope.changeCurrentFestivalesAuto, 5000);
     $scope.readCartelerasData();
     $scope.readFestivalesData();
+
+    Security.verifySession();
 }]);
