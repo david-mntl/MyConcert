@@ -32,7 +32,7 @@ app2.controller('AppController', [ 'FileUploader','$cookies','$scope', function(
             console.log($scope.uploader.queue);
             console.log($scope.uploader.queue[0].file.name);
             var extension = $scope.uploader.queue[0].file.name.split('.');
-            $scope.uploader.queue[0].file.name = $cookies.get("userRegisterEmail") + "."+extension[extension.length-1];
+            $scope.uploader.queue[0].file.name = $cookies.get("tempEmail") + "."+extension[extension.length-1];
             console.log($scope.uploader.queue[0].file.name);
         };
         uploader.onAfterAddingAll = function(addedFileItems) {

@@ -7,39 +7,77 @@ security.factory("Security", function($cookies,Notification){
     var facade = {};
 
     facade.verifySession = function () {
-        var user = $cookies.get('zUserName',{path: '/fanatico/'});
-
+        var user = $cookies.get('zUserName',{path: '/'});
         if(user != undefined && user != "expired"){
-            Notification.success({message:"Sesión iniciada como:"+user, title: 'Iniciando sesión...'});
+            //Notification.success({message:"Sesión iniciada como:"+user, title: 'Iniciando sesión...'});
+            console.log("Iniciando Sesión...");
         }
         else{
             Notification.error({message:"No ha iniciado sesión.", title: 'Sesión inválida.'});
-            setTimeout(function(){location.href="index.html"} , 10);
+            setTimeout(function(){location.href="../index.html"} , 10);
+        }
+    };
+    facade.verifySessionInit = function () {
+        var user = $cookies.get('zUserName',{path: '/'});
+        var type = $cookies.get('zUserType',{path: '/'});
+        if(user != undefined && user != "expired"){
+            if(type == 1)
+                setTimeout(function(){location.href="../promocion/promo.html"} , 10);
+        }
+        else{
+            Notification.error({message:"No ha iniciado sesión.", title: 'Sesión inválida.'});
+            setTimeout(function(){location.href="../index.html"} , 10);
         }
     };
 
     facade.exitSession = function () {
-        $cookies.put('zUserName', 'expired',{path: '/fanatico/'});
-        $cookies.put('zUserType', 'expired',{path: '/fanatico/'});
+        $cookies.put('zUserName', 'expired',{path: '/'});
+        $cookies.put('zUserType', 'expired',{path: '/'});
         Notification.info({message:"Se ha cerrado la sesión.", title: 'Cerrando sesión...'});
-        setTimeout(function(){location.href="../../index.html"} , 1000);
+        setTimeout(function(){location.href="../index.html"} , 1000);
     };
 
+    facade.initSession = function (pUsername,pUserType) {
+        $cookies.put('zUserName', pUsername,{path: '/'});
+        $cookies.put('zUserType', pUserType,{path: '/'});
 
-    /*var facade = {
-        verifySession: function(){
-            facade.verifySession = function () {
-                var user = $cookies.get('zUserName');
+        var type = $cookies.get('zUserType',{path: '/'});
+        if(type == 1)
+            setTimeout(function(){location.href="promocion/promo.html"} , 10);
+        else if(type == 2)
+            setTimeout(function(){location.href="fanatico/init.html"} , 10);
+    };
 
-                if(user != ""){
-                    Notification.success({message:"Sesión iniciada como:"+user, title: 'Iniciando sesión...'});
-                }
-                else{
-                    Notification.error({message:"No ha iniciado sesión.", title: 'Html content'});
-                    setTimeout(function(){location.href="index.html"} , 10);
-                }
-            };
+    facade.getCurrentUserType = function () {
+        return $cookies.get('zUserType',{path: '/'});
+    };
+
+    facade.setTempEmail = function (pEmail) {
+        $cookies.put('tempEmail', pEmail,{path: '/'});
+    };
+
+    facade.verifySessionInHome = function () {
+        var user = $cookies.get('zUserName',{path: '/'});
+        var type = $cookies.get('zUserType',{path: '/'});
+        if(user != undefined && user != "expired"){
+            Notification.success({message:"Sesión iniciada como:"+user, title: 'Iniciando sesión...'});
+            if(type == 1)
+                setTimeout(function(){location.href="promocion/promo.html"} , 10);
+            else if(type == 2)
+                setTimeout(function(){location.href="fanatico/init.html"} , 10);
         }
-    };*/
+    };
+
+    facade.gotoProfile = function () {
+        var user = $cookies.get('zUserName',{path: '/'});
+        if(user != undefined && user != "expired"){
+            setTimeout(function(){location.href="profile.html"} , 10);
+        }
+        else{
+            Notification.error({message:"No ha iniciado sesión.", title: 'Sesión inválida.'});
+            setTimeout(function(){location.href="../index.html"} , 10);
+        }
+    };
+
     return facade;
 });

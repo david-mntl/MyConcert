@@ -1,6 +1,6 @@
-var app = angular.module('mainModule', ['angular-loading-bar','angularNotify','ngCookies']);
+var app = angular.module('mainModule', ['angular-loading-bar','angularNotify','ngCookies','ngSecurity']);
 
-app.controller('mainController',['$scope','$http','$cookies','$window',function ($scope,$http,$cookies,$window) {
+app.controller('mainController',['$scope','$http','$cookies','$window','Security',function ($scope,$http,$cookies,$window,Security) {
 
     $scope.data = [];
 
@@ -25,37 +25,13 @@ app.controller('mainController',['$scope','$http','$cookies','$window',function 
                 if(response.State == 0){
                     $scope.showMessage('error','Error','Credenciales Inválidas',2000);
                 }
-                else if(response.State == 1){
-                    $cookies.put('zUserType',1,{path: '/fanatico/'});
-                    $cookies.put('zUserName',$scope.data.Username.toString(),{path: '/fanatico/'});
-                    $window.location.href = 'fanatico/init.html';
-                }
-                else if(response.State == 2){
-                    $cookies.put('zUserType',2,{path: '/fanatico/'});
-                    $cookies.put('zUserName',$scope.data.Username.toString(),{path: '/fanatico/'});
-                    $window.location.href = 'fanatico/init.html';
+                else{
+                    Security.initSession($scope.data.Username.toString(),response.State);
                 }
             }).error(function (data, status, headers, config) {
                 console.log(data);
             });
         }
-
-
-        /*$http.get('http://myconcert1.azurewebsites.net/api/Country').
-        success(function(data, status, headers, config) {
-            // this callback will be called asynchronously
-            // when the response is available
-
-            console.log("status " + status);
-            console.log("config " + data);
-
-        }).
-        error(function(data, status, headers, config) {
-            // called asynchronously if an error occurs
-            // or server returns response with an error status.
-            console.log(data);
-            console.log(status);
-        });*/
     };
 
 
@@ -74,5 +50,7 @@ app.controller('mainController',['$scope','$http','$cookies','$window',function 
         };
         $scope.$emit('notify', notify);
     };
+
+    Security.verifySessionInHome();
 
 }]);

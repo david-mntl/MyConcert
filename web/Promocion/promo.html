@@ -12,6 +12,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+    <script src="../assets/js/libs/angular-notify.js"></script>
+    <script src="../assets/js/libs/angular-cookies.js"></script>
+    <script src="../assets/js/libs/angular-ui-notification.min.js"></script>
+    <link rel="stylesheet" href="../assets/styles/angular-ui-notification.min.css" />
+    <script src="../assets/js/angular-session.js"></script>
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link href='../assets/styles/loading-bar.css' rel='stylesheet' />
     <link rel="stylesheet" href="../assets/styles/basicStyles.css" />
@@ -22,12 +28,10 @@
 
 </head>
 <body class="bodyall">
-    <div class="header">
+    <div class="xheader">
+        <a href="../index.html" style="float: left"><img src="../assets/imgs/logo.png" style="width: 100px; height: 100px"/></a>
         <div class="header_center"><h1>MyConcert</h1></div>
-        <div class="header_right-profile">
-            <div class="log-reg"><i class="fa fa-user fa-2x"></i>Mi Perfil</div>
-            <div class="log-reg"><i class="fa fa-sign-out fa-2x"></i></div>
-        </div>
+        <div class="header_right-profile"><div style="margin: auto">Dep. Promoción</div></div>
     </div>
 
     <div class="bodycont1"  ng-controller="mainController">
@@ -35,7 +39,8 @@
             <a ng-click="selectEdit('bandas')" class="navigation-button">Bandas</a>
             <a ng-click="selectEdit('categorias')" class="navigation-button">Categoría</a>
             <a href="../fanatico/festivales.html" class="navigation-button">Festivales</a>
-            <a href="../fanatico/carteleras.html" class="navigation-button">Cartelera</a>
+            <a href="../fanatico/carteleras.html" class="navigation-button">Carteleras</a>
+            <button ng-click="xExitSession()" class="navigation-button" style="float: right; margin-right: 10px;">Salir</button>
         </div>
         <div ng-if= "selectedEdit == 'bandas'"class="divImage">
             <h3 class="titulo">{{selectedBanda}}</h3>

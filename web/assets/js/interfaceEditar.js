@@ -1,9 +1,9 @@
-var app = angular.module('mainModule', ['spotify','angular-loading-bar']);
+var app = angular.module('mainModule', ['spotify','angular-loading-bar','ngSecurity']);
 
 
 
 
-app.controller('mainController',['$scope','$http','Spotify',function ($scope,$http,Spotify,$timeout) {
+app.controller('mainController',['$scope','$http','Spotify','Security',function ($scope,$http,Spotify,Security,$timeout) {
     $scope.selectedWindow="Artista";
     $scope.artists = [];
     $scope.currentArtist = new Object();
@@ -94,22 +94,25 @@ app.controller('mainController',['$scope','$http','Spotify',function ($scope,$ht
 
             });
         }, 400);
-    }
+    };
 
     $scope.getCategoria = function () {
         console.log(JSON.stringify({name:$scope.inputVal},null,"    "));
-    }
+    };
     $scope.postArtista = function () {
         console.log(JSON.stringify({name:$scope.inputName,miembros:$scope.inputMiembros,canciones:$scope.inputCanciones,generos:$scope.inputGeneros},null,"    "));
-    }
+    };
     $scope.postEditArtista = function () {
         console.log(JSON.stringify({name:$scope.inputEditName,miembros:$scope.inputEditMiembros,canciones:$scope.inputEditCanciones,generos:$scope.inputEditGeneros},null,"    "));
-    }
+    };
     $scope.selectCategoria = function (nameCategory) {
         $scope.selectedCategory = nameCategory;
+    };
 
 
-    }
+    Security.verifySession();
+    /*********** AUX FUNCTIONS **************/
+    $scope.xExitSession = function () { Security.exitSession(); };
 
 
 }]);

@@ -5,13 +5,16 @@
     <title>MyConcert by X-Fest</title>
 
     <script src="assets/js/libs/angular.min.js"></script>
-    <script src="assets/js/libs/angular-spotify.js"></script>
     <script src="assets/js/interface.js"></script>
     <script src="assets/js/libs/loading-bar.js"></script>
     <script src="assets/js/libs/slides.js"></script>
-    <script src="assets/js/libs/angular-notify.js"></script>
     <script src="assets/js/jquery/jquery-1.11.1.min.js"></script>
+
+    <script src="assets/js/libs/angular-notify.js"></script>
     <script src="assets/js/libs/angular-cookies.js"></script>
+    <script src="assets/js/libs/angular-ui-notification.min.js"></script>
+    <link rel="stylesheet" href="assets/styles/angular-ui-notification.min.css" />
+    <script src="assets/js/angular-session.js"></script>
 
     <link href='assets/styles/loading-bar.css' rel='stylesheet' />
     <link rel="stylesheet" href="assets/styles/basicStyles.css" />
@@ -23,7 +26,6 @@
 <body class="bodyall" ng-controller="mainController">
     <div class="header">
         <h1>MyConcert</h1>
-
     </div>
 
     <div class="bodycont">
@@ -76,11 +78,11 @@
             </p>
         </div>
         <div class="bodycont_right">
-            <img src="assets/imgs/logo.png" style="width: 100px; height:100px">
+            <img src="assets/imgs/logo.png" style="width: 170px; height:170px">
             <h4 style="margin-top: 8px; margin-bottom: 8px">Usuario</h4>
-            <input class="pInput" type="text" ng-model="data.Username">
+            <input class="pInput pIBlue" type="text" ng-model="data.Username">
             <h4 style="margin-top: 8px; margin-bottom: 8px">Contraseña</h4>
-            <input class="pInput" type="password" style="margin-bottom: 10px" ng-model="data.Password">
+            <input class="pInput pIBlue" type="password" style="margin-bottom: 10px" ng-model="data.Password">
             <a ng-click="login()" class="box-cartelera-button">Ingresar</a>
             <a class="helpLetter" href="newpassword.html">¿Olvidaste tu contraseña?</a>
             <a class="helpLetter" href="fanatico/register.html">Registrarse</a>

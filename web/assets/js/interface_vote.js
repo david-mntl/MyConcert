@@ -1,7 +1,7 @@
-var app = angular.module('mainModule', ['spotify','angular-loading-bar','ui-notification','ngCookies','ngRoute','ngAnimate']);
+var app = angular.module('mainModule', ['angular-loading-bar','ui-notification','ngRoute','ngAnimate','ngSecurity']);
 
 
-app.controller('mainController',['$scope','$http','$window','Notification','$cookies','Spotify','$location','$interval',function ($scope,$http,$window,Notification,$cookies,Spotify,$location,$interval) {
+app.controller('mainController',['$scope','$http','$window','Notification','$location','$interval','Security',function ($scope,$http,$window,Notification,$location,$interval,Security) {
 
     $scope.cartelera = [];
     $scope.categories = [];
@@ -93,7 +93,7 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
         var ready = true;
         for(i = 0; i < $scope.categories.length; i++){
             if($scope.categories[i].done == false){
-                var pMessage = 'Aún tiene dinero disponible en la categoría ' + $scope.categories[i].name;
+                var pMessage = 'Aún tiene $'+$scope.categories[i].money+' disponibles en la categoría ' + $scope.categories[i].name;
                 Notification.error({message: pMessage ,title:'¡Atención!', delay: 2000});
                 ready = false;
             }
@@ -229,6 +229,7 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
         $scope.currentComment.prevrating = pRating;
     };
 
+    /********* AUX FUNCTIONS **********/
     $scope.getNumber = function(num) {
         var obj = [];
         for(i = 0; i < num; i++)
@@ -236,6 +237,10 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
         return obj;
     };
 
+    $scope.xExitSession = function () { Security.exitSession(); };
+    $scope.xGotoProfile = function () { Security.gotoProfile(); };
+
+    Security.verifySessionInit();
     //$scope.readCategoriesData();
     $scope.readURLParams();
 }]);

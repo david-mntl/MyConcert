@@ -1,7 +1,7 @@
-var app = angular.module('mainModule', ['720kb.datepicker','angular-loading-bar','angularFileUpload','ui-notification','ngCookies']);
+var app = angular.module('mainModule', ['720kb.datepicker','angular-loading-bar','angularFileUpload','ui-notification','ngSecurity']);
 
 
-app.controller('mainController',['$scope','$http','$window','Notification','$cookies',function ($scope,$http,$window,Notification,$cookies) {
+app.controller('mainController',['$scope','$http','$window','Notification','Security',function ($scope,$http,$window,Notification,Security) {
     $scope.profiles = [{id: '2',name: 'Fanático'}, {id: '1',name: 'Promoción'}];
     $scope.universities = [];
     $scope.genres = [];
@@ -41,9 +41,14 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
 
     $scope.sendRegisterForm = function() {
         if($scope.verifyForm()){
+            if($scope.data.Place == undefined)
+                $scope.data.Place = "";
+            if($scope.data.University == undefined)
+                $scope.data.University = {id: '1',name: 'null'};
+
             var parameter = JSON.stringify({
                 Name: $scope.data.Name.toString(),
-                Lastname : scope.data.LastName.toString() ,
+                Lastname : $scope.data.LastName.toString() ,
                 Country: $scope.data.Phone.toString(),
                 Residence: $scope.data.Place.toString(),
                 ID_Uni: $scope.data.University.id.toString(),
@@ -52,23 +57,16 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
                 Photo: $scope.data.Email.toString(),
                 Pass: $scope.data.Password.toString(),
                 Description: $scope.data.Description.toString(),
-                Birthdate: $scope.data.BirthDate.toString()
+                Birthdate: $scope.data.BirthDate.toString(),
+                Genres: $scope.data.GenresList.toString()
             });
 
             $http.post('https://myconcert1.azurewebsites.net/api/Verify/RegisterUser', parameter).success(function (data, status, headers, config) {
-                var response = JSON.parse(data);
-                if(response.State == 0){
-                    $scope.showMessage('error','Error','Credenciales Inválidas',2000);
+                if(data == "error"){
+                    console.log("ha ocurrido un error");
                 }
-                else if(response.State == 1){
-                    $cookies.put('zUserType',1,{path: '/fanatico/'});
-                    $cookies.put('zUserName',$scope.data.Username.toString(),{path: '/fanatico/'});
-                    $window.location.href = 'fanatico/init.html';
-                }
-                else if(response.State == 2){
-                    $cookies.put('zUserType',2,{path: '/fanatico/'});
-                    $cookies.put('zUserName',$scope.data.Username.toString(),{path: '/fanatico/'});
-                    $window.location.href = 'fanatico/init.html';
+                else{
+                    console.log("todo bien");
                 }
             }).error(function (data, status, headers, config) {
                 console.log(data);
@@ -174,29 +172,32 @@ app.controller('mainController',['$scope','$http','$window','Notification','$coo
 
     $scope.openUploadWindow = function(files) {
         if($scope.verifyForm()){
-            var parameter = JSON.stringify({
-                Email: $scope.data.Email.toString()
-            });
-
-            $http.post('https://myconcert1.azurewebsites.net/api/Verify/User', parameter).success(function (data, status, headers, config) {
-                var response = JSON.parse(data);
-                if(response.State == 0){
-                    $cookies.put('userRegisterEmail',$scope.data.Email.toString());
-
-                    PopupCenter('upload/files.html','Subir Imagen','800','200');
-                }
-                else if(response.State == 1){
-                    Notification.warning({message: 'El correo electrónico ya ha sido registrado.<br><center><img src="../assets/imgs/mail.png"><img src="../assets/imgs/mail.png"></center>', title: '¡Atención!'});
-                }
-            }).error(function (data, status, headers, config) {
-                console.log(data);
-            });
+            if(!$scope.verifyIfUserExists()){
+                Security.setTempEmail($scope.data.Email.toString());
+                PopupCenter('upload/files.html','Subir Imagen','800','200');
+            }
+            else
+                Notification.warning({message: 'El correo electrónico ya ha sido registrado.<br><center><img src="../assets/imgs/mail.png"><img src="../assets/imgs/mail.png"></center>', title: '¡Atención!'});
         }
         else{
             Notification.error({message: 'Por favor, complete el formulario antes de añadir una foto de perfil.', delay: 2000});
         }
-
     };
+
+    $scope.verifyIfUserExists = function () {
+        var parameter = JSON.stringify({
+            Email: $scope.data.Email.toString()
+        });
+        $http.post('https://myconcert1.azurewebsites.net/api/Verify/User', parameter).success(function (data, status, headers, config) {
+            var response = JSON.parse(data);
+            return !response.State;
+
+        }).error(function (data, status, headers, config) {
+            console.log(data);
+        });
+    };
+
+
     $scope.isValid = function(value) {
         return !value
     };

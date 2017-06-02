@@ -24,6 +24,7 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
     $scope.currentComment.prevrating = 0;
     $scope.currentComment.data = "";
     $scope.currentComment.title = "";
+    var firstInit = true;
     
     $scope.readCartelerasData = function() {
         $http.get("../assets/docs/carteleras.txt").success(function (response) {
@@ -196,6 +197,8 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
         return obj;
     };
 
+    $scope.xExitSession = function () { Security.exitSession(); };
+    $scope.xGotoProfile = function () { Security.gotoProfile(); };
 
     /************************** Festivales/Carteleras Carrousel *********************************/
     $scope.changeCurrentCartelerasAuto = function () { $scope.changeCurrentCarteleras(1); };
@@ -274,10 +277,14 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
     };
 
 
+    if(firstInit) {
+        Security.verifySessionInit();
+        firstInit = false;
+    }
+
     $interval($scope.changeCurrentCartelerasAuto, 5000);
     $interval($scope.changeCurrentFestivalesAuto, 5000);
     $scope.readCartelerasData();
     $scope.readFestivalesData();
 
-    Security.verifySession();
 }]);

@@ -7,16 +7,14 @@
     <script src="../assets/js/libs/angular.min.js"></script>
     <script src="../assets/js/interface_vote.js"></script>
     <script src="../assets/js/libs/loading-bar.js"></script>
-    <script src="../assets/js/libs/angular-datepicker.js"></script>
-    <script src="../assets/js/upload/angular-file-upload.min.js"></script>
-    <script src="../assets/js/libs/angular-route.min.js"></script>
-    <script src="../assets/js/libs/angular-ui-notification.min.js"></script>
     <script src="../assets/js/libs/angular-animate.js"></script>
-    <script src="../assets/js/jquery/jquery-1.11.1.min.js"></script>
-    <script src="../assets/js/libs/angular-cookies.js"></script>
-    <script src="../assets/js/libs/angular-spotify.js"></script>
+    <script src="../assets/js/libs/angular-route.min.js"></script>
 
+    <script src="../assets/js/libs/angular-notify.js"></script>
+    <script src="../assets/js/libs/angular-cookies.js"></script>
+    <script src="../assets/js/libs/angular-ui-notification.min.js"></script>
     <link rel="stylesheet" href="../assets/styles/angular-ui-notification.min.css" />
+    <script src="../assets/js/angular-session.js"></script>
 
     <link href='../assets/styles/loading-bar.css' rel='stylesheet' />
     <link rel="stylesheet" href="../assets/styles/jquery-ui.css" />
@@ -27,14 +25,16 @@
 </head>
 <body class="bodyall" ng-controller="mainController">
     <div class="header">
-        <h1>MyConcert</h1>
-
+        <a href="../index.html" style="float: left"><img src="../assets/imgs/logo.png" style="width: 100px; height: 100px"/></a>
+        <div class="header_center"><h1>MyConcert</h1></div>
+        <div class="header_right-profile" ng-include="'nav_profile.html'"></div>
     </div>
 
     <div ng-include="'howtovote_modal.html'"></div>
     <div ng-include="'band_modal.html'"></div>
 
     <div class="bodyreg_cont">
+        <div ng-include="'nav_menu.html'"></div>
         <div class="categories-box-left">
             <div class="box-cartelera" style="height: 445px">
                 <div class="box-cartelera-title">{{cartelera.name}}</div>
@@ -57,10 +57,10 @@
                 <div ng-click="sendVote()" class="sendVoteButton" style="cursor: pointer">
                     Enviar Voto
                 </div>
-                <div id="moneybox" class="categorymoney-box">
+                <!--<div id="moneybox" class="categorymoney-box">
                     <a style="margin-top: 1.5px; float: right">{{categories[currentCarteleraCategory].money}}</a>
                     <i class="fa fa-dollar fa-1x" style="margin-top: 4px;float: right;"></i>
-                </div>
+                </div>-->
             </div>
             <div ng-repeat="category in categories">
                 <button ng-click="changeCurrentCarteleraCategory(category.localID)" class="categories-accordion">
@@ -68,9 +68,13 @@
                     <i ng-if="currentCarteleraCategory == category.localID" class="fa fa-caret-up fa-2x" style="float: right; margin-left: 5px;"></i>
                     <i ng-if="currentCarteleraCategory != category.localID" class="fa fa-caret-down fa-2x" style="float: right; margin-left: 5px;"></i>
 
+                    <i ng-if="category.done == true" class="fa fa-check-circle fa-2x" style="float: right; color: #2ea628; margin-top: 3px;"></i>
+                    <i ng-if="category.done == false" class="fa fa-times-circle fa-2x" style="float: right; color: red; margin-top: 3px"></i>
 
-                    <i ng-if="category.done == true" class="fa fa-check-circle fa-2x" style="float: right; color: #2ea628"></i>
-                    <i ng-if="category.done == false" class="fa fa-times-circle fa-2x" style="float: right; color: red"></i>
+                    <div class="categorymoney-box" style="margin-right: 10px">
+                        <a style="margin-top: 1.5px; float: right">{{category.money}}</a>
+                        <i class="fa fa-dollar fa-1x" style="margin-top: 4px;float: right;"></i>
+                    </div>
                 </button>
                 <div class="categories-vote-panel fade" ng-show="currentCarteleraCategory == category.localID">
                     <div class="cartelera-bandbox" ng-repeat="band in category.bands">

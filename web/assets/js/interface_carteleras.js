@@ -1,17 +1,16 @@
-var app = angular.module('mainModule', ['spotify','angular-loading-bar','ngCookies']);
+var app = angular.module('mainModule', ['angular-loading-bar','ngSecurity']);
 
 
-app.controller('cartelerasController',['$scope','$http','$cookies','Spotify',function ($scope,$http,$cookies,Spotify) {
+app.controller('cartelerasController',['$scope','$http','Security',function ($scope,$http,Security) {
     $scope.carteleras = [];
-    $scope.userType = $cookies.get('zUserType');
+    $scope.userType = Security.getCurrentUserType();
     $scope.userTypeUse = "Votar";
-    if ($scope.userType == "fanatico"){
+    if ($scope.userType == 2){
         $scope.userTypeUse = "Votar";
-    }else{
+    }
+    else if($scope.userType == 1){
         $scope.userTypeUse = "Crear festival";
     }
-
-
     $scope.readCartelerasData = function() {
         $http.get("../assets/docs/carteleras.txt").success(function (response) {
             if (response.carteleras.length > 0) {
@@ -27,11 +26,13 @@ app.controller('cartelerasController',['$scope','$http','$cookies','Spotify',fun
                     $scope.carteleras.push(cartelera);
                 }
             }
-            $scope.changeCurrentCarteleras(2);
         });
     };
 
+    /*********** AUX FUNCTIONS *************/
+    $scope.xExitSession = function () { Security.exitSession(); };
+    $scope.xGotoProfile = function () { Security.gotoProfile(); };
 
-
+    Security.verifySession();
     $scope.readCartelerasData();
 }]);
