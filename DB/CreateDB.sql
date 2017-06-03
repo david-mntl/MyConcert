@@ -57,8 +57,10 @@ CREATE TABLE BILLBOARD(
 	StartVotingDate DATE,
 	EndVotingDate DATE,
 	FK_ID_Place INT,
-	FK_ID_UserVote INT,
-	FK_ID_EventState int
+	FK_ID_EventState int,
+	BillboardDescription VARCHAR(300),
+	BillboardPhoto VARCHAR(30),
+	Ubication VARCHAR(30)
 )
 
 CREATE TABLE USER_VOTE(
@@ -96,7 +98,9 @@ CREATE TABLE BAND(
 	Name VARCHAR(30),
 	Calification FLOAT,
 	N_Calification INT,
-	FK_ID_GenreList INT
+	FK_ID_GenreList INT,
+	ID_Spotify INT,
+	BandState BIT 
 )
 
 CREATE TABLE BAND_GENRE_LIST(
@@ -137,10 +141,8 @@ CREATE TABLE COMMENT_LIST(
 CREATE TABLE FESTIVAL(
 	PK_ID_FESTIVAL INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	FK_ID_Billboard INT,
-	FK_ID_Category_List INT,
 	FestivalStart Date,
 	FestivalEnd Date,
-	FK_ID_Place INT,
 	FK_ID_EventState INT
 )
 

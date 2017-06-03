@@ -1,3 +1,6 @@
+INSERT INTO user_state (Name) VALUES ('Deactivated')
+INSERT INTO user_state (Name) VALUES ('Activated')
+
 insert into country (name) values ('acosta obviamente')
 INSERT INTO COUNTRY (Name) Values ('Costa Rica')
 
@@ -16,7 +19,7 @@ INSERT INTO MCUSER_ADMIN(Name, LastName, Email, MCPassword, FK_ID_State, Registr
 VALUES('Abrahamon','Arias','a@gmail.com','12345678',1,getDate())
 
 INSERT INTO MCUSER(Name, LastName, FK_ID_Country, Residence, FK_ID_University, Email, Phone, Photo, RegistrationDate,MCPassword, PersonalDescription, BirthDate, FK_ID_State) 
-VALUES('Lenin','T', 1, 'PZ', 3, 'Tgmail.com', '+5061', 'lenins', getDate(),'abc', 'Como dedillo al ano', '02/02/99', 1)
+VALUES('Lenin','T', 1, 'PZ', 3, 'T@gmail.com', '+5061', 'lenins', getDate(),'abc', 'Como dedillo al ano', '02/02/99', 1)
 
 
 INSERT INTO COMMENT_LIST (FK_ID_BAND, FK_ID_COMMENT) VALUES (1,1)
@@ -47,7 +50,9 @@ spRegisterPlace 'paraiso'
 spRegisterCategory 'metal'
 spRegisterBand 'querubines'
 spRegisterGenre 'rockchata1'
-spRegisterGenre'heavy salsa1' 
+spRegisterGenre'heavy salsa1'
+spRegisterUser
+spRegisterUser 'name', 'last', 'panama','resi','TEC','@3','8','foto','pass','descp',"12/12/12"
 */
 
 
@@ -92,3 +97,20 @@ insert into FESTIVAL_BANDS_LIST (FK_ID_FestivalCategory, FK_ID_Band) VALUES(1,7)
 insert into FESTIVAL_BANDS_LIST (FK_ID_FestivalCategory, FK_ID_Band) VALUES(1,8)
 insert into FESTIVAL_BANDS_LIST (FK_ID_FestivalCategory, FK_ID_Band) VALUES(1,9)
 insert into FESTIVAL_BANDS_LIST (FK_ID_FestivalCategory, FK_ID_Band) VALUES(1,10)
+
+
+
+
+-- 2 categorias y cada una con 3 bandas para 1 festival
+insert into billboard (Name,StartVotingDate,Endvotingdate,FK_ID_Place,FK_ID_EventState) Values ('billN',getDate(),getDate(),2,1)
+insert into festival_category(FK_ID_Category) VALUES (4)
+insert into FESTIVAL_CATEGORY_LIST(FK_ID_Festival, FK_ID_FestivalCategory) VALUES (2,4)
+
+
+
+
+
+
+
+
+
