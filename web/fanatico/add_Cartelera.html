@@ -1,8 +1,8 @@
 <div  class="container" >
     <!-- Trigger the modal with a button -->
-       <!-- Modal -->
-    <div class="modal fade" id="addCartelera" role="dialog">
-        <div class="modal-dialog">
+    <!-- Modal -->
+    <div  class="modal fade" id="addCartelera" role="dialog">
+        <div style="width: 80%" class="modal-dialog">
 
             <!-- Modal content-->
             <div class="modal-content">
@@ -13,30 +13,101 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-sm-6" style="background-color:#ffffff;">
-                                <label for="nameArtist">Nombre:</label>
-                                <input ng-model="inputName" type="text" class="form-control" id="nameArtist">
-                                <label for="nameMiembros">Lista de miembros:</label>
-                                <textarea rows="5" ng-model="inputMiembros" type="text" class="form-control" id="nameMiembros"></textarea>
-                                <label for="nameCanciones">Canciones principales:</label>
-                                <textarea rows="5" ng-model="inputCanciones" type="text" class="form-control" id="nameCanciones"></textarea>
-
+                            <div class="col-md-4">
+                                <label for="nameCartelera">Nombre de la cartelera:</label>
+                                <input ng-model="inputName" type="text" class="form-control" id="nameCartelera">
                             </div>
-                            <div class="col-sm-6" style="background-color:#ffffff;">
-                                <label for="nameGeneros">Géneros musicales:</label>
-                                <textarea rows="3" ng-model="inputGeneros" type="text" class="form-control" id="nameGeneros"></textarea>
-
+                            <div class="col-md-4">
+                                <label for="ubicacionCartelera">Ubicación:</label>
+                                <input ng-model="inputUbicacion" type="text" class="form-control" id="ubicacionCartelera">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="fechaCartelera">Fecha:</label>
+                                <input ng-model="inputFecha" type="text" class="form-control" id="fechaCartelera">
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="labelCategoria" >Categorias:</label>
+                                <div style="margin-bottom: 10px;width: 30%;float: left" class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-search"></span></span>
+                                    <input ng-model="buscarCat" type="text" class="form-control" placeholder="Buscar" aria-describedby="basic-addon1">
+                                </div>
 
+                                <button style="float: right"  data-toggle="modal" data-target="#addCategoria" ng-click="" class="sAddCategoria"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                            </div>
+                        </div>
+                        <div STYLE="overflow: scroll;height: 300px" class="row">
+                            <div ng-repeat="x in categoriasIncluidas | filter: buscarCat">
+                                <button ng-click="changeCurrentCategory(x.localID)" class="accordion">
+                                    {{x.name}}
+                                </button>
+                                <div   ng-if="currentCategory == x.localID">
+                                    <button data-toggle="modal" data-target="#addBanda"  ng-click="" class="sAddBanda"><span class="glyphicon glyphicon-plus"></span></button>
+                                    <div class="bandname" ng-repeat="band in x.bandas">
+                                        <button ng-click="borrar(band)" style="float: left"><span class="glyphicon glyphicon-remove"></span></button>
+                                        <h3>{{band}}</h3>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
-                <div class="modal-footer">
-                    <button ng-click="postArtista()" type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
+            </div>
+            <div class="modal-footer">
+                <button ng-click="postArtista()" type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!--Form para buscar banda-->
+<div  class="container" >
+    <!-- Trigger the modal with a button -->
+    <!-- Modal -->
+    <div  class="modal fade" id="addBanda" role="dialog">
+        <div style="width: 30%" class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Buscar banda</h4>
+                    <input ng-model="inputBanda" type="text" class="form-control" id="inputBanda">
+                    <div class="addBandasContenedor ">
+                        <button ng-repeat="x in bandas | filter: inputBanda" ng-click="addBanda(x.name)" data-dismiss="modal" class="buttonBandas" type="button">{{x.name}}</button>
+                    </div>
                 </div>
             </div>
 
         </div>
-    </div>
 
+    </div>
+</div>
+<!--Form para buscar categoria-->
+<div  class="container" >
+    <!-- Trigger the modal with a button -->
+    <!-- Modal -->
+    <div  class="modal fade" id="addCategoria" role="dialog">
+        <div style="width: 30%" class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Buscar Categoria</h4>
+                    <input ng-model="inputCategoria" type="text" class="form-control" id="inputCategoria">
+                    <div class="addBandasContenedor ">
+                        <button ng-repeat="x in listaCategorias | filter: inputCategoria" ng-click="addCategoria(x.name,x.localID)" data-dismiss="modal" class="buttonBandas" type="button">{{x.name}}</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
 </div>

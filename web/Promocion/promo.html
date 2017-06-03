@@ -27,20 +27,21 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
 </head>
-<body class="bodyall">
+<body class="bodyall" ng-controller="mainController">
     <div class="xheader">
         <a href="../index.html" style="float: left"><img src="../assets/imgs/logo.png" style="width: 100px; height: 100px"/></a>
         <div class="header_center"><h1>MyConcert</h1></div>
-        <div class="header_right-profile"><div style="margin: auto">Dep. Promoción</div></div>
+        <div class="header_right-profile" style="height: 70px;"><div style="margin: auto">Dep. Promoción</div>
+            <a ng-click="xExitSession()" class="navigation-button" style="margin: auto; margin-top: 5px;">Salir</a>
+        </div>
     </div>
 
-    <div class="bodycont1"  ng-controller="mainController">
+    <div class="bodycont1">
         <div class="navigation-menu" >
             <a ng-click="selectEdit('bandas')" class="navigation-button">Bandas</a>
             <a ng-click="selectEdit('categorias')" class="navigation-button">Categoría</a>
             <a href="../fanatico/festivales.html" class="navigation-button">Festivales</a>
             <a href="../fanatico/carteleras.html" class="navigation-button">Carteleras</a>
-            <button ng-click="xExitSession()" class="navigation-button" style="float: right; margin-right: 10px;">Salir</button>
         </div>
         <div ng-if= "selectedEdit == 'bandas'"class="divImage">
             <h3 class="titulo">{{selectedBanda}}</h3>

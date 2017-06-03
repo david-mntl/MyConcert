@@ -110,7 +110,7 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
     };
 
 
-    Security.verifySession();
+    Security.verifySessionInit(1);
     /*********** AUX FUNCTIONS **************/
     $scope.xExitSession = function () { Security.exitSession(); };
 

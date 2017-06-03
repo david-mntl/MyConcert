@@ -32,7 +32,9 @@
         <a href="../index.html" style="float: left"><img src="../assets/imgs/logo.png" style="width: 100px; height: 100px"/></a>
         <div class="header_center"><h1>MyConcert</h1></div>
         <div ng-if="userType == 2" class="header_right-profile" ng-include="'nav_profile.html'"></div>
-        <div ng-if="userType == 1" class="header_right-profile"><div style="margin: auto">Dep. Promoción</div></div>
+        <div ng-if="userType == 1" class="header_right-profile" style="height: 70px;"><div style="margin: auto">Dep. Promoción</div>
+            <a ng-click="xExitSession()" class="navigation-button" style="margin: auto; margin-top: 5px;">Salir</a>
+        </div>
     </div>
 
     <div class="bodycont">

@@ -7,6 +7,10 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
     $scope.categories = [];
     $scope.currentCarteleraCategory = -1;
 
+    $scope.playingSong = false;
+    $scope.audio = new Audio();
+    $scope.data = [];
+    $scope.songs = [];
     $scope.selectedBand = [];
     $scope.completeStars = [];
     $scope.blankStars = [];
@@ -16,6 +20,9 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
     $scope.currentComment.prevrating = 0;
     $scope.currentComment.data = "";
     $scope.currentComment.title = "";
+    $scope.audio.addEventListener('ended', function(){
+        $scope.playingSong = false;
+    });
 
     $scope.readURLParams = function () {
         //URL Example: https://myconcert.fun/web/fanatico/vote.html#?IDConcert=5050
@@ -71,6 +78,65 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
             }
         });
     };
+
+
+    $scope.readSongsData = function() {
+        $http.get("../assets/docs/songs.txt").success(function (response) {
+
+            if (response.songs.length > 0) {
+                for (j = 0; j < response.songs.length; j++) {
+                    var song = {};
+
+                    song.localIndex = j;
+                    song.name = response.songs[j].name;
+                    song.url = response.songs[j].url;
+
+                    $scope.songs.push(song);
+                }
+            }
+        });
+    };
+
+
+    $scope.playSong = function () {
+        if($scope.data.SelectedSong != undefined && $scope.data.SelectedSong.url != "") {
+            $scope.playingSong = true;
+            $scope.audio.src = $scope.data.SelectedSong.url.toString();
+            $scope.audio.play();
+        }
+        else
+            Notification.error({message: 'Por favor seleccione una canción',title: 'Error de Reprodución', delay: 2000});
+    };
+
+    $scope.pauseSong = function() {
+        if ($scope.audio.src) {
+            $scope.playingSong = false;
+            $scope.audio.pause();
+        }
+    };
+
+    $scope.nextSong = function () {
+        if(($scope.data.SelectedSong.localIndex+1) < $scope.songs.length){
+            $scope.data.SelectedSong = $scope.songs[$scope.data.SelectedSong.localIndex+1];
+            $scope.playSong();
+        }
+        else{
+            $scope.data.SelectedSong = $scope.songs[0];
+            $scope.playSong();
+        }
+    };
+
+    $scope.prevSong = function () {
+        if(($scope.data.SelectedSong.localIndex-1) >= 0){
+            $scope.data.SelectedSong = $scope.songs[$scope.data.SelectedSong.localIndex-1];
+            $scope.playSong();
+        }
+        else{
+            $scope.data.SelectedSong = $scope.songs[$scope.songs.length-1];
+            $scope.playSong();
+        }
+    };
+
 
     var promise;
     $scope.mouseDown = function (bandLocalID,pType) {
@@ -168,7 +234,11 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
     };
 
     $scope.closeBandModal = function () {
+        $scope.pauseSong();
+        $scope.audio = new Audio();
         $scope.visibleBandModal = false;
+        $scope.data = [];
+        $scope.songs = [];
         $scope.selectedBand = [];
         $scope.completeStars = [];
         $scope.blankStars = [];
@@ -184,6 +254,7 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
     $scope.showBandModal = function (pBandIndex,pCategoryIndex) {
         $scope.visibleBandModal = true;
         $scope.selectedBand = $scope.categories[pCategoryIndex].bands[pBandIndex];
+        $scope.readSongsData();
         for(i = 0; i< $scope.selectedBand.rating; i++){
             $scope.completeStars.push(i);
         }

@@ -17,12 +17,14 @@ security.factory("Security", function($cookies,Notification){
             setTimeout(function(){location.href="../index.html"} , 10);
         }
     };
-    facade.verifySessionInit = function () {
+    facade.verifySessionInit = function (pLocation) {
         var user = $cookies.get('zUserName',{path: '/'});
         var type = $cookies.get('zUserType',{path: '/'});
         if(user != undefined && user != "expired"){
-            if(type == 1)
+            if(type == 1 && pLocation ==2)
                 setTimeout(function(){location.href="../promocion/promo.html"} , 10);
+            else if(type == 2 && pLocation ==1)
+                setTimeout(function(){location.href="../fanatico/init.html"} , 10);
         }
         else{
             Notification.error({message:"No ha iniciado sesión.", title: 'Sesión inválida.'});
