@@ -63,7 +63,7 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
                         band.spotifyID = response.categories[j].bands[k].spotifyID;
                         band.rating = response.categories[j].bands[k].rating;
                         band.members = response.categories[j].bands[k].members;
-                        band.genders = response.categories[j].bands[k].genders;
+                        band.genders = response.categories[j].bands[k].genres;
                         band.comments = response.categories[j].bands[k].comments;
                         band.image = response.categories[j].bands[k].image;
                         band.followers = response.categories[j].bands[k].followers;

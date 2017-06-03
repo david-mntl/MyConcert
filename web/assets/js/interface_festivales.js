@@ -24,27 +24,35 @@ app.controller('festivalesController',['$scope','$http','Security',function ($sc
     $scope.userType = Security.getCurrentUserType();
 
     $scope.readFestivalesData = function() {
-        $http.get("../assets/docs/festivales.txt").success(function (response) {
-            if (response.festivales.length > 0) {
-                for (j = 0; j < response.festivales.length; j++) {
+        $http.get("https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllFestivals/").success(function (response) {
+            //$http.get("../assets/docs/festivales.txt").success(function (response) {
+            response = JSON.parse(response);
+
+            if (response.spGetAllFestivals.length > 0) {
+                for (j = 0; j < response.spGetAllFestivals.length; j++) {
                     var festival = new Object();
 
                     festival.localIndex = j;
-                    festival.id = response.festivales[j].id;
-                    festival.name = response.festivales[j].name;
-                    festival.description = response.festivales[j].description;
-                    festival.location = response.festivales[j].location;
-                    festival.date = response.festivales[j].date;
-                    festival.place = response.festivales[j].place;
-                    festival.image = "../assets/"+response.festivales[j].image;
+                    festival.id = response.spGetAllFestivals[j].id;
+                    festival.name = response.spGetAllFestivals[j].name;
+                    festival.description = response.spGetAllFestivals[j].description;
+                    festival.location = response.spGetAllFestivals[j].location;
+                    festival.date = response.spGetAllFestivals[j].date;
+                    festival.place = response.spGetAllFestivals[j].place;
+                    festival.image = "../assets/"+response.spGetAllFestivals[j].image;
                     $scope.festivales.push(festival);
                 }
             }
         });
     };
 
-    $scope.readCategoriesData = function() {
-        $http.get("../assets/docs/festival2.txt").success(function (response) {
+    $scope.readCategoriesData = function(pFestivalID) {
+        //$http.get("../assets/docs/festival2.txt").success(function (response) {
+        $http.get("https://myconcert1.azurewebsites.net/api/Main/GET/FestivalInfo/"+pFestivalID).success(function (responseStr) {
+            var response = JSON.parse(responseStr);
+            console.log(response);
+
+
             $scope.categories = [];
             $scope.currentFestivalCategory = -1;
             if (response.categories.length > 0) {
@@ -62,7 +70,7 @@ app.controller('festivalesController',['$scope','$http','Security',function ($sc
                         band.spotifyID = response.categories[j].bands[k].spotifyID;
                         band.rating = response.categories[j].bands[k].rating;
                         band.members = response.categories[j].bands[k].members;
-                        band.genders = response.categories[j].bands[k].genders;
+                        band.genders = response.categories[j].bands[k].genres;
                         band.comments = response.categories[j].bands[k].comments;
                         band.image = response.categories[j].bands[k].image;
                         band.followers = response.categories[j].bands[k].followers;
@@ -86,7 +94,7 @@ app.controller('festivalesController',['$scope','$http','Security',function ($sc
     $scope.showFestivalModal = function (pFestivalIndex) {
         $scope.selectedFestival = $scope.festivales[pFestivalIndex];
         $scope.visibleFestivalModal = true;
-        $scope.readCategoriesData();
+        $scope.readCategoriesData($scope.selectedFestival.id);
 
     };
 

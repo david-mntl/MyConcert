@@ -17,6 +17,20 @@ security.factory("Security", function($cookies,Notification){
             setTimeout(function(){location.href="../index.html"} , 10);
         }
     };
+
+    facade.verifySessionInHome = function () {
+        var user = $cookies.get('zUserName',{path: '/'});
+        var type = $cookies.get('zUserType',{path: '/'});
+        if(user != undefined && user != "expired"){
+            Notification.success({message:"Sesión iniciada como:"+user, title: 'Iniciando sesión...'});
+            if(type == 1)
+                setTimeout(function(){location.href="promocion/promo.html"} , 10);
+            else if(type == 2)
+                setTimeout(function(){location.href="fanatico/init.html"} , 10);
+        }
+    };
+
+
     facade.verifySessionInit = function (pLocation) {
         var user = $cookies.get('zUserName',{path: '/'});
         var type = $cookies.get('zUserType',{path: '/'});
@@ -53,22 +67,14 @@ security.factory("Security", function($cookies,Notification){
     facade.getCurrentUserType = function () {
         return $cookies.get('zUserType',{path: '/'});
     };
+    facade.getCurrentUserEmail = function () {
+        return $cookies.get('zUserName',{path: '/'});
+    };
 
     facade.setTempEmail = function (pEmail) {
         $cookies.put('tempEmail', pEmail,{path: '/'});
     };
 
-    facade.verifySessionInHome = function () {
-        var user = $cookies.get('zUserName',{path: '/'});
-        var type = $cookies.get('zUserType',{path: '/'});
-        if(user != undefined && user != "expired"){
-            Notification.success({message:"Sesión iniciada como:"+user, title: 'Iniciando sesión...'});
-            if(type == 1)
-                setTimeout(function(){location.href="promocion/promo.html"} , 10);
-            else if(type == 2)
-                setTimeout(function(){location.href="fanatico/init.html"} , 10);
-        }
-    };
 
     facade.gotoProfile = function () {
         var user = $cookies.get('zUserName',{path: '/'});

@@ -56,19 +56,78 @@ app.controller('mainController',['$scope','$http','$window','Notification','Secu
     };
 
     $scope.sendRegisterForm = function() {
-        if($scope.data.ProfileType.id == 1){
-            if(!$scope.isValid($scope.data.Name)){
-                if(!$scope.isValid($scope.data.LastName)) {
-                    if(!$scope.isValid($scope.data.Email)) {
-                        if(!$scope.isValid($scope.data.Password)) {
+        if($scope.data.ProfileType != undefined) {
+
+            var parameter = JSON.stringify({
+                Email: $scope.data.Email.toString()
+            });
+            $http.post('https://myconcert1.azurewebsites.net/api/Verify/User', parameter).success(function (data, status, headers, config) {
+                var response = JSON.parse(data);
+
+                if(response.State == 0){
+                    if ($scope.data.ProfileType.id == 1) {
+                        if (!$scope.isValid($scope.data.Name)) {
+                            if (!$scope.isValid($scope.data.LastName)) {
+                                if (!$scope.isValid($scope.data.Email)) {
+                                    if (!$scope.isValid($scope.data.Password)) {
+                                        var parameter = JSON.stringify({
+                                            Name: $scope.data.Name.toString(),
+                                            Lastname: $scope.data.LastName.toString(),
+                                            Email: $scope.data.Email.toString(),
+                                            Password: $scope.data.Password.toString()
+                                        });
+
+                                         $http.post('https://myconcert1.azurewebsites.net/api/Verify/RegisterAdmin', parameter).success(function (data, status, headers, config) {
+                                            if (data == "error") {
+                                                Notification.error({message: 'Ha ocurrido un error. Por favor inténtelo más tarde.',delay: 2000});
+                                            }
+                                            else {
+                                                Notification.success({message: 'Usuario registrado. Redirigiendolo a la página principal.',delay: 2000});
+                                                setTimeout(function () {location.href = "../index.html"}, 2000);
+                                            }
+                                         }).error(function (data, status, headers, config) {
+                                             console.log(data);
+                                         });
+                                    }
+                                    else {
+                                        Notification.error({message: 'Ingrese una contraseña.', delay: 2000});
+                                    }
+                                }
+                                else {
+                                    Notification.error({message: 'Ingrese un correo electróncio.', delay: 2000});
+                                }
+                            }
+                            else {
+                                Notification.error({message: 'Ingrese un apellido.', delay: 2000});
+                            }
+                        }
+                        else {
+                            Notification.error({message: 'Ingrese un nombre.', delay: 2000});
+                        }
+                    }
+                    else {
+                        if ($scope.verifyForm()) {
+                            if ($scope.data.Place == undefined)
+                                $scope.data.Place = "";
+                            if ($scope.data.University == undefined)
+                                $scope.data.University = {id: '1', name: 'null'};
+
                             var parameter = JSON.stringify({
                                 Name: $scope.data.Name.toString(),
                                 Lastname: $scope.data.LastName.toString(),
+                                Country: $scope.data.Country.name.toString(),
+                                Residence: $scope.data.Place.toString(),
+                                ID_Uni: $scope.data.University.id.toString(),
                                 Email: $scope.data.Email.toString(),
-                                Password: $scope.data.Password.toString()
+                                Phone: $scope.data.Phone.toString(),
+                                Photo: $scope.data.Email.toString(),
+                                Pass: $scope.data.Password.toString(),
+                                Description: $scope.data.Description.toString(),
+                                Birthdate: $scope.data.BirthDate.toString(),
+                                Genres: $scope.data.GenresList.toString()
                             });
 
-                            $http.post('https://myconcert1.azurewebsites.net/api/Verify/RegisterAdmin', parameter).success(function (data, status, headers, config) {
+                             $http.post('https://myconcert1.azurewebsites.net/api/Verify/RegisterUser', parameter).success(function (data, status, headers, config) {
                                 if (data == "error") {
                                     Notification.error({message: 'Ha ocurrido un error. Por favor inténtelo más tarde.', delay: 2000});
                                 }
@@ -76,73 +135,38 @@ app.controller('mainController',['$scope','$http','$window','Notification','Secu
                                     Notification.success({message: 'Usuario registrado. Redirigiendolo a la página principal.', delay: 2000});
                                     setTimeout(function(){location.href="../index.html"} , 2000);
                                 }
-                            }).error(function (data, status, headers, config) {
+                             }).error(function (data, status, headers, config) {
                                 console.log(data);
-                            });
-                        }
-                        else{
-                            Notification.error({message: 'Ingrese una contraseña.', delay: 2000});
+                             });
                         }
                     }
-                    else{
-                        Notification.error({message: 'Ingrese un correo electróncio.', delay: 2000});
-                    }
                 }
-                else{
-                    Notification.error({message: 'Ingrese un apellido.', delay: 2000});
+                else if(response.State == 1){
+                    Notification.error({message: 'El correo electrónico ya fue registrado.', delay: 2000});
                 }
-            }
-            else{
-                Notification.error({message: 'Ingrese un nombre.', delay: 2000});
-            }
+            }).error(function (data, status, headers, config) {
+                Notification.error({message: 'Error de comunicación con el servidor. Inténtelo más tarde.', delay: 2000});
+            });
+
+
         }
-        else {
-            if ($scope.verifyForm()) {
-                if ($scope.data.Place == undefined)
-                    $scope.data.Place = "";
-                if ($scope.data.University == undefined)
-                    $scope.data.University = {id: '1', name: 'null'};
-
-                var parameter = JSON.stringify({
-                    Name: $scope.data.Name.toString(),
-                    Lastname: $scope.data.LastName.toString(),
-                    Country: $scope.data.Country.name.toString(),
-                    Residence: $scope.data.Place.toString(),
-                    ID_Uni: $scope.data.University.id.toString(),
-                    Email: $scope.data.Email.toString(),
-                    Phone: $scope.data.Phone.toString(),
-                    Photo: $scope.data.Email.toString(),
-                    Pass: $scope.data.Password.toString(),
-                    Description: $scope.data.Description.toString(),
-                    Birthdate: $scope.data.BirthDate.toString(),
-                    Genres: $scope.data.GenresList.toString()
-                });
-
-                $http.post('https://myconcert1.azurewebsites.net/api/Verify/RegisterUser', parameter).success(function (data, status, headers, config) {
-                    if (data == "error") {
-                        Notification.error({message: 'Ha ocurrido un error. Por favor inténtelo más tarde.', delay: 2000});
-                    }
-                    else {
-                        Notification.success({message: 'Usuario registrado. Redirigiendolo a la página principal.', delay: 2000});
-                        setTimeout(function(){location.href="../index.html"} , 2000);
-                    }
-                }).error(function (data, status, headers, config) {
-                    console.log(data);
-                });
-            }
+        else{
+            Notification.error({message: 'Por favor ingrese un tipo de usuario.', delay: 2000});
         }
 
     };
 
     $scope.addGenre = function() {
-        if($scope.data.Genre.name != "" && $scope.choosedGenres.indexOf($scope.data.Genre.name) == -1){
-            if($scope.data.GenresList == undefined || $scope.data.GenresList == "" ) {
-                $scope.data.GenresList = $scope.data.Genre.name;
-                $scope.choosedGenres.push($scope.data.Genre.name);
-            }
-            else {
-                $scope.data.GenresList = $scope.data.GenresList + "," + $scope.data.Genre.name;
-                $scope.choosedGenres.push($scope.data.Genre.name);
+        if($scope.data.Genre != undefined) {
+            if ($scope.data.Genre.name != "" && $scope.choosedGenres.indexOf($scope.data.Genre.name) == -1) {
+                if ($scope.data.GenresList == undefined || $scope.data.GenresList == "") {
+                    $scope.data.GenresList = $scope.data.Genre.name;
+                    $scope.choosedGenres.push($scope.data.Genre.name);
+                }
+                else {
+                    $scope.data.GenresList = $scope.data.GenresList + "," + $scope.data.Genre.name;
+                    $scope.choosedGenres.push($scope.data.Genre.name);
+                }
             }
         }
     };
@@ -250,6 +274,7 @@ app.controller('mainController',['$scope','$http','$window','Notification','Secu
         });
         $http.post('https://myconcert1.azurewebsites.net/api/Verify/User', parameter).success(function (data, status, headers, config) {
             var response = JSON.parse(data);
+            console.log(data);
             return !response.State;
 
         }).error(function (data, status, headers, config) {
