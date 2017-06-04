@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Web;
 using System.Web.Script.Serialization;
@@ -32,8 +35,36 @@ namespace MyConcert.Models
                 stream.Write(data, 0, data.Length);
             }
 
-            var response = request.GetResponse().ToString();
-            return response;
+            string message = string.Empty;
+            JsonSerializer _serializer = new JsonSerializer();
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (Stream stream = response.GetResponseStream())
+            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+            using (var json = new JsonTextReader(reader))
+            {
+                message = _serializer.Deserialize<string>(json);
+                return message;
+            }
+        }
+
+        public static string getMethod(string pUrl)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(pUrl);            
+            request.Method = "GET";
+            request.ContentType = "application/json";
+                
+            string message = string.Empty;
+            JsonSerializer _serializer = new JsonSerializer();
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (Stream stream = response.GetResponseStream())
+            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+            using (var json = new JsonTextReader(reader))
+            {
+                message = _serializer.Deserialize<string>(json);                
+                return message;
+            }            
         }
 
 

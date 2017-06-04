@@ -160,20 +160,8 @@ namespace MyConcert.Controllers
                      command.Parameters.AddWithValue("@pDescription", (string)(pJson.Description)); 
                      command.Parameters.AddWithValue("@pBirthdate", (string)(pJson.Birthdate));
 
-                    /*command.Parameters.AddWithValue("@pName", "David");
-                    command.Parameters.AddWithValue("@pLastname", "Monestel");
-                    command.Parameters.AddWithValue("@pID_Country", "1");
-                    command.Parameters.AddWithValue("@pResidence", "Casa de Fabian");
-                    command.Parameters.AddWithValue("@pUni_ID", "1");
-                    command.Parameters.AddWithValue("@pEmail", "@papa");
-                    command.Parameters.AddWithValue("@pPhone", "89731119");
-                    command.Parameters.AddWithValue("@pPhoto", "abcdefgh");
-                    command.Parameters.AddWithValue("@pPass", "123");
-                    command.Parameters.AddWithValue("@pDescription", "hola me llamo benito benitocamelas");
-                    command.Parameters.AddWithValue("@pBirthdate", "01/02/2010");*/
-
-
                     var details = new Dictionary<string, object>();
+                    var userID = "";
 
                     // Create new SqlDataReader object and read data from the command.
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -184,16 +172,31 @@ namespace MyConcert.Controllers
                             {
                                 details.Add(reader.GetName(i), reader.IsDBNull(i) ? null : reader.GetValue(i));
                             }
+                            userID = reader.GetValue(0).ToString();
                         }
-
-                        JavaScriptSerializer jss = new JavaScriptSerializer();
-                        string jsonDoc = jss.Serialize(details);
-                        return jsonDoc;
+                       
                     }
+
+                    var arrayGenres = pJson.Genres.ToString().Split(',');
+
+                    for (int i = 0; i < arrayGenres.Length; i++)
+                    {
+                        var diccA = new Dictionary<string, object>();
+                        diccA.Add("ID", userID.ToString());
+                        diccA.Add("Genre", (string)(arrayGenres[i]));
+                        dynamic JsonA = Models.UtilityMethods.diccTOstrinJson(diccA);
+
+                        string url = "http://myconcert1.azurewebsites.net/api/Funcs/AddGenreToUser";
+                        Models.UtilityMethods.postMethod(JsonA, url);
+                    }
+                    
+                    return userID;
+
+
                 }
-                catch (SqlException e)
+                catch (Exception e)
                 {
-                    return e.Message;
+                    return "error";
                 }
             }
         }
@@ -556,13 +559,23 @@ namespace MyConcert.Controllers
                 {
                     conn.Open();
                     string dbQuery = "spRegisterBand";
-                    SqlCommand command = new SqlCommand(); // DB Call. dbQuery, conn
+                    SqlCommand command = new SqlCommand(); 
 
                     command.Connection = conn;
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.CommandText = dbQuery;//  
 
-                    command.Parameters.AddWithValue("@pName", (string)pJson.name);                    
+                    string mainSpotifyUrl = "http://myconcert1.azurewebsites.net/api/Spotify/main";
+                    string spotifyIDUrl = "http://myconcert1.azurewebsites.net/api/Spotify/getArtistID/" + (string)pJson.name;
+                    Models.UtilityMethods.getMethod(mainSpotifyUrl);
+                    string spotifyInfo = Models.UtilityMethods.getMethod(spotifyIDUrl);
+
+                    var spotifyInfoObject = new Dictionary<string, object>();
+                    JavaScriptSerializer oJS = new JavaScriptSerializer();
+                    spotifyInfoObject = oJS.Deserialize<Dictionary<string, object>>(spotifyInfo);                                       
+
+                    command.Parameters.AddWithValue("@pName", (string)pJson.name);
+                    command.Parameters.AddWithValue("@pSpotifyID", (spotifyInfoObject["ID"]));
 
                     string bandID = string.Empty;                    
 
@@ -584,7 +597,7 @@ namespace MyConcert.Controllers
                             diccA.Add("ID", bandID.ToString()); 
                             diccA.Add("Song", (string)(pJson.songs[i].name));
                             dynamic JsonA = Models.UtilityMethods.diccTOstrinJson(diccA);
-
+                                                       
                             string url = "http://myconcert1.azurewebsites.net/api/Funcs/AddSongToBand";
                             response = Models.UtilityMethods.postMethod(JsonA, url);                            
 
