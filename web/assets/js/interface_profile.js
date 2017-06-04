@@ -289,7 +289,6 @@ app.controller('mainController',['$scope','$http','$window','Security','Notifica
 
     };
 
-    /************** AUX FUNCTIONS ***********/
     $scope.isValid = function(value) {
         return !value
     };

@@ -8,14 +8,18 @@ security.factory("Security", function($cookies,Notification){
 
     facade.verifySession = function () {
         var user = $cookies.get('zUserName',{path: '/'});
-        if(user != undefined && user != "expired"){
+        if(user == undefined || user == "expired"){
+            Notification.error({message:"No ha iniciado sesión.", title: 'Sesión inválida.'});
+            setTimeout(function(){location.href="../index.html"} , 10);
+        };
+        /*if(user != undefined && user != "expired"){
             //Notification.success({message:"Sesión iniciada como:"+user, title: 'Iniciando sesión...'});
-            console.log("Iniciando Sesión...");
+            //console.log("Iniciando Sesión...");
         }
         else{
             Notification.error({message:"No ha iniciado sesión.", title: 'Sesión inválida.'});
             setTimeout(function(){location.href="../index.html"} , 10);
-        }
+        }*/
     };
 
     facade.verifySessionInHome = function () {

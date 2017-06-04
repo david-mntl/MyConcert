@@ -1,14 +1,27 @@
-var app = angular.module('mainModule', ['spotify','angular-loading-bar','ngSecurity']);
+var app = angular.module('mainModule', ['720kb.datepicker','spotify','angular-loading-bar','ngSecurity','ui-notification']);
 
 
-app.controller('cartelerasController',['$scope','$http','Security','$filter',function ($scope,$http,Security,$filter,$timeout) {
+app.controller('cartelerasController',['$scope','$http','Security','$filter',"Notification",function ($scope,$http,Security,$filter,Notification,$timeout) {
     $scope.currentCategory = -1;
     $scope.carteleras = [];
+    $scope.selectedCartelera = [];
+    $scope.selectedBands = [];
+    $scope.chefBand = [];
     $scope.bandas = [];
     $scope.userType =  Security.getCurrentUserType();
     $scope.listaCategorias = [];
     $scope.categoriasIncluidas = [];
     $scope.regBandas = [];
+    $scope.visibleFestivalModal = false;
+    $scope.currentCarteleraCategory = -1;
+    $scope.currentStep = 1;
+    $scope.playingSong = false;
+    $scope.audio = new Audio();
+    $scope.data = [];
+    $scope.songs = [];
+    $scope.audio.addEventListener('ended', function(){
+        $scope.playingSong = false;
+    });
 
     $scope.addBanda = function (name) {
         var flag = 0;
@@ -74,9 +87,9 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',fun
     };
 
     $scope.readCartelerasData = function() {
-        //$http.get("../assets/docs/carteleras.txt").success(function (response) {
-        $http.get("https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllBillboards/").success(function (response) {
-            response = JSON.parse(response);
+        $http.get("../assets/docs/carteleras.txt").success(function (response) {
+        //$http.get("https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllBillboards/").success(function (response) {
+            //response = JSON.parse(response);
             if (response.spGetAllBillboards.length > 0) {
                 for (j = 0; j < response.spGetAllBillboards.length; j++) {
                     var cartelera = new Object();
@@ -90,14 +103,9 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',fun
                     $scope.carteleras.push(cartelera);
                 }
             }
-            $scope.changeCurrentCarteleras(2);
         });
     };
 
-
-    /**
-     * Obtiene las bandas de un JSON
-     * */
     $scope.readBandas = function () {
         $scope.bandas = [];
         $http.get("../assets/docs/bandas.json").success(function (response) {
@@ -111,14 +119,222 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',fun
         });
     };
 
+    $scope.readCategoriesData = function(pCarteleraID) {
+        $http.get("../assets/docs/cartelera_inf.txt").success(function (response) {
+            //$http.get("https://myconcert1.azurewebsites.net/api/Main/GET/FestivalInfo/"+pCarteleraID).success(function (responseStr) {
+
+            //var response = JSON.parse(response);
+
+            $scope.selectedCartelera.categories = [];
+            if (response.categories.length > 0) {
+                for (j = 0; j < response.categories.length; j++) {
+                    var category = new Object();
+                    var bands = [];
+
+                    category.localID = j;
+                    category.name = response.categories[j].name;
+
+                    for(k = 0; k < response.categories[j].bands.length; k++){
+                        var band = new Object();
+                        band.localID = k;
+                        band.id = response.categories[j].bands[k].id;
+                        band.name = response.categories[j].bands[k].name;
+                        band.image = response.categories[j].bands[k].image;
+                        band.votes = response.categories[j].bands[k].votes;
+                        band.percentage = response.categories[j].bands[k].percentage;
+                        bands.push(band);
+                    }
+                    category.bands = bands;
+                    category.winningNumber = 0;
+                    category.done = false;
+                    $scope.selectedCartelera.categories.push(category);
+                }
+            }
+        });
+    };
+
+    $scope.readChefBandData = function(pCarteleraID) {
+        $http.get("../assets/docs/band.txt").success(function (response) {
+            //$http.get("https://myconcert1.azurewebsites.net/api/Main/GET/FestivalInfo/"+pCarteleraID).success(function (responseStr) {
+
+            //var response = JSON.parse(response);
+
+            $scope.chefBand = [];
+            $scope.chefBand.name = response.name;
+            $scope.chefBand.image = response.image;
+            $scope.chefBand.followers = response.followers;
+            $scope.chefBand.popularity = response.popularity;
+            $scope.chefBand.rating = response.rating;
+            $scope.chefBand.members = response.members;
+            $scope.chefBand.genres = response.genres;
+            $scope.chefBand.songs = response.songs;
+        });
+    };
+
 
     $scope.changeCurrentCategory = function (pCurrentCategoryID) {
         $scope.currentCategory = pCurrentCategoryID;
     };
 
+    $scope.closeCreateFestivalModal = function () {
+        $scope.playingSong = false;
+        $scope.visibleFestivalModal = false;
+        $scope.selectedCartelera = [];
+        $scope.selectedBands = [];
+        $scope.currentCarteleraCategory = -1;
+        $scope.currentStep = 1;
+        $scope.data=[];
+    };
+
+    $scope.showCreateFestivalModal = function (pCarteleraIndex) {
+        $scope.audio = new Audio();
+        $scope.songs = [];
+        $scope.data=[];
+        $scope.currentStep = 1;
+        $scope.visibleFestivalModal = true;
+        $scope.selectedCartelera = $scope.carteleras[pCarteleraIndex];
+        $scope.readCategoriesData($scope.selectedCartelera.id);
+    };
+
+
+
+    $scope.changeCurrentCarteleraCategory = function (pCurrentCategoryID) {
+        if(pCurrentCategoryID == $scope.currentCarteleraCategory){
+            $scope.currentCarteleraCategory = -1;
+            $scope.selectedBands = [];
+        }
+        else {
+            $scope.currentCarteleraCategory = pCurrentCategoryID;
+            $scope.selectedBands = $scope.selectedCartelera.categories[pCurrentCategoryID].bands;
+        }
+    };
+
     //********* AUX FUNCTIONS ************
+    $scope.playSong = function () {
+        if($scope.data.SelectedSong != undefined && $scope.data.SelectedSong.url != "") {
+            $scope.playingSong = true;
+            $scope.audio.src = $scope.data.SelectedSong.url.toString();
+            $scope.audio.play();
+        }
+        else
+            Notification.error({message: 'Por favor seleccione una canción',title: 'Error de Reprodución', delay: 2000});
+    };
+
+    $scope.pauseSong = function() {
+        if ($scope.audio.src) {
+            $scope.playingSong = false;
+            $scope.audio.pause();
+        }
+    };
+
+    $scope.nextSong = function () {
+        if(($scope.data.SelectedSong.localIndex+1) < $scope.chefBand.songs.length){
+            $scope.data.SelectedSong = $scope.songs[$scope.chefBand.data.SelectedSong.localIndex+1];
+            $scope.playSong();
+        }
+        else{
+            $scope.data.SelectedSong = $scope.chefBand.songs[0];
+            $scope.playSong();
+        }
+    };
+
+    $scope.prevSong = function () {
+        if(($scope.data.SelectedSong.localIndex-1) >= 0){
+            $scope.data.SelectedSong = $scope.songs[$scope.chefBand.data.SelectedSong.localIndex-1];
+            $scope.playSong();
+        }
+        else{
+            $scope.data.SelectedSong = $scope.songs[$scope.chefBand.songs.length-1];
+            $scope.playSong();
+        }
+    };
+
     $scope.xExitSession = function () { Security.exitSession(); };
     $scope.xGotoProfile = function () { Security.gotoProfile(); };
+
+    $scope.getPercentage = function (pSelectedBandIndex) {
+        return $scope.selectedBands[pSelectedBandIndex].percentage;
+    };
+    $scope.isBandEnabled = function (pBandLocalIndex) {
+        if(pBandLocalIndex < $scope.selectedCartelera.categories[$scope.currentCarteleraCategory].winningNumber)
+            return false;
+        else
+            return true;
+    };
+
+    $scope.changeBandsWinningNumber = function (pAddOrSubstract) {
+        var currentCategory = $scope.selectedCartelera.categories[$scope.currentCarteleraCategory];
+        if(pAddOrSubstract == 0){
+            if(currentCategory.winningNumber + 1  <= currentCategory.bands.length){
+                currentCategory.winningNumber+=1;
+            }
+        }
+        else if(pAddOrSubstract == 1){
+            if(currentCategory.winningNumber - 1  >= 0){
+                currentCategory.winningNumber-=1;
+            }
+        }
+        $scope.checkDoneCategory(currentCategory);
+    };
+    $scope.changeStep = function (pRightOrLeft) {
+        if(pRightOrLeft == 0){
+            if($scope.currentStep==1){
+                if($scope.checkCategories()){
+                    if($scope.currentStep + 1  <= 3) {
+                        $scope.currentStep += 1;
+                        $scope.readChefBandData();
+                    }
+                }
+            }
+            else{
+                if($scope.currentStep + 1  <= 3) {
+                    $scope.currentStep += 1;
+                    $scope.readChefBandData();
+                    $scope.pauseSong();
+                }
+            }
+        }
+        else if(pRightOrLeft == 1){
+            if($scope.currentStep + 1  >= 1)
+                $scope.currentStep-=1;
+        }
+    };
+    $scope.checkDoneCategory = function (pCategory) {
+        if(pCategory.winningNumber != 0)
+            pCategory.done = true;
+        else
+            pCategory.done = false;
+    };
+    $scope.checkCategories = function () {
+        var categories = $scope.selectedCartelera.categories;
+        var done = true;
+        for(i=0; i< categories.length; i++){
+            if(categories[i].done == false){
+                Notification.error({message: 'Categoría '+categories[i].name +' pendiente.',title: 'Información incompleta', delay: 2000});
+                done = false;
+            }
+        }
+        if($scope.data.Date != undefined && $scope.data.Date != "") {
+            if ($scope.data.Place != undefined && $scope.data.Place != "") {
+                if ($scope.data.Description != undefined && $scope.data.Description != "") {
+                    done = true;
+                }
+                else {
+                    Notification.error({message: 'Ingrese una descripción.',title: 'Información incompleta',delay: 2000});
+                    done = false;
+                }
+            }
+            else {
+                Notification.error({message: 'Ingrese una lugar para el evento.', title: 'Información incompleta', delay: 2000});
+                done = false;
+            }
+        }
+        else{
+            Notification.error({message: 'Ingrese una fecha para el evento.',title: 'Información incompleta', delay: 2000});
+            done = false;
+        }
+        return done;
+    };
 
     Security.verifySession();
     $scope.readBandas();

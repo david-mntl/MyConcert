@@ -1,0 +1,158 @@
+<div id="myModal" class="zmodal" ng-show="visibleFestivalModal">
+
+    <div class="zmodal-content">
+
+        <div class="zmodal-header green" style="float: left; width: 100%">
+            <div style="float: left">
+                <h2>Crear Festival: <a style="color:black;">{{selectedCartelera.name}}</a></h2>
+            </div>
+            <span ng-click="closeCreateFestivalModal()" class="close" style="float: right;">&times;</span>
+            <div style="float:right; margin-top: 12px; margin-right: 5px;">
+                <i ng-click="changeStep(1)" style="float: left; cursor: pointer" class="fa fa-caret-left fa-3x colorHover colorHoverBlue"></i>
+                <div class="stepsBox"><b>{{currentStep}}/3</b></div>
+                <i ng-click="changeStep(0)" style="float: left; cursor: pointer" class="fa fa-caret-right fa-3x colorHover colorHoverBlue"></i>
+            </div>
+
+        </div>
+        <div class="zmodal-body" style="clear:both;">
+            <div class="modal-info-image" ><image ng-src={{selectedCartelera.image}}></image></div>
+            <div style="margin-left: 15px" class="modal-info-box">
+                <div style="padding: 5px" class="box-cartelera-info-icon">
+                    <i class="fa fa-globe fa-3x"></i>
+                    <div class="modal-info-text">{{selectedCartelera.location}}</div>
+                </div>
+                <div style="padding: 5px" class="box-cartelera-info-icon">
+                    <i class="fa fa-calendar fa-3x"></i>
+                    <div class="modal-info-text">
+                        <datepicker date-format="MM/d/y">
+                            <input ng-disabled="currentStep!=1" class="pInput pIGreen" ng-model="data.Date" type="text" readonly/>
+                        </datepicker>
+                    </div>
+                </div>
+                <div style="padding: 5px" class="box-cartelera-info-icon">
+                    <i class="fa fa-map-marker fa-3x"></i>
+                    <div class="modal-info-text">
+                        <input ng-disabled="currentStep!=1" style="margin-left: 13px;" class="pInput pIGreen" ng-model="data.Place" type="text"/>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-left: 15px" class="modal-info-box">
+                <div style="padding: 5px" class="box-cartelera-info-icon">
+                    <i class="fa fa-pencil fa-2x"></i>
+                    <div class="modal-info-text">Descripción</div>
+                </div>
+                <div style="padding: 5px" class="box-cartelera-info-icon">
+                    {{selectedFestival.description}}
+                    <form style="float: left; width: 250px;">
+                        <textarea ng-disabled="currentStep!=1" ng-model="data.Description" class="pInput pIGreen" maxlength="150" onblur="textCounter(this.form.counter_txt,150,this.form.message);" onkeyup="textCounter(this.form.counter_txt,150,this.form.message);" style="width: 100%; height: 90px; resize:none;" name="message" rows="1" cols="15" ></textarea>
+                        <input style="float: left;" onblur="textCounter(this.form.counter_txt,150,this.form.message);" disabled  onfocus="this.blur();" tabindex="999" maxlength="3" size="3" value="150" name="counter_txt">
+                        <div ng-click="changeStep(0)" style="margin-top: 30px; margin-left: -195px;" class="box-cartelera-button">Continuar</div>
+                    </form>
+                </div>
+
+            </div>
+
+            <div style="clear: both; margin-top:15px; display: block;" ng-if="currentStep == 1">
+                <div class="modal-info-text" style="float: left;">Categorías</div>
+                <div ng-repeat="category in selectedCartelera.categories">
+                    <button ng-click="changeCurrentCarteleraCategory(category.localID)" class="accordion">
+                        {{category.name}}
+                        <a style="color: red;" ng-if="category.done==false">(Pendiente)</a>
+                        <a style="color: green;"ng-if="category.done==true">(Completado)</a>
+                    </button>
+                    <div class="panel" ng-if="currentCarteleraCategory == category.localID">
+                        <div>
+                            <div style="float: left;">
+                                <b>Cantidad de Bandas Ganadoras:</b>
+                                <input ng-model="category.winningNumber" style="height: 20px; width: 30px; text-align: center;" class="pInput pIGreen" type="text" readonly/>
+                            </div>
+                            <div style="float: left; margin-top: 1px; margin-left: 5px;">
+                                <i ng-click="changeBandsWinningNumber(0)" class="fa fa-plus-circle fa-2x colorHover colorHoverGreen" style="margin-left: 1px;cursor: pointer;"></i>
+                                <i ng-click="changeBandsWinningNumber(1)" class="fa fa-minus-circle fa-2x colorHover colorHoverRed" style="margin-left: 1px; cursor: pointer;"></i>
+                            </div>
+                        </div>
+                        <div style="clear: both">
+                            <button class="cartelera-bandbox" ng-repeat="band in selectedBands" ng-disabled="isBandEnabled(band.localID)">
+                                <div class="cartelera-bandbox-title" >{{band.name}}</div>
+                                <image class="bandimage-box"  ng-src={{band.image}}></image>
+
+                                <div>Votos:{{band.votes}}</div>
+                                <div style="width: 100%; border: solid black; height: 10px; border-width: 0.3px;">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="70"
+                                         aria-valuemin="0" aria-valuemax="100"  ng-style="{width : ( getPercentage(band.localID) + '%' ) }">
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div style="margin-top: 250px" ng-if="currentStep == 2">
+                <div class="modal-info-text" style="float: left;">Recomendación del Chef</div>
+                    <div style="clear: both">
+                        <button class="cartelera-bandbox" >
+                            <div class="cartelera-bandbox-title" >{{chefBand.name}}</div>
+                            <image class="bandimage-box"  ng-src={{chefBand.image}}></image>
+                        </button>
+
+
+                        <div style="margin-left: 15px" class="modal-info-box">
+                            <div style="padding: 5px" class="box-cartelera-info-icon">
+                                <i class="fa fa-line-chart fa-2x"></i>
+                                <div class="modal-info-text">Seguidores: {{chefBand.followers}}</div>
+                            </div>
+                            <div style="padding: 5px" class="box-cartelera-info-icon">
+                                <i class="fa fa-thumbs-up fa-2x"></i>
+                                <div class="modal-info-text">Popularidad: {{chefBand.popularity}}</div>
+                            </div>
+                            <div style="padding: 5px" class="box-cartelera-info-icon">
+                                <i class="fa fa-users fa-2x"></i>
+                                <div class="modal-info-text">Miembros:</div>
+
+                            </div>
+                            <div class="modal-members-holder">
+                                <div class="modal-info-text-member" ng-repeat="member in chefBand.members">{{member.name}}</div>
+                            </div>
+                            <!--<div style="padding: 5px" class="box-cartelera-info-icon">
+                                <i class="fa fa-map-marker fa-3x"></i>
+                                <div class="modal-info-text">{{selectedFestival.place}}</div>
+                            </div>-->
+                        </div>
+                        <div style="margin-left: 15px" class="modal-info-box">
+                            <div style="padding: 5px" class="box-cartelera-info-icon">
+                                <i class="fa fa-music fa-2x"></i>
+                                <div class="modal-info-text">Géneros Musicales:</div>
+
+                            </div>
+                            <div class="modal-members-holder">
+                                <div class="modal-info-text-member" ng-repeat="genre in chefBand.genres">{{genre.name}}</div>
+                            </div>
+                            <div style="margin-left: 5px" class="music-player">
+                                <i style="float: left" class="fa fa-volume-up fa-2x"></i>
+                                <div style="float: left" class="modal-info-text">Música</div>
+                                <br>
+                                <br>
+                                <div class="music-player-controlers-box">
+                                    <div class="music-player-controler" ng-click="prevSong()"><i class="fa fa-step-backward fa-1x"></i></div>
+                                    <div class="music-player-controler" ng-if="!playingSong" ng-click="playSong()"><i class="fa fa-play fa-1x"></i></div>
+                                    <div class="music-player-controler" ng-if="playingSong" ng-click="pauseSong()"><i class="fa fa-pause fa-1x"></i></div>
+                                    <div class="music-player-controler" ng-click="nextSong()"><i class="fa fa-step-forward fa-1x"></i></div>
+                                </div>
+                                <select class="pInput pIBlue" style="width: 300px; margin-top: 5px;" ng-model="data.SelectedSong" ng-options="song.name for song in chefBand.songs track by song.name">
+                                    <option value="">Canción</option>
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        </div>
+
+    </div>
+</div>

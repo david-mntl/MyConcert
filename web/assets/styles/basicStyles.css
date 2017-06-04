@@ -959,6 +959,9 @@
     transform: scale(1.1);
     border: solid #d2ca1f;
 }
+.cartelera-bandbox:disabled{
+    opacity: 0.5;
+}
 
 
 .cartelera-bandbox-title{
@@ -1006,6 +1009,13 @@
 }
 .colorHoverGreen:hover{
     color:#2ea628;
+}
+
+.colorHoverBlue{
+    color: black;
+}
+.colorHoverBlue:hover{
+    color:#00aced;
 }
 
 .colorHoverRed{

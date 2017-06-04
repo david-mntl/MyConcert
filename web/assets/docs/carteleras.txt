@@ -1,4 +1,4 @@
-{"carteleras":[
+{"spGetAllBillboards":[
     {"id":"50","name":"Speed Sound","location":"Cartago, Costa Rica","timeLeft":"5","image":"imgs/speed.png"},
     {"id":"51","name":"Festival Imperial","location":"San José, Costa Rica","timeLeft":"9","image":"imgs/imperial.png"},
     {"id":"52","name":"Jazz Fest","location":"Cartago, Costa Rica","timeLeft":"11","image":""},

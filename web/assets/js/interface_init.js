@@ -173,7 +173,6 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
     };
 
     $scope.openVoteWindow = function (IDCartelera) {
-        console.log("ID",IDCartelera);
         window.location = "vote.html#?IDCartelera="+IDCartelera;
     };
 
