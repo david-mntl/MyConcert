@@ -19,6 +19,7 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
     $scope.audio = new Audio();
     $scope.data = [];
     $scope.songs = [];
+    $scope.confirmFestival = false;
     $scope.audio.addEventListener('ended', function(){
         $scope.playingSong = false;
     });
@@ -154,12 +155,13 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
     };
 
     $scope.readChefBandData = function(pCarteleraID) {
-        $http.get("../assets/docs/band.txt").success(function (response) {
+        $http.get("../assets/docs/bandd.txt").success(function (response) {
             //$http.get("https://myconcert1.azurewebsites.net/api/Main/GET/FestivalInfo/"+pCarteleraID).success(function (responseStr) {
 
             //var response = JSON.parse(response);
 
             $scope.chefBand = [];
+            $scope.chefBand.id = response.id;
             $scope.chefBand.name = response.name;
             $scope.chefBand.image = response.image;
             $scope.chefBand.followers = response.followers;
@@ -171,6 +173,59 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
         });
     };
 
+    $scope.writeCreateFestival = function () {
+        var categories = [];
+        for(z=0; z < $scope.selectedCartelera.categories.length; z++){
+            var category = new Object();
+            category.name = $scope.selectedCartelera.categories[z].name;
+            var bands = [];
+            for(k=0; k < $scope.selectedCartelera.categories[z].winningNumber; k++){
+                var band = new Object();
+                band.id = $scope.selectedCartelera.categories[z].bands[k].id;
+                band.name = $scope.selectedCartelera.categories[z].bands[k].name;
+                band.money = $scope.selectedCartelera.categories[z].bands[k].votes;
+                bands.push(band);
+            }
+            category.bands = bands;
+            categories.push(category);
+        }
+
+        var chefCategory = new Object();
+        chefCategory.name = "Recomendación del Chef";
+        var chefBands = [];
+        var chefBand = new Object();
+        chefBand.id = $scope.chefBand.id;
+        chefBand.name = $scope.chefBand.name;
+        chefBand.money = 0;
+        chefBands.push(chefBand);
+        chefCategory.bands = chefBands;
+        categories.push(chefCategory);
+
+
+        var festival = JSON.stringify({
+            name: $scope.selectedCartelera.name,
+            location: $scope.selectedCartelera.location,
+            date: $scope.data.Date,
+            place: $scope.data.Place,
+            description: $scope.data.Description,
+            categories: categories
+        });
+
+        console.log(festival);
+
+        /*$http.post('https://myconcert1.azurewebsites.net/api/Verify/Login', parameter).success(function (data, status, headers, config) {
+            var response = JSON.parse(data);
+            if(response.State == 0){
+                $scope.showMessage('error','Error','Credenciales Inválidas',2000);
+            }
+            else{
+                Security.initSession($scope.data.Username.toString(),response.State);
+            }
+        }).error(function (data, status, headers, config) {
+            console.log(data);
+        });*/
+
+    };
 
     $scope.changeCurrentCategory = function (pCurrentCategoryID) {
         $scope.currentCategory = pCurrentCategoryID;
@@ -228,8 +283,8 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
     };
 
     $scope.nextSong = function () {
-        if(($scope.data.SelectedSong.localIndex+1) < $scope.chefBand.songs.length){
-            $scope.data.SelectedSong = $scope.songs[$scope.chefBand.data.SelectedSong.localIndex+1];
+        if( parseInt($scope.data.SelectedSong.localIndex)+1 < $scope.chefBand.songs.length){
+            $scope.data.SelectedSong = $scope.chefBand.songs[parseInt($scope.data.SelectedSong.localIndex)+1];
             $scope.playSong();
         }
         else{
@@ -239,12 +294,12 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
     };
 
     $scope.prevSong = function () {
-        if(($scope.data.SelectedSong.localIndex-1) >= 0){
-            $scope.data.SelectedSong = $scope.songs[$scope.chefBand.data.SelectedSong.localIndex-1];
+        if(parseInt($scope.data.SelectedSong.localIndex)-1 >= 0){
+            $scope.data.SelectedSong = $scope.chefBand.songs[parseInt($scope.data.SelectedSong.localIndex)-1];
             $scope.playSong();
         }
         else{
-            $scope.data.SelectedSong = $scope.songs[$scope.chefBand.songs.length-1];
+            $scope.data.SelectedSong = $scope.chefBand.songs[$scope.chefBand.songs.length-1];
             $scope.playSong();
         }
     };
@@ -295,9 +350,12 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
             }
         }
         else if(pRightOrLeft == 1){
-            if($scope.currentStep + 1  >= 1)
+            if($scope.currentStep -1  >= 1)
                 $scope.currentStep-=1;
         }
+    };
+    $scope.toggleConfirmFestival = function () {
+        $scope.confirmFestival = !$scope.confirmFestival;
     };
     $scope.checkDoneCategory = function (pCategory) {
         if(pCategory.winningNumber != 0)
@@ -308,12 +366,6 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
     $scope.checkCategories = function () {
         var categories = $scope.selectedCartelera.categories;
         var done = true;
-        for(i=0; i< categories.length; i++){
-            if(categories[i].done == false){
-                Notification.error({message: 'Categoría '+categories[i].name +' pendiente.',title: 'Información incompleta', delay: 2000});
-                done = false;
-            }
-        }
         if($scope.data.Date != undefined && $scope.data.Date != "") {
             if ($scope.data.Place != undefined && $scope.data.Place != "") {
                 if ($scope.data.Description != undefined && $scope.data.Description != "") {
@@ -332,6 +384,13 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
         else{
             Notification.error({message: 'Ingrese una fecha para el evento.',title: 'Información incompleta', delay: 2000});
             done = false;
+        }
+
+        for(i=0; i< categories.length; i++){
+            if(categories[i].done == false){
+                Notification.error({message: 'Categoría '+categories[i].name +' pendiente.',title: 'Información incompleta', delay: 2000});
+                done = false;
+            }
         }
         return done;
     };
