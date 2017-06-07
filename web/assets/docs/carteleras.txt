@@ -1,0 +1,9 @@
+{"spGetAllBillboards":[
+    {"id":"50","name":"Speed Sound","location":"Cartago, Costa Rica","timeLeft":"5","image":"imgs/speed.png"},
+    {"id":"51","name":"Festival Imperial","location":"San José, Costa Rica","timeLeft":"9","image":"imgs/imperial.png"},
+    {"id":"52","name":"Jazz Fest","location":"Cartago, Costa Rica","timeLeft":"11","image":""},
+    {"id":"53","name":"Picnic Fest","location":"Heredia, Costa Rica","timeLeft":"19","image":"imgs/picnic.png"},
+    {"id":"54","name":"Jungle Jam","location":"Heredia, Costa Rica","timeLeft":"29","image":"imgs/jungle.png"},
+    {"id":"55","name":"Blues Xtreme Fest","location":"Alajuela, Costa Rica","timeLeft":"45","image":""}
+    ]
+}

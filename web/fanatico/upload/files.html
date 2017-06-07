@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html ng-app="mainModule"> <!-- id="ng-app" IE<8 -->
+
+<head>
+    <title>Adjuntar foto de perfil</title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+
+    <!-- Fix for old browsers -->
+    <script src="http://nervgh.github.io/js/es5-shim.min.js"></script>
+    <script src="http://nervgh.github.io/js/es5-sham.min.js"></script>
+    <script src="../../assets/js/jquery/jquery-1.11.1.min.js"></script>
+
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+    <!--<script src="../bower_components/angular/angular.js"></script>-->
+
+
+    <script src="../../assets/js/libs/angular.min.js"></script>
+    <script src="../../assets/js/upload/directives.js"></script>
+    <script src="../../assets/js/upload/controllers.js"></script>
+    <script src="../../assets/js/upload/angular-file-upload.min.js"></script>
+    <script src="../../assets/js/upload/console-sham.js"></script>
+
+    <script src="../../assets/js/libs/angular-notify.js"></script>
+    <script src="../../assets/js/libs/angular-cookies.js"></script>
+    <script src="../../assets/js/libs/angular-ui-notification.min.js"></script>
+    <link rel="stylesheet" href="../../assets/styles/angular-ui-notification.min.css" />
+    <script src="../../assets/js/angular-session.js"></script>
+
+</head>
+
+<!-- 1. nv-file-drop="" uploader="{Object}" options="{Object}" filters="{String}" -->
+<body ng-controller="AppController" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+
+<div class="container">
+
+
+    <div class="row">
+        <div class="col-md-9" style="margin-bottom: 40px">
+            <input type="file" nv-file-select="" uploader="uploader" ng-disabled="isOneFile"/>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th width="50%">Nombre</th>
+                    <th ng-show="uploader.isHTML5">Tamaño</th>
+                    <th ng-show="uploader.isHTML5">Progreso</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="item in uploader.queue">
+                    <td><strong>{{ item.file.name }}</strong></td>
+                    <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                    <td ng-show="uploader.isHTML5">
+                        <div class="progress" style="margin-bottom: 0;">
+                            <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                        <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                        <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                    </td>
+                    <td nowrap>
+                        <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                            <span class="glyphicon glyphicon-upload"></span> Upload
+                        </button>
+                        <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                        </button>
+                        <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove(); reset()">
+                            <span class="glyphicon glyphicon-trash"></span> Remove
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div>
+                <div>
+                    Progreso:
+                    <div class="progress" style="">
+                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
