@@ -33,9 +33,6 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
     };
 
 
-    /**
-     * Obtiene las bandas de un JSON
-     * */
     $scope.readBandas = function () {
         $scope.bandas = [];
         $http.get("../assets/docs/bandas.json").success(function (response) {
@@ -48,9 +45,7 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
             }
         });
     };
-    /**
-     * Obtiene las categorias de un JSON
-     * */
+
     $scope.readCategorias = function () {
         $scope.categorias = [];
         $http.get("../assets/docs/categorias.json").success(function (response) {
@@ -64,11 +59,9 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
             }
         });
     };
-    /** inicia con las bandas disponibles**/
+
     $scope.readBandas();
-    /**
-     * Selecciona si muestra Categorias o Bandas
-     * */
+
     $scope.selectEdit = function (selectedItem) {
         $scope.selectedEdit = selectedItem;
 
@@ -111,10 +104,7 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
 
 
     Security.verifySessionInit(1);
-    /*********** AUX FUNCTIONS **************/
     $scope.xExitSession = function () { Security.exitSession(); };
-
-
 }]);
 
 
