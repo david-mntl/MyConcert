@@ -39,6 +39,9 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
             var index = $scope.categoriasIncluidas.indexOf(foundItem );
             $scope.categoriasIncluidas[index].bandas.push(name);
         }
+
+
+        console.log(JSON.stringify($scope.categoriasIncluidas,null,""));
     };
 
     $scope.borrar = function (name) {
@@ -66,7 +69,7 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
             }
         }if(flag == 0){
             var catTemp = new Object();
-            catTemp.localID = localid;
+            //catTemp.localID = localid;
             catTemp.name = name;
             catTemp.bandas = [];
             $scope.categoriasIncluidas.push(catTemp);
@@ -75,16 +78,19 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
 
     $scope.readCategorias = function () {
         $scope.listaCategorias = [];
-        $http.get("../assets/docs/categorias.json").success(function (response) {
-            if (response.categorias.length > 0) {
-                for (j = 0; j < response.categorias.length; j++) {
-                    var categoria = new Object();
-                    categoria.name = response.categorias[j].name;
-                    categoria.localID = j;
-                    $scope.listaCategorias.push(categoria);
-                }
+        var url = 'https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllCategories/';
+        $http.get(url).success(function (data, status, headers, config) {
+            var response = JSON.parse(data);
+            for (j = 0; j < response.spGetAllCategories.length; j++) {
+                var category = new Object();
+                category.name = response.spGetAllCategories[j].Name;
+                category.localID  = response.spGetAllCategories[j].PK_ID_CATEGORY;
+                $scope.listaCategorias.push(category);
             }
+        }).error(function (data, status, headers, config) {
+            console.log("Error retrieving data from Spotify...");
         });
+
     };
 
     $scope.readCartelerasData = function() {
@@ -109,15 +115,21 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
 
     $scope.readBandas = function () {
         $scope.bandas = [];
-        $http.get("../assets/docs/bandas.json").success(function (response) {
-            if (response.bandas.length > 0) {
-                for (j = 0; j < response.bandas.length; j++) {
-                    var banda = new Object();
-                    banda.name = response.bandas[j].name;
-                    $scope.bandas.push(banda);
-                }
+        var url = 'https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllBands/';
+        $http.get(url).success(function (data, status, headers, config) {
+            var response = JSON.parse(data);
+            for (j = 0; j < response.spGetAllBands.length; j++) {
+                var bands = new Object();
+                bands.name = response.spGetAllBands[j].Name;
+                bands.id  = response.spGetAllBands[j].ID_Spotify;
+                bands.idBand  = response.spGetAllBands[j].PK_ID_BAND;
+                bands.status = response.spGetAllBands[j].BandState;
+                $scope.bandas.push(bands);
             }
+        }).error(function (data, status, headers, config) {
+            console.log("Error retrieving data from Spotify...");
         });
+
     };
 
     $scope.readCategoriesData = function(pCarteleraID) {
@@ -399,4 +411,9 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
     $scope.readBandas();
     $scope.readCategorias();
     $scope.readCartelerasData();
+
+    $scope.postArtista = function(){
+        console.log("Hola");
+        console.log(JSON.stringify($scope.categoriasIncluidas[0].bandas[0]));
+    }
 }]);

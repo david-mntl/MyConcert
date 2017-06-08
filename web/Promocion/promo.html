@@ -57,7 +57,11 @@
         <div class="contenedor1 ">
             <div ng-if = "selectedEdit == 'bandas'" class="contenedorBandas ">
                 <ul >
-                    <li ng-repeat="x in bandas"><button ng-click="selectBanda(x.name)" class="buttonBandas" type="button">{{x.name}}</button></li>
+                    <li ng-repeat="x in bandas">
+                        <button ng-click="selectBanda(x.name)" class="buttonBandas" type="button">{{x.name}}</button>
+                        <button ng-click="actionBand(1,x.idBand)" ng-if=" x.status != 1 " style=" font-size: 10px" type="button" class="btn btn-outline-primary"><span class="glyphicon glyphicon-ok"></span></button>
+                        <button ng-click="actionBand(0,x.idBand)" ng-if=" x.status == 1" style=" font-size: 10px" type="button" class="btn btn-outline-primary"><span class="glyphicon glyphicon-remove"></span></button>
+                    </li>
                 </ul>
             </div>
             <div ng-if = "selectedEdit == 'categorias'" class="contenedorCategorias">
@@ -86,11 +90,11 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="usr">Nombre:</label>
-                                <input  ng-model="inputVal" type="text" class="form-control" id="usr">
+                                <input  ng-model="inputCategory" type="text" class="form-control" id="usr">
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button ng-click="getCategoria()" type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
+                            <button ng-click="postCategorias()" type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
                         </div>
                     </div>
 
