@@ -52,7 +52,7 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
             console.log("Error retrieving data from Spotify...");
         });
     };
-    
+
     $scope.readBandas = function () {
         $scope.bandas = [];
         var url = 'https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllBands/';
@@ -191,6 +191,7 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
 
     Security.verifySessionInit(1);
     $scope.xExitSession = function () { Security.exitSession(); };
+
     $scope.actionBand = function (dato,id) {
         console.log(dato)
         if(dato == 1){
@@ -210,6 +211,7 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
 
 
     }
+
 }]);
 
 
