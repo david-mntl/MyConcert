@@ -3,8 +3,7 @@ var app = angular.module('mainModule', ['720kb.datepicker','spotify','angular-lo
 
 app.controller('cartelerasController',['$scope','$http','Security','$filter',"Notification","cartelerasModel",
                             function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
-    $scope.prueba = cartelerasModel.getVotos();
-    console.log($scope.prueba);
+
     $scope.currentCategory = -1;
     $scope.carteleras = [];
     $scope.selectedCartelera = [];

@@ -1,6 +1,7 @@
-var app = angular.module('mainModule', ['spotify','angular-loading-bar','ui-notification','ngSecurity']);
+var app = angular.module('mainModule', ['angular-loading-bar','ui-notification','ngSecurity']);
 
-app.controller('cartelerasController',['$scope','$http','$interval','Spotify','Notification','Security',function ($scope,$http,$interval,Spotify,Notification,Security) {
+app.controller('cartelerasController',['$scope','$http','$interval','Notification','Security','initModel',
+                            function ($scope,$http,$interval,Notification,Security,initModel){
     $scope.carteleras = [];
     $scope.festivales = [];
     $scope.currentCarteleras = [];

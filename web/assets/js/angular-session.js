@@ -60,7 +60,6 @@ security.factory("Security", function($cookies,Notification){
     facade.initSession = function (pUsername,pUserType) {
         $cookies.put('zUserName', pUsername,{path: '/'});
         $cookies.put('zUserType', pUserType,{path: '/'});
-
         var type = $cookies.get('zUserType',{path: '/'});
         if(type == 1)
             setTimeout(function(){location.href="promocion/promo.html"} , 10);
