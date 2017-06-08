@@ -1,62 +1,37 @@
-INSERT INTO user_state (Name) VALUES ('Deactivated')
-INSERT INTO user_state (Name) VALUES ('Activated')
 
-insert into country (name) values ('acosta obviamente')
-INSERT INTO COUNTRY (Name) Values ('Costa Rica')
+EXEC spRegisterUser 'user', '1', 'Costa Rica','100m Este de la Basílica de los Ángeles',1,'user@gmail.com','+506','photo.jpg','123','Me gusta la salsa',"12/12/12";
+EXEC spRegisterAdmin 'admin','sudo','admin@gmail.com','123';
 
-INSERT INTO UNIVERSITY (Name) Values ('Hogwarts')
-INSERT INTO UNIVERSITY (Name) Values ('TEC')
-INSERT INTO UNIVERSITY (Name) Values ('UCR')
+EXEC spRegisterCountry 'Panamá';
+EXEC spRegisterCountry 'Brazil';
+EXEC spRegisterCountry 'Costa Rica';
 
-INSERT INTO USER_STATE (Name) Values ('Active')
-INSERT INTO USER_STATE (Name) Values ('Deactive')
+EXEC spRegisterUniversity 'TEC';
+EXEC spRegisterUniversity 'UNA';
+EXEC spRegisterUniversity 'UCR';
 
-INSERT INTO BAND (Name) VALUES ('querubines')
-INSERT INTO BAND (Name) VALUES ('aluminitca')
-INSERT INTO BAND (Name) VALUES ('carbonica')
+EXEC spRegisterUserState 'Activate';
+EXEC spRegisterUserState 'Deactive';
 
-INSERT INTO MCUSER_ADMIN(Name, LastName, Email, MCPassword, FK_ID_State, RegistrationDate) 
-VALUES('Abrahamon','Arias','a@gmail.com','12345678',1,getDate())
+EXEC spRegisterEventState 'Activate';
+EXEC spRegisterEventState 'Deactive';
 
-INSERT INTO MCUSER(Name, LastName, FK_ID_Country, Residence, FK_ID_University, Email, Phone, Photo, RegistrationDate,MCPassword, PersonalDescription, BirthDate, FK_ID_State) 
-VALUES('Lenin','T', 1, 'PZ', 3, 'T@gmail.com', '+5061', 'lenins', getDate(),'abc', 'Como dedillo al ano', '02/02/99', 1)
+EXEC spRegisterPlace 'Cangrejal';
+EXEC spRegisterPlace 'Palmichal';
 
+EXEC spRegisterCategory 'Headliners';
 
-INSERT INTO COMMENT_LIST (FK_ID_BAND, FK_ID_COMMENT) VALUES (1,1)
-INSERT INTO COMMENT_LIST (FK_ID_BAND, FK_ID_COMMENT) VALUES (2,1)
-INSERT INTO COMMENT_LIST (FK_ID_BAND, FK_ID_COMMENT) VALUES (3,3)
-INSERT INTO COMMENT_LIST (FK_ID_BAND, FK_ID_COMMENT) VALUES (3,4)
-INSERT INTO COMMENT_LIST (FK_ID_BAND, FK_ID_COMMENT) VALUES (3,5)
+EXEC spRegisterBand 'Megadeath';
+EXEC spRegisterBand 'Carbonica';
+EXEC spRegisterBand 'Aluminica';
 
-INSERT INTO BAND_GENRE_LIST (FK_ID_Band, FK_ID_Genre) VALUES (1,1);
-INSERT INTO BAND_GENRE_LIST (FK_ID_Band, FK_ID_Genre) VALUES (1,2);
-INSERT INTO BAND_GENRE_LIST (FK_ID_Band, FK_ID_Genre) VALUES (1,3);
-INSERT INTO BAND_GENRE_LIST (FK_ID_Band, FK_ID_Genre) VALUES (1,4);
-INSERT INTO BAND_GENRE_LIST (FK_ID_Band, FK_ID_Genre) VALUES (1,5);
-INSERT INTO BAND_GENRE_LIST (FK_ID_Band, FK_ID_Genre) VALUES (1,6);
-INSERT INTO BAND_GENRE_LIST (FK_ID_Band, FK_ID_Genre) VALUES (1,7);
-INSERT INTO BAND_GENRE_LIST (FK_ID_Band, FK_ID_Genre) VALUES (1,8);
-
-INSERT INTO BAND_GENRE_LIST (FK_ID_Band, FK_ID_Genre) VALUES (2,2);
-INSERT INTO BAND_GENRE_LIST (FK_ID_Band, FK_ID_Genre) VALUES (3,5);
-
- 
-/*
-spRegisterCountry 'panama'
-spRegisterUniversity 'UNA'
-spRegisterUserState 'space'
-spRegisterEventState 'ocurriendo'
-spRegisterPlace 'paraiso'
-spRegisterCategory 'metal'
-spRegisterBand 'querubines'
-spRegisterGenre 'rockchata1'
-spRegisterGenre'heavy salsa1'
-spRegisterUser
-spRegisterUser 'name', 'last', 'panama','resi','TEC','@3','8','foto','pass','descp',"12/12/12"
-*/
+EXEC spRegisterGenre 'Rock';
+EXEC spRegisterGenre 'Salsa';
+EXEC spRegisterGenre 'Pop';
 
 
-insert into comment(comment, score, FK_ID_USER) values ('ok',5,1)
+
+
 
 
 INSERT INTO ARTIST (NAME) VALUES ('a')
