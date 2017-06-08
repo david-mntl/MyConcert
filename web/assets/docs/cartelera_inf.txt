@@ -1,0 +1,26 @@
+{
+"id":"50",
+"name":"Blue Sky Fest",
+"description":"Este festival es muy bonito.",
+"location":"Cartago,Costa Rica",
+"date":"6 Mayo 2017",
+"image":"imgs/blue.png",
+"categories": [
+        {"id":"90",
+        "name":"Headliners",
+        "bands": [
+            {"id":"1","name":"Red Hot Chilli Peppers","image":"https://i.scdn.co/image/5b2072e522bf3324019a8c2dc3db20116dff0b87","votes":"100","percentage":"50"},
+            {"id":"2","name":"Metallica","image":"https://i.scdn.co/image/5a06711d7fc48d5e0e3f9a3274ffed3f0af1bd91","votes":"50","percentage":"25"},
+            {"id":"3","name":"Against The Current","image":"https://i.scdn.co/image/1e41c6f91d722e8273b6d12c2025f1d7db504987","votes":"50","percentage":"25"}
+            ]
+        },
+        {"id":"91",
+        "name":"Otros",
+        "bands": [
+            {"id":"1","name":"Sonámbulo","image":"https://i.scdn.co/image/5b2072e522bf3324019a8c2dc3db20116dff0b87","votes":"25","percentage":"12.5"},
+            {"id":"2","name":"Pink Floyd","image":"https://i.scdn.co/image/5a06711d7fc48d5e0e3f9a3274ffed3f0af1bd91","votes":"25","percentage":"12.5"},
+            {"id":"3","name":"Led Zeppellin","image":"https://i.scdn.co/image/1e41c6f91d722e8273b6d12c2025f1d7db504987","votes":"150","percentage":"75"}
+            ]
+        }
+    ]
+}

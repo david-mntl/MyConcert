@@ -1,14 +1,11 @@
-var app = angular.module('mainModule', ['angular-loading-bar','angularNotify','ngCookies']);
+var app = angular.module('mainModule', ['angular-loading-bar','angularNotify','ngCookies','ngSecurity']);
 
-app.controller('mainController',['$scope','$http','$cookies','$window',function ($scope,$http,$cookies,$window) {
+app.controller('mainController',['$scope','$http','$cookies','$window','Security',function ($scope,$http,$cookies,$window,Security) {
 
     $scope.data = [];
 
     //http://myconcert1.azurewebsites.net/api/Country
     $scope.login = function () {
-        console.log($scope.data.Username);
-        console.log($scope.data.Password);
-
         if($scope.isValid($scope.data.Username)) {
             $scope.showMessage('error','Error','Por favor ingrese un nombre de usuario válido.',2000);
         }
@@ -23,42 +20,18 @@ app.controller('mainController',['$scope','$http','$cookies','$window',function 
                 Password: $scope.data.Password.toString()
             });
 
-            $http.post('http://myconcert1.azurewebsites.net/api/Verify/Login', parameter).success(function (data, status, headers, config) {
+            $http.post('https://myconcert1.azurewebsites.net/api/Verify/Login', parameter).success(function (data, status, headers, config) {
                 var response = JSON.parse(data);
                 if(response.State == 0){
                     $scope.showMessage('error','Error','Credenciales Inválidas',2000);
                 }
-                else if(response.State == 1){
-                    $cookies.put('zUserType',1);
-                    $cookies.put('zUserName',$scope.data.Username.toString()) ;
-                    $window.location.href = 'fanatico/init.html';
-                }
-                else if(response.State == 2){
-                    $cookies.put('zUserType',2);
-                    $cookies.put('zUserName',$scope.data.Username.toString()) ;
-                    $window.location.href = 'fanatico/init.html';
+                else{
+                    Security.initSession($scope.data.Username.toString(),response.State);
                 }
             }).error(function (data, status, headers, config) {
                 console.log(data);
             });
         }
-
-
-        /*$http.get('http://myconcert1.azurewebsites.net/api/Country').
-        success(function(data, status, headers, config) {
-            // this callback will be called asynchronously
-            // when the response is available
-
-            console.log("status " + status);
-            console.log("config " + data);
-
-        }).
-        error(function(data, status, headers, config) {
-            // called asynchronously if an error occurs
-            // or server returns response with an error status.
-            console.log(data);
-            console.log(status);
-        });*/
     };
 
 
@@ -77,5 +50,7 @@ app.controller('mainController',['$scope','$http','$cookies','$window',function 
         };
         $scope.$emit('notify', notify);
     };
+
+    Security.verifySessionInHome();
 
 }]);

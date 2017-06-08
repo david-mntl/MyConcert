@@ -1,10 +1,7 @@
-'use strict';
-
-
 angular
 
 
-    .module('app')
+    .module('secondApp', ['angularFileUpload'])
 
 
     // Angular File Upload module does not include this directive
@@ -24,7 +21,7 @@ angular
             },
             isImage: function(file) {
                 var type =  '|' + file.type.slice(file.type.lastIndexOf('/') + 1) + '|';
-                return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
+                return '|jpg|png|jpeg|gif|'.indexOf(type) !== -1;
             }
         };
 

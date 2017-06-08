@@ -71,10 +71,15 @@
     float: left;
 }
 .modal-band-image{
-    width: 130px;
-    height: 130px;
+    width: 250px;
+    height: 250px;
     display: inline-block;
+    background-image: url("../imgs/not_image_250x250.png");
     float: left;
+}
+.modal-band-image-inside{
+    width: 250px;
+    height: 250px;
 }
 .modal-info-box{
     padding-top: 25px;
@@ -132,7 +137,7 @@
 }
 
 .newcomment-box-inner{
-    width: 90%;
+    width: 92%;
     height: 210px;
     padding: 7px;
     background: #b9b9ba;

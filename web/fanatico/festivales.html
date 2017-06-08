@@ -5,38 +5,48 @@
     <title>MyConcert by X-Fest</title>
 
     <script src="../assets/js/libs/angular.min.js"></script>
-    <script src="../assets/js/libs/angular-spotify.js"></script>
     <script src="../assets/js/interface_festivales.js"></script>
-    <script src="../assets/js/loading-bar.js"></script>
+    <script src="../assets/js/libs/loading-bar.js"></script>
     <script src="../assets/js/libs/slides.js"></script>
 
+    <script src="../assets/js/libs/angular-notify.js"></script>
+    <script src="../assets/js/libs/angular-cookies.js"></script>
+    <script src="../assets/js/libs/angular-ui-notification.min.js"></script>
+    <link rel="stylesheet" href="../assets/styles/angular-ui-notification.min.css" />
+    <script src="../assets/js/angular-session.js"></script>
 
     <link href='../assets/styles/loading-bar.css' rel='stylesheet' />
     <link rel="stylesheet" href="../assets/styles/basicStyles.css" />
-    <link rel="stylesheet" href="../assets/styles/slides.css" />
     <link rel="stylesheet" href="../assets/styles/font-awesome.min.css" />
-
+    <link rel="stylesheet" href="../assets/styles/modalStyle.css" />
+    <script>
+        var counter = 0;
+        function textCounter( field, maxlimit, text) {
+            counter = maxlimit - text.value.length;
+            field.value = counter;
+        }
+    </script>
 </head>
 <body ng-controller="festivalesController" class="bodyall" >
     <div class="header">
-        <!-- <div class="header_left"></div> -->
+        <a href="../index.html" style="float: left"><img src="../assets/imgs/logo.png" style="width: 100px; height: 100px"/></a>
         <div class="header_center"><h1>MyConcert</h1></div>
-        <div class="header_right-profile">
-            <div class="log-reg"><i class="fa fa-user fa-2x"></i>Mi Perfil</div>
-            <div class="log-reg"><i class="fa fa-sign-out fa-2x"></i></div>
+        <div ng-if="userType == 2" class="header_right-profile" ng-include="'nav_profile.html'"></div>
+        <div ng-if="userType == 1" class="header_right-profile" style="height: 70px;"><div style="margin: auto">Dep. Promoción</div>
+            <a ng-click="xExitSession()" class="navigation-button" style="margin: auto; margin-top: 5px;">Salir</a>
         </div>
     </div>
 
     <div class="bodycont">
-        <div class="navigation-menu">
-            <a href="#" class="navigation-button">Carteleras</a>
-            <a href="#" class="navigation-button">Festivales</a>
-            <a href="#" class="navigation-button">Mi Perfil</a>
-        </div>
+
+        <div ng-include="'nav_menu.html'"></div>
+        <div ng-include="'festival_modal.html'"></div>
+        <div style="width:1000px" ng-include="'band_modal.html'"></div>
+
 
         <div class="body-carteleras" >
             <!--<div class="box-cartelera-monthTitle">{{festival.name}}</div>-->
-            <div class="box-cartelera" ng-repeat="festival in festivales">
+            <div class="box-cartelera" ng-repeat="festival in festivales" style="float:left;">
                 <div class="box-cartelera-title">{{festival.name}}</div>
                 <div class="box-cartelera-image" ><image ng-src={{festival.image}}></image></div>
                 <div class="box-cartelera-info">
@@ -49,11 +59,11 @@
                         <div class="box-cartelera-info-text">{{festival.date}}</div>
                     </div>
                     <div class="box-cartelera-info-icon">
-                        <i class="fa fa-map-marker fa-2x"></i>
+                        <i style="margin-left: 4px" class="fa fa-map-marker fa-2x"></i>
                         <div class="box-cartelera-info-text">{{festival.place}}</div>
                     </div>
                 </div>
-                <a href="#" class="box-festival-button">Ver más</a>
+                <a ng-click="showFestivalModal(festival.localIndex)" class="box-festival-button">Ver más</a>
             </div>
         </div>
     </div>

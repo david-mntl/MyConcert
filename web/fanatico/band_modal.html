@@ -8,8 +8,8 @@
             <i ng-repeat="star in completeStars" class="fa fa-star fa-2x" style="color: yellow"></i><i ng-repeat="star in blankStars" class="fa fa-star-o fa-2x" style="color: yellow"></i>
         </div>
         <div class="modal-body">
-            <div class="modal-band-image" ><image style="width: 250px; height: 250px" ng-show="selectedBand.image" ng-src={{selectedBand.image}}></image></div>
-            <div class="modal-band-image" ><image style="width: 250px; height: 250px" ng-show="!selectedBand.image" src="../assets/imgs/not_image.png"></image></div>
+            <div class="modal-band-image" ><image class="modal-band-image-inside" ng-if="selectedBand.image != ''" ng-src={{selectedBand.image}}></image></div>
+            <!--<div class="modal-band-image" ><image style="width: 250px; height: 250px" ng-show="selectedBand.image" ng-src={{selectedBand.image}}></image></div>-->
             <div style="margin-left: 15px" class="modal-info-box">
                 <div style="padding: 5px" class="box-cartelera-info-icon">
                     <i class="fa fa-line-chart fa-2x"></i>
@@ -27,10 +27,6 @@
                 <div class="modal-members-holder">
                     <div class="modal-info-text-member" ng-repeat="member in selectedBand.members">{{member.name}}</div>
                 </div>
-                <!--<div style="padding: 5px" class="box-cartelera-info-icon">
-                    <i class="fa fa-map-marker fa-3x"></i>
-                    <div class="modal-info-text">{{selectedFestival.place}}</div>
-                </div>-->
             </div>
 
             <div style="margin-left: 15px" class="modal-info-box">
@@ -41,6 +37,22 @@
                 </div>
                 <div class="modal-members-holder">
                     <div class="modal-info-text-member" ng-repeat="gender in selectedBand.genders">{{gender.name}}</div>
+                </div>
+                <div style="margin-left: 5px" class="music-player">
+                    <i style="float: left" class="fa fa-volume-up fa-2x"></i>
+                    <div style="float: left" class="modal-info-text">Música</div>
+                    <br>
+                    <br>
+                    <div class="music-player-controlers-box">
+                        <div class="music-player-controler" ng-click="prevSong()"><i class="fa fa-step-backward fa-1x"></i></div>
+                        <div class="music-player-controler" ng-if="!playingSong" ng-click="playSong()"><i class="fa fa-play fa-1x"></i></div>
+                        <div class="music-player-controler" ng-if="playingSong" ng-click="pauseSong()"><i class="fa fa-pause fa-1x"></i></div>
+                        <div class="music-player-controler" ng-click="nextSong()"><i class="fa fa-step-forward fa-1x"></i></div>
+                    </div>
+                    <select class="pInput pIBlue" style="width: 300px; margin-top: 5px;" ng-model="data.SelectedSong" ng-options="song.name for song in songs track by song.name">
+                        <option value="">Canción</option>
+                    </select>
+
                 </div>
             </div>
 
@@ -68,7 +80,7 @@
                     </div>
                     <!--<textarea ng-model="currentComment.data"></textarea>-->
                     <form>
-                        <textarea  ng-model="currentComment.data" maxlength="300" onblur="textCounter(this.form.counter_txt,300,this.form.message);" onkeyup="textCounter(this.form.counter_txt,300,this.form.message);" style="width: 100%; height: 90px; resize:none;" name="message" rows="1" cols="15" ></textarea>
+                        <textarea  ng-model="currentComment.data" maxlength="300" onblur="textCounter(this.form.counter_txt,300,this.form.message);" onkeyup="textCounter(this.form.counter_txt,300,this.form.message);" style="width: 98%; height: 90px; resize:none;" name="message" rows="1" cols="15" ></textarea>
                         <input style="float: left" onblur="textCounter(this.form.counter_txt,300,this.form.message);" disabled  onfocus="this.blur();" tabindex="999" maxlength="3" size="3" value="300" name="counter_txt">
                     </form>
                     <a ng-click="sendNewComment()" style="float: right" class="box-festival-button">Enviar</a>

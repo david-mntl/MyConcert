@@ -31,10 +31,8 @@ BEGIN
 		SET @r =1;
 	END IF(@b=1) BEGIN
 		SET @r =2;
-	END ELSE BEGIN
-		SET @r =0;
 	END
-	SELECT @r AS 'Status'
+	SELECT @r AS 'State'
 END
 GO
 
@@ -103,7 +101,7 @@ BEGIN
 		FK_ID_University=@pUni_ID, Phone=@pPhone, Photo=@pPhoto, MCPassword=@pPass, 
 		PersonalDescription=@pDescription, Birthdate=@pBirthdate
 	WHERE Email=@pEmail; 
-	SELECT 'ok' AS 'Status';
+	SELECT 'ok' AS 'State';
 END
 GO
 
@@ -132,7 +130,7 @@ BEGIN
 	SET @GID = (SELECT PK_ID_GENRE FROM GENRE WHERE Name=@pGenre);
 	
 	INSERT INTO USER_GENRE_LIST (FK_ID_User, FK_ID_Genre) VALUES (@pUserID, @GID);
-	SELECT 'ok' as 'Status';
+	SELECT 'ok' as 'State';
 END
 GO
 
@@ -167,9 +165,9 @@ BEGIN
 		UPDATE MCUSER_ADMIN SET Name = @pName WHERE Email = @pEmail;
 		UPDATE MCUSER_ADMIN SET LastName = @pLastname WHERE Email = @pPass;
 		UPDATE MCUSER_ADMIN SET MCPassword = @pPass	WHERE Email = @pPass;
-		SELECT 'ok' AS 'Status';
+		SELECT 'ok' AS 'State';
 	END ELSE BEGIN
-		SELECT 'No user email' AS 'Status';
+		SELECT 'No user email' AS 'State';
 	END
 END 
 GO
@@ -272,7 +270,7 @@ BEGIN
 	IF(@c1=0 AND @c2=0)BEGIN
 		UPDATE BAND SET BAND.BandState=0 WHERE BAND.PK_ID_BAND=@ID;
 	END ELSE BEGIN
-		SELECT 'error' as 'Error';
+		SELECT 'error' as 'Status';
 	END
 END
 GO
@@ -390,7 +388,7 @@ BEGIN
 	INSERT INTO BAND_ARTIST(FK_ID_Band, FK_ID_Artist)
 	VALUES (@pBandID, @ID);
 	
-	SELECT 'ok' as 'Status';
+	SELECT 'ok' as 'State';
 
 END
 GO
@@ -413,7 +411,7 @@ BEGIN
 	END 
 	INSERT INTO BAND_GENRE_LIST(FK_ID_Band, FK_ID_Genre)
 	VALUES (@pBandID, @ID);
-	SELECT 'ok' AS 'Status'
+	SELECT 'ok' AS 'State'
 END
 GO
 
@@ -435,7 +433,7 @@ BEGIN
 	INSERT INTO SONG_LIST(FK_ID_Band, FK_ID_Song)
 	VALUES (@pBandID, @ID);
 
-	SELECT 'ok' AS 'Status'
+	SELECT 'ok' AS 'State'
 END
 GO
 
@@ -506,7 +504,7 @@ BEGIN
 	IF (@c=1) BEGIN
 		SELECT *,'2' FROM MCUSER WHERE Email=@ID;
 	END ELSE BEGIN
-		SELECT 'No user' as 'Status';
+		SELECT 'No user' as 'State';
 	END
 	
 END
@@ -612,7 +610,7 @@ BEGIN
 		INSERT INTO FESTIVAL(FK_ID_Billboard, FestivalStart, FestivalEnd, FK_ID_EventState, FK_ID_Ubication,FestivalDescription)
 		VALUES (@pBillboardID, @pStartDate, @pEndDate, 1,SCOPE_IDENTITY(),@pDescription)
 	END ELSE BEGIN
-		SELECT 'error' AS 'Status'
+		SELECT 'error' AS 'State'
 	END
 END
 GO

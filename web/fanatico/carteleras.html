@@ -7,42 +7,57 @@
     <script src="../assets/js/libs/angular.min.js"></script>
     <script src="../assets/js/libs/angular-spotify.js"></script>
     <script src="../assets/js/interface_carteleras.js"></script>
-    <script src="../assets/js/loading-bar.js"></script>
-    <script src="../assets/js/libs/slides.js"></script>
-    <script src="../assets/js/libs/angular-cookies.js"></script>
+    <script src="../assets/js/models/carteleras_model.js"></script>
+    <script src="../assets/js/libs/loading-bar.js"></script>
+    <script src="../assets/js/libs/angular-datepicker.js"></script>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+    <script src="../assets/js/libs/angular-notify.js"></script>
+    <script src="../assets/js/libs/angular-cookies.js"></script>
+    <script src="../assets/js/libs/angular-ui-notification.min.js"></script>
+    <link rel="stylesheet" href="../assets/styles/angular-ui-notification.min.css" />
+    <script src="../assets/js/angular-session.js"></script>
+
     <link href='../assets/styles/loading-bar.css' rel='stylesheet' />
     <link rel="stylesheet" href="../assets/styles/basicStyles.css" />
-    <link rel="stylesheet" href="../assets/styles/slides.css" />
+
+    <link rel="stylesheet" href="../assets/styles/add_Cartelera.css" />
+    <link rel="stylesheet" href="../assets/styles/angular-datepicker.css" />
+    <link rel="stylesheet" href="../assets/styles/jquery-ui.css" />
+    <link rel="stylesheet" href="../assets/styles/zModalStyle.css" />
     <link rel="stylesheet" href="../assets/styles/font-awesome.min.css" />
+
+    <script>
+        var counter = 0;
+        function textCounter( field, maxlimit, text) {
+            counter = maxlimit - text.value.length;
+            field.value = counter;
+        }
+    </script>
 
 </head>
 <body ng-controller="cartelerasController" class="bodyall" >
     <div class="header">
-        <!-- <div class="header_left"></div> -->
+        <a href="../index.html" style="float: left"><img src="../assets/imgs/logo.png" style="width: 100px; height: 100px"/></a>
         <div class="header_center"><h1>MyConcert</h1></div>
-        <div class="header_right-profile">
-            <div class="log-reg"><i class="fa fa-user fa-2x"></i>Mi Perfil</div>
-            <div class="log-reg"><i class="fa fa-sign-out fa-2x"></i></div>
+        <div ng-if="userType == 2" class="header_right-profile" ng-include="'nav_profile.html'"></div>
+        <div ng-if="userType == 1" class="header_right-profile" style="height: 70px;"><div style="margin: auto">Dep. Promoción</div>
+            <a ng-click="xExitSession()" class="navigation-button" style="margin: auto; margin-top: 5px;">Salir</a>
         </div>
     </div>
 
     <div class="bodycont">
-        <div class="navigation-menu">
-            <a href="#" class="navigation-button">Carteleras</a>
-            <a href="#" class="navigation-button">Festivales</a>
-            <a href="#" class="navigation-button">Mi Perfil</a>
-            <a data-toggle="modal" data-target="#addCartelera" style="width: 130px; float: right; margin-right:3px " href="#" class="navigation-button">Agregar Cartelera</a>
-        </div>
+        <div ng-include="'nav_menu.html'"></div>
+        <a ng-if="userType == 1" data-toggle="modal" data-target="#addCartelera" style="width: 130px; float: right; margin-right:3px " href="#" class="navigation-button">Agregar Cartelera</a>
+
+        <div ng-include="'createfestival_modal.html'"></div>
 
         <div class="body-carteleras">
             <div class="box-cartelera" ng-repeat="cartelera in carteleras">
                 <div class="box-cartelera-title">{{cartelera.name}}</div>
-
                 <div class="box-cartelera-image" ><image ng-src={{cartelera.image}}></image></div>
                 <div class="box-cartelera-info">
                     <div class="box-cartelera-info-icon">
@@ -51,11 +66,11 @@
                     </div>
                     <div class="box-cartelera-info-icon">
                         <i class="fa fa-clock-o fa-2x"></i>
-                        <div class="box-cartelera-info-text">{{cartelera.leftTime}}</div>
+                        <div class="box-cartelera-info-text">{{cartelera.leftTime}} días restantes</div>
                     </div>
                 </div>
                 <a ng-if="userType == 2" href="#" class="box-cartelera-button">Votar</a>
-                <a ng-if="userType == 1" href="#" class="box-cartelera-button" style="width: 120px ">Crear festival</a>
+                <a ng-if="userType == 1" ng-click="showCreateFestivalModal(cartelera.localIndex)" class="box-cartelera-button" style="width: 120px ">Crear festival</a>
                 <a ng-if="userType == 1" href="#" class="box-cartelera-button">Cancelar</a>
             </div>
         </div>
