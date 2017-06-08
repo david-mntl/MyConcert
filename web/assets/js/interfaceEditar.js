@@ -55,6 +55,7 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
     /**
      * Obtiene las bandas de un JSON
      * */
+
     $scope.readBandas = function () {
         $scope.bandas = [];
         var url = 'https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllBands/';
@@ -75,9 +76,7 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
             console.log("Error retrieving data from Spotify...");
         });
     };
-    /**
-     * Obtiene las categorias de un JSON
-     * */
+
     $scope.readCategorias = function () {
 
         $scope.categorias = [];
@@ -109,11 +108,9 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
 
 
     };
-    /** inicia con las bandas disponibles**/
+
     $scope.readBandas();
-    /**
-     * Selecciona si muestra Categorias o Bandas
-     * */
+
     $scope.selectEdit = function (selectedItem) {
         $scope.selectedEdit = selectedItem;
 
@@ -196,8 +193,8 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
 
 
     Security.verifySessionInit(1);
-    /*********** AUX FUNCTIONS **************/
     $scope.xExitSession = function () { Security.exitSession(); };
+
 
     $scope.actionBand = function (dato,id) {
         console.log(dato)
@@ -218,6 +215,7 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
 
 
     }
+
 
 }]);
 

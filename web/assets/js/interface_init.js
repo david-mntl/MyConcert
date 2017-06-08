@@ -33,17 +33,19 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
     });
     
     $scope.readCartelerasData = function() {
-        $http.get("../assets/docs/carteleras.txt").success(function (response) {
-            if (response.carteleras.length > 0) {
-                for (j = 0; j < response.carteleras.length; j++) {
+        //$http.get("../assets/docs/carteleras.txt").success(function (response) {
+        $http.get("https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllBillboards/").success(function (response) {
+            response = JSON.parse(response);
+            if (response.spGetAllBillboards.length > 0) {
+                for (j = 0; j < response.spGetAllBillboards.length; j++) {
                     var cartelera = new Object();
 
                     cartelera.localIndex = j;
-                    cartelera.id = response.carteleras[j].id;
-                    cartelera.name = response.carteleras[j].name;
-                    cartelera.location = response.carteleras[j].location;
-                    cartelera.leftTime = response.carteleras[j].timeLeft;
-                    cartelera.image = "../assets/"+response.carteleras[j].image;
+                    cartelera.id = response.spGetAllBillboards[j].id;
+                    cartelera.name = response.spGetAllBillboards[j].name;
+                    cartelera.location = response.spGetAllBillboards[j].location;
+                    cartelera.leftTime = response.spGetAllBillboards[j].timeLeft;
+                    cartelera.image = "../assets/"+response.spGetAllBillboards[j].image;
                     $scope.carteleras.push(cartelera);
                 }
             }
@@ -52,22 +54,22 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
     };
 
     $scope.readFestivalesData = function() {
-        //$http.get("https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllFestivals/").success(function (response) {
-        $http.get("../assets/docs/festivales.txt").success(function (response) {
-            console.log(response);
+        $http.get("https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllFestivals/").success(function (response) {
+            //$http.get("../assets/docs/festivales.txt").success(function (response) {
+            response = JSON.parse(response);
 
-            if (response.festivales.length > 0) {
-                for (j = 0; j < response.festivales.length; j++) {
+            if (response.spGetAllFestivals.length > 0) {
+                for (j = 0; j < response.spGetAllFestivals.length; j++) {
                     var festival = new Object();
 
                     festival.localIndex = j;
-                    festival.id = response.festivales[j].id;
-                    festival.name = response.festivales[j].name;
-                    festival.description = response.festivales[j].description;
-                    festival.location = response.festivales[j].location;
-                    festival.date = response.festivales[j].date;
-                    festival.place = response.festivales[j].place;
-                    festival.image = "../assets/"+response.festivales[j].image;
+                    festival.id = response.spGetAllFestivals[j].id;
+                    festival.name = response.spGetAllFestivals[j].name;
+                    festival.description = response.spGetAllFestivals[j].description;
+                    festival.location = response.spGetAllFestivals[j].location;
+                    festival.date = response.spGetAllFestivals[j].date;
+                    festival.place = response.spGetAllFestivals[j].place;
+                    festival.image = "../assets/"+response.spGetAllFestivals[j].image;
                     $scope.festivales.push(festival);
                 }
             }
@@ -75,13 +77,11 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
         });
     };
 
-    $scope.readCategoriesData = function() {
+    $scope.readCategoriesData = function(pFestivalID) {
         //$http.get("../assets/docs/festival2.txt").success(function (response) {
-        $http.get("https://myconcert1.azurewebsites.net/api/Main/GET/FestivalInfo/1").success(function (responseStr) {
+        $http.get("https://myconcert1.azurewebsites.net/api/Main/GET/FestivalInfo/"+pFestivalID).success(function (responseStr) {
 
             var response = JSON.parse(responseStr);
-            console.log(response);
-
 
             $scope.categories = [];
             $scope.currentFestivalCategory = -1;
@@ -100,7 +100,7 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
                         band.spotifyID = response.categories[j].bands[k].spotifyID;
                         band.rating = response.categories[j].bands[k].rating;
                         band.members = response.categories[j].bands[k].members;
-                        band.genders = response.categories[j].bands[k].genders;
+                        band.genders = response.categories[j].bands[k].genres;
                         band.comments = response.categories[j].bands[k].comments;
                         band.image = response.categories[j].bands[k].image;
                         band.followers = response.categories[j].bands[k].followers;
@@ -173,7 +173,6 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
     };
 
     $scope.openVoteWindow = function (IDCartelera) {
-        console.log("ID",IDCartelera);
         window.location = "vote.html#?IDCartelera="+IDCartelera;
     };
 
@@ -187,7 +186,7 @@ app.controller('cartelerasController',['$scope','$http','$interval','Spotify','N
     $scope.showFestivalModal = function (pFestivalIndex) {
         $scope.selectedFestival = $scope.festivales[pFestivalIndex];
         $scope.visibleFestivalModal = true;
-        $scope.readCategoriesData();
+        $scope.readCategoriesData($scope.selectedFestival.id);
 
     };
 
