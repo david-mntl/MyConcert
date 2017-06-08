@@ -63,7 +63,7 @@ security.factory("Security", function($cookies,Notification){
 
         var type = $cookies.get('zUserType',{path: '/'});
         if(type == 1)
-            setTimeout(function(){location.href="../../promocion/promo.html"} , 10);
+            setTimeout(function(){location.href="promocion/promo.html"} , 10);
         else if(type == 2)
             setTimeout(function(){location.href="fanatico/init.html"} , 10);
     };
