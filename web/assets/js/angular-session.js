@@ -28,7 +28,7 @@ security.factory("Security", function($cookies,Notification){
         if(user != undefined && user != "expired"){
             Notification.success({message:"Sesión iniciada como:"+user, title: 'Iniciando sesión...'});
             if(type == 1)
-                setTimeout(function(){location.href="../../promocion/promo.html"} , 10);
+                setTimeout(function(){location.href="promocion/promo.html"} , 10);
             else if(type == 2)
                 setTimeout(function(){location.href="fanatico/init.html"} , 10);
         }
@@ -40,7 +40,7 @@ security.factory("Security", function($cookies,Notification){
         var type = $cookies.get('zUserType',{path: '/'});
         if(user != undefined && user != "expired"){
             if(type == 1 && pLocation ==2)
-                setTimeout(function(){location.href="../../promocion/promo.html"} , 10);
+                setTimeout(function(){location.href="../promocion/promo.html"} , 10);
             else if(type == 2 && pLocation ==1)
                 setTimeout(function(){location.href="../fanatico/init.html"} , 10);
         }

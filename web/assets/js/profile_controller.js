@@ -57,40 +57,62 @@ app.controller('mainController',['$scope','$http','$window','Security','Notifica
     };
 
     $scope.loadUserInfo = function () {
+        var userType = Security.getCurrentUserType();
+
         var parameter = JSON.stringify({
             Email: Security.getCurrentUserEmail()
         });
 
-        $scope.data.University = [];
-        $scope.data.Genre = [];
-        $http.post('https://myconcert1.azurewebsites.net/api/GET/userInfo', parameter).success(function (data, status, headers, config) {
-            var response = JSON.parse(data);
+        if(userType == 1){
+            $http.post('https://myconcert1.azurewebsites.net/api/GET/adminInfo', parameter).success(function (data, status, headers, config) {
+                console.log(data);
+                var response = JSON.parse(data);
 
-            $scope.choosedGenres = [];
-            $scope.data.Name = response.Name;
-            $scope.data.LastName = response.LastName;
-            $scope.data.Phone = response.Phone;
-            $scope.data.Birthdate = response.Birthdate;
-            $scope.data.University.id = response.FK_ID_University;
-            $scope.data.Country.id = response.FK_ID_Country;
+                $scope.choosedGenres = [];
+                $scope.data.Name = response.Name;
+                $scope.data.LastName = response.LastName;
+                $scope.data.Email = response.Email;
+                $scope.data.Password = response.Password;
+                console.log(response);
+                $scope.loading = false;
 
-            $scope.data.Email = response.Email;
-            $scope.data.Place = response.Residence;
-            $scope.data.Description = response.PersonalDescription;
-            /*$scope.data.GenresList = "";*/
-            if(response.genres.length > 0){
-                $scope.data.GenresList = response.genres[0].Name;
-                for(i=1; i < response.genres.length; i++){
-                    $scope.data.GenresList+= ","+response.genres[i].Name;
-                    $scope.choosedGenres.push(response.genres[i].Name);
+            }).error(function (data, status, headers, config) {
+                console.log(data);
+            });
+        }
+        else if(userType == 2){
+            $scope.data.University = [];
+            $scope.data.Genre = [];
+            $http.post('https://myconcert1.azurewebsites.net/api/GET/userInfo', parameter).success(function (data, status, headers, config) {
+                var response = JSON.parse(data);
+
+                $scope.choosedGenres = [];
+                $scope.data.Name = response.Name;
+                $scope.data.LastName = response.LastName;
+                $scope.data.Phone = response.Phone;
+                $scope.data.Birthdate = response.Birthdate;
+                $scope.data.University.id = response.FK_ID_University;
+                $scope.data.Country.id = response.FK_ID_Country;
+
+                $scope.data.Email = response.Email;
+                $scope.data.Place = response.Residence;
+                $scope.data.Description = response.PersonalDescription;
+                /*$scope.data.GenresList = "";*/
+                if(response.genres.length > 0){
+                    $scope.data.GenresList = response.genres[0].Name;
+                    for(i=1; i < response.genres.length; i++){
+                        $scope.data.GenresList+= ","+response.genres[i].Name;
+                        $scope.choosedGenres.push(response.genres[i].Name);
+                    }
                 }
-            }
 
-            $scope.loading = false;
+                $scope.loading = false;
 
-        }).error(function (data, status, headers, config) {
-            console.log(data);
-        });
+            }).error(function (data, status, headers, config) {
+                console.log(data);
+            });
+        }
+
     };
 
     /********* AUX FUNCTIONS **********/
@@ -141,10 +163,10 @@ app.controller('mainController',['$scope','$http','$window','Security','Notifica
                             });
 
                             $http.post('https://myconcert1.azurewebsites.net/api/Funcs/EditPerfilAdmin', parameter).success(function (data, status, headers, config) {
-                                if (data == "error") {
+                                if (data.State == "error") {
                                     Notification.error({message: 'Ha ocurrido un error. Por favor inténtelo más tarde.',delay: 2000});
                                 }
-                                else {
+                                else if(data.State == "ok") {
                                     Notification.success({message: 'Información actualizada.', delay: 2000});
                                     $scope.editingProfile = false;
                                 }
@@ -178,7 +200,7 @@ app.controller('mainController',['$scope','$http','$window','Security','Notifica
                 var parameter = JSON.stringify({
                     name: $scope.data.Name.toString(),
                     lastName: $scope.data.LastName.toString(),
-                    country: $scope.data.Country.name.toString(),
+                    country: $scope.data.Country.id.toString(),
                     residence: $scope.data.Place.toString(),
                     uniID: $scope.data.University.id.toString(),
                     email: $scope.data.Email.toString(),
@@ -192,10 +214,12 @@ app.controller('mainController',['$scope','$http','$window','Security','Notifica
                 });
 
                 $http.post('https://myconcert1.azurewebsites.net/api/Funcs/EditPerfil', parameter).success(function (data, status, headers, config) {
-                    if (data == "error") {
-                        Notification.error({message: 'Ha ocurrido un error. Por favor inténtelo más tarde.', delay: 2000});
+                    console.log(data);
+
+                    if (data.State == "error") {
+                        Notification.error({message: 'Ha ocurrido un error. Por favor inténtelo más tarde.',delay: 2000});
                     }
-                    else {
+                    else if(data.State == "ok") {
                         Notification.success({message: 'Información actualizada.', delay: 2000});
                         $scope.editingProfile = false;
                     }

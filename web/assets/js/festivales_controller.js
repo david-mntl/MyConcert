@@ -2,11 +2,12 @@ var app = angular.module('mainModule', ['angular-loading-bar','ngSecurity']);
 
 
 app.controller('festivalesController',['$scope','$http','Security',function ($scope,$http,Security) {
-    $scope.festivales = [];
 
+    $scope.festivales = [];
     $scope.visibleFestivalModal = false;
     $scope.visibleBandModal = false;
 
+    $scope.userType =  Security.getCurrentUserType();
     $scope.selectedFestival = [];
     $scope.currentFestivalCategory = -1;
     $scope.categories = [];

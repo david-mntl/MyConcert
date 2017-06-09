@@ -63,7 +63,8 @@
                         <div class="box-cartelera-info-text">{{festival.place}}</div>
                     </div>
                 </div>
-                <a ng-click="showFestivalModal(festival.localIndex)" class="box-festival-button">Ver más</a>
+                <div ng-click="showFestivalModal(festival.localIndex)" class="box-festival-button">Ver más</div>
+                <div ng-click="cancelFest"ng-if="userType == 1" href="#" class="box-cartelera-button">Cancelar</div>
             </div>
         </div>
     </div>

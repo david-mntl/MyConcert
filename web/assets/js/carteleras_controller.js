@@ -96,9 +96,9 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
     };
 
     $scope.readCartelerasData = function() {
-        $http.get("../assets/docs/carteleras.txt").success(function (response) {
-        //$http.get("https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllBillboards/").success(function (response) {
-            //response = JSON.parse(response);
+        //$http.get("../assets/docs/carteleras.txt").success(function (response) {
+        $http.get("https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllBillboards/").success(function (response) {
+            response = JSON.parse(response);
             if (response.spGetAllBillboards.length > 0) {
                 for (j = 0; j < response.spGetAllBillboards.length; j++) {
                     var cartelera = new Object();

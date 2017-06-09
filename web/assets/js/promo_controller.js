@@ -131,8 +131,7 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
             $scope.$apply(function(){
                 for(i = 0; i < $scope.bandas.length;i++){
                     if($scope.bandas[i].name == nameBanda){
-                        console.log($scope.bandas[i].status);
-                            $scope.currentArtist.status = $scope.bandas[i].status;
+                        $scope.currentArtist.status = $scope.bandas[i].status;
                         $scope.getArtistInformation($scope.bandas[i].id);
                     }
 
