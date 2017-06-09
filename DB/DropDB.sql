@@ -181,3 +181,11 @@ DROP PROCEDURE spVerifyUserState;
 DROP PROCEDURE spGetChefRecommendation;
 DROP PROCEDURE spAddCategoryToBillboard;
 DROP PROCEDURE spAddBillboardPhoto;
+DROP PROCEDURE spGetAdminInfo;
+DROP PROCEDURE spDeactivateBillboard;
+DROP PROCEDURE spDeactivateFestival;
+
+
+
+
+

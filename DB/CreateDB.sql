@@ -19,7 +19,7 @@ CREATE TABLE MCUSER(
 	Phone VARCHAR(15) NOT NULL,
 	Photo VARCHAR(30),
 	RegistrationDate date NOT NULL,
-	MCPassword varchar(8) NOT NULL,
+	MCPassword varchar(64) NOT NULL,
 	PersonalDescription varchar(300) NOT NULL,
 	Birthdate date,
 	FK_ID_State int
@@ -41,7 +41,7 @@ CREATE TABLE MCUSER_ADMIN(
 	Name VARCHAR(30)NOT NULL,
 	LastName VARCHAR(30) NOT NULL,
 	Email VARCHAR(50) NOT NULL,
-	MCpassword VARCHAR(8) NOT NULL,
+	MCPassword VARCHAR(64) NOT NULL,
 	FK_ID_State INT NOT NULL,
 	RegistrationDate DATE NOT NULL
 );
@@ -98,7 +98,7 @@ CREATE TABLE BAND(
 	Calification FLOAT,
 	N_Calification INT,
 	FK_ID_GenreList INT,
-	ID_Spotify VARCHAR(20),
+	ID_Spotify VARCHAR(30),
 	BandState BIT 
 );
 

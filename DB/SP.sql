@@ -18,7 +18,7 @@ GO
 /************************************************/
 CREATE PROCEDURE spLogin
 	@pEmail VARCHAR(30),
-	@pPass VARCHAR(8)
+	@pPass VARCHAR(64)
 AS
 BEGIN
 	DECLARE @a INT;
@@ -28,9 +28,13 @@ BEGIN
 	SET @a = (SELECT COUNT(*) FROM MCUSER_ADMIN WHERE ( Email=@pEmail AND MCPassword=@pPass));
 	SET @b = (SELECT COUNT(*) FROM MCUSER WHERE ( Email=@pEmail AND MCPassword=@pPass));
 	IF(@a=1) BEGIN
-		SET @r =1;
+		SET @r =1;	--Admin
 	END IF(@b=1) BEGIN
-		SET @r =2;
+		IF( (SELECT FK_ID_State FROM MCUSER WHERE Email=@pEmail)=1) BEGIN
+			SET @r =2;	--User
+		END ELSE BEGIN
+			SET @r =3;	--User blocked
+		END
 	END
 	SELECT @r AS 'State'
 END
@@ -46,7 +50,7 @@ CREATE PROCEDURE spRegisterUser
 	@pEmail VARCHAR(50),
 	@pPhone VARCHAR(15),
 	@pPhoto VARCHAR(30),
-	@pPass VARCHAR(8),
+	@pPass VARCHAR(64),
 	@pDescription VARCHAR(300),
 	@pBirthdate DATETIME	
 AS
@@ -64,7 +68,7 @@ BEGIN
 		SET @id = (SELECT PK_ID_COUNTRY FROM COUNTRY WHERE Name=@pCountry);
 
 		INSERT INTO MCUSER(Name,LastName,FK_ID_Country, Residence, FK_ID_University, Email, Phone, Photo, RegistrationDate, MCPassword, PersonalDescription, Birthdate,FK_ID_State)
-		VALUES (@pName, @pLastname,@id, @pResidence, @pUni_ID, @pEmail, @pPhone, @pPhoto, (getdate()),@pPass,@pDescription,@pBirthdate,2);
+		VALUES (@pName, @pLastname,@id, @pResidence, @pUni_ID, @pEmail, @pPhone, @pPhoto, (getdate()),@pPass,@pDescription,@pBirthdate,1);
 		SELECT * FROM MCUSER WHERE PK_ID_MCUSER= SCOPE_IDENTITY();
 	END ELSE BEGIN
 		SELECT 'email already exists' AS 'Error';
@@ -96,12 +100,17 @@ BEGIN
 	END
 	SET @id = (SELECT PK_ID_COUNTRY FROM COUNTRY WHERE Name=@pCountry);
 
-	UPDATE MCUSER 
-	SET Name=@pName, LastName=@pLastname ,FK_ID_Country=@pCountry, Residence=@pResidence, 
-		FK_ID_University=@pUni_ID, Phone=@pPhone, Photo=@pPhoto, MCPassword=@pPass, 
-		PersonalDescription=@pDescription, Birthdate=@pBirthdate
-	WHERE Email=@pEmail; 
-	SELECT 'ok' AS 'State';
+	SET @c = (SELECT COUNT(*) FROM MCUSER WHERE Email=@pEmail)
+	IF(@c=1) BEGIN
+		UPDATE MCUSER 
+		SET Name=@pName, LastName=@pLastname ,FK_ID_Country=@pCountry, Residence=@pResidence, 
+			FK_ID_University=@pUni_ID, Phone=@pPhone, Photo=@pPhoto, MCPassword=@pPass, 
+			PersonalDescription=@pDescription, Birthdate=@pBirthdate
+		WHERE Email=@pEmail; 
+		SELECT 'ok' AS 'State';
+	END ELSE BEGIN
+		SELECT 'Error' AS 'State';
+	END
 END
 GO
 
@@ -139,7 +148,7 @@ CREATE PROCEDURE spRegisterAdmin
 	@pName VARCHAR(30),
 	@pLastname VARCHAR(30),
 	@pEmail VARCHAR(50),
-	@pPass VARCHAR(8)	
+	@pPass VARCHAR(70)	
 
 AS
 BEGIN
@@ -163,8 +172,8 @@ BEGIN
 	SET @c = (SELECT COUNT(*) FROM MCUSER_ADMIN WHERE Email=@pEmail);
 	IF(@c=1) BEGIN
 		UPDATE MCUSER_ADMIN SET Name = @pName WHERE Email = @pEmail;
-		UPDATE MCUSER_ADMIN SET LastName = @pLastname WHERE Email = @pPass;
-		UPDATE MCUSER_ADMIN SET MCPassword = @pPass	WHERE Email = @pPass;
+		UPDATE MCUSER_ADMIN SET LastName = @pLastname WHERE Email = @pEmail;
+		UPDATE MCUSER_ADMIN SET MCPassword = @pPass	WHERE Email = @pEmail;
 		SELECT 'ok' AS 'State';
 	END ELSE BEGIN
 		SELECT 'No user email' AS 'State';
@@ -263,8 +272,7 @@ BEGIN
 				INNER JOIN BAND ON BILLBOARD_BANDS_LIST.FK_ID_Band = BAND.PK_ID_BAND
 				WHERE BAND.PK_ID_BAND=@ID);
 	SET @c2 = (SELECT COUNT(*) FROM FESTIVAL_CATEGORY_LIST
-				INNER JOIN FESTIVAL_CATEGORY ON FESTIVAL_CATEGORY_LIST.FK_ID_FestivalCategory = FESTIVAL_CATEGORY.PK_ID_FESTIVAL_CATEGORY
-				INNER JOIN FESTIVAL_BANDS_LIST ON FESTIVAL_CATEGORY.PK_ID_FESTIVAL_CATEGORY = FESTIVAL_BANDS_LIST.FK_ID_FestivalCategory
+				INNER JOIN FESTIVAL_BANDS_LIST ON FESTIVAL_CATEGORY_LIST.PK_ID_FESTIVAL_CATEGORY_LIST = FESTIVAL_BANDS_LIST.FK_ID_FestivalCategory
 				INNER JOIN BAND ON FESTIVAL_BANDS_LIST.FK_ID_Band = BAND.PK_ID_BAND
 				WHERE BAND.PK_ID_BAND=@ID);
 	IF(@c1=0 AND @c2=0)BEGIN
@@ -308,7 +316,7 @@ CREATE PROCEDURE spGetCountries
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT * FROM GENRE
+	SELECT * FROM COUNTRY;
 END
 GO
 
@@ -317,7 +325,7 @@ CREATE PROCEDURE spGetUniversities
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT * FROM GENRE
+	SELECT * FROM UNIVERSITY
 END
 GO
 
@@ -439,17 +447,16 @@ GO
 
 /************************************************/
 CREATE PROCEDURE spGetBandsFromFestivalCategory
-    @ID INT
+	@pIDFestival INT,
+	@pIDCategory INT
 AS
 BEGIN
 	SET NOCOUNT ON;
-SELECT BAND.Name FROM FESTIVAL_CATEGORY
-
-INNER JOIN FESTIVAL_BANDS_LIST ON FESTIVAL_CATEGORY.PK_ID_FESTIVAL_CATEGORY = FESTIVAL_BANDS_LIST.FK_ID_FestivalCategory
-INNER JOIN FESTIVAL_CATEGORY_LIST ON (FESTIVAL_CATEGORY.PK_ID_FESTIVAL_CATEGORY = FESTIVAL_CATEGORY_LIST.FK_ID_FestivalCategory 
-AND FESTIVAL_CATEGORY.FK_ID_Category=@ID)
-INNER JOIN BAND ON FESTIVAL_BANDS_LIST.FK_ID_Band= BAND.PK_ID_BAND;
-
+	SELECT BAND.PK_ID_BAND AS 'id', BAND.Name AS 'name', BAND.Calification AS 'calification', BAND.N_Calification AS 'numberC', BAND.ID_Spotify AS 'spotifyID', BAND.BandState as 'state' 
+	FROM FESTIVAL_CATEGORY_LIST 
+	INNER JOIN FESTIVAL_BANDS_LIST ON FESTIVAL_BANDS_LIST.FK_ID_FestivalCategory = FESTIVAL_CATEGORY_LIST.PK_ID_FESTIVAL_CATEGORY_LIST
+	INNER JOIN BAND ON FESTIVAL_BANDS_LIST.FK_ID_Band = BAND.PK_ID_BAND
+	WHERE FESTIVAL_CATEGORY_LIST.FK_ID_Festival = @pIDFestival AND FESTIVAL_CATEGORY_LIST.FK_ID_FestivalCategory = @pIDCategory;
 END
 GO
 
@@ -548,7 +555,12 @@ CREATE PROCEDURE spGetAllBillboards
 AS 
 BEGIN
 	SET NOCOUNT ON;
-	SELECT PK_ID_BILLBOARD AS 'id', Name AS 'name', FK_ID_Place AS 'location', (EndVotingDate) AS 'timeLeft', BillboardPhoto AS 'image' FROM BILLBOARD;
+
+	SELECT PK_ID_BILLBOARD AS 'id', BILLBOARD.Name AS 'name', PLACE.Name AS 'location', (EndVotingDate) AS 'timeLeft', BillboardPhoto AS 'image' 
+	FROM BILLBOARD 
+	INNER JOIN EVENT_STATE ON BILLBOARD.FK_ID_EventState=EVENT_STATE.PK_ID_EVENT_STATE
+	INNER JOIN PLACE ON BILLBOARD.FK_ID_Place=PLACE.PK_ID_PLACE
+	WHERE EVENT_STATE.Name='Votation';
 END
 GO
 
@@ -567,12 +579,13 @@ CREATE PROCEDURE spAddBillboard
      @pStartVotingDate DATE,
      @pEndVotingDate DATE,
      @pPlaceID INT,
-	 @pState INT
+	 @pState INT,
+	 @pDescription VARCHAR(300)
 AS
 BEGIN
 	SET NOCOUNT ON;
-	INSERT INTO BILLBOARD(Name, StartVotingDate, EndVotingDate, FK_ID_Place, FK_ID_EventState) 
-	VALUES(@pName, @pStartVotingDate, @pEndVotingDate, @pPlaceID, @pState);
+	INSERT INTO BILLBOARD(Name, StartVotingDate, EndVotingDate, FK_ID_Place, FK_ID_EventState, BillboardDescription) 
+	VALUES(@pName, @pStartVotingDate, @pEndVotingDate, @pPlaceID, @pState, @pDescription);
 	SELECT PK_ID_BILLBOARD FROM BILLBOARD WHERE PK_ID_BILLBOARD= SCOPE_IDENTITY();
 END
 GO
@@ -603,12 +616,14 @@ BEGIN
 	SET @v = (SELECT COUNT(*) FROM FESTIVAL WHERE FK_ID_Billboard=@pBillboardID);
 	IF(@v=0) BEGIN
 		DECLARE @c INT;
-		SET @c = (SELECT COUNT(*) FROM FestivalUbication WHERE Name=@pUbication);
+		SET @c = (SELECT COUNT(*) FROM Festival_Ubication WHERE Name=@pUbication);
 		IF(@c=0) BEGIN
-			INSERT INTO FestivalUbication (Name) VALUES (@pUbication)
+			INSERT INTO Festival_Ubication (Name) VALUES (@pUbication)
 		END
+		UPDATE BILLBOARD SET FK_ID_EventState=2 WHERE BILLBOARD.PK_ID_BILLBOARD=@pBillboardID;
 		INSERT INTO FESTIVAL(FK_ID_Billboard, FestivalStart, FestivalEnd, FK_ID_EventState, FK_ID_Ubication,FestivalDescription)
-		VALUES (@pBillboardID, @pStartDate, @pEndDate, 1,SCOPE_IDENTITY(),@pDescription)
+		VALUES (@pBillboardID, @pStartDate, @pEndDate, 1,SCOPE_IDENTITY(),@pDescription);
+		SELECT SCOPE_IDENTITY() AS 'FestivalID'
 	END ELSE BEGIN
 		SELECT 'error' AS 'State'
 	END
@@ -622,44 +637,33 @@ CREATE PROCEDURE spAddCategoryToFestival
 AS
 BEGIN
 	SET NOCOUNT ON;
-	INSERT INTO FESTIVAL_CATEGORY (FK_ID_Category) 
-	VALUES (@pCategoryID);
 	INSERT INTO FESTIVAL_CATEGORY_LIST(FK_ID_Festival, FK_ID_FestivalCategory)
-	VALUES (@pFestivalID, SCOPE_IDENTITY());
+	VALUES (@pFestivalID,@pCategoryID );
 END
 GO
 
 /************************************************/
 CREATE PROCEDURE spAddBandToFestival
-	@pFestivalID INT,
 	@pCategoryID INT,
 	@pBandID INT
 AS
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @c INT;
-	SET @c =(SELECT FESTIVAL_CATEGORY.FK_ID_Category FROM FESTIVAL_CATEGORY
-	INNER JOIN CATEGORY ON CATEGORY.PK_ID_CATEGORY=FESTIVAL_CATEGORY.PK_ID_FESTIVAL_CATEGORY
-	INNER JOIN FESTIVAL_CATEGORY_LIST ON FESTIVAL_CATEGORY_LIST.FK_ID_FestivalCategory=FESTIVAL_CATEGORY.PK_ID_FESTIVAL_CATEGORY
-	WHERE CATEGORY.PK_ID_CATEGORY=@pCategoryID AND FESTIVAL_CATEGORY_LIST.FK_ID_Festival=@pFestivalID);
 	INSERT INTO FESTIVAL_BANDS_LIST(FK_ID_FestivalCategory, FK_ID_Band) 
-	VALUES (@c,@pBandID)
+	VALUES (@pCategoryID, @pBandID);
 END
 GO
 
 
 /************************************************/
-CREATE PROCEDURE spGetCategoriesFromFest
+CREATE PROCEDURE spGetCategoriesFromFest 6
      @ID INT
 AS 
 BEGIN
 	SET NOCOUNT ON;
-	--SELECT CATEGORY.PK_ID_CATEGORY, CATEGORY.Name 
-	SELECT *
 	FROM FESTIVAL_CATEGORY_LIST
-	INNER JOIN FESTIVAL_CATEGORY ON FESTIVAL_CATEGORY_LIST.FK_ID_FestivalCategory=FESTIVAL_CATEGORY.PK_ID_FESTIVAL_CATEGORY
-	INNER JOIN CATEGORY ON FESTIVAL_CATEGORY.FK_ID_Category=CATEGORY.PK_ID_CATEGORY
-	WHERE FESTIVAL_CATEGORY_LIST.FK_ID_Festival=@ID;
+	INNER JOIN CATEGORY ON FESTIVAL_CATEGORY_LIST.FK_ID_FestivalCategory = CATEGORY.PK_ID_CATEGORY
+	WHERE FK_ID_Festival=@ID;
 END
 GO
 
@@ -676,8 +680,8 @@ BEGIN
 	INNER JOIN BAND ON FESTIVAL_BANDS_LIST.FK_ID_Band=BAND.PK_ID_BAND
 	WHERE FESTIVAL_CATEGORY_LIST.FK_ID_Festival=@pIDFestival AND FESTIVAL_CATEGORY.FK_ID_Category=@pIDFestival
 END
-GO
- 
+GO 
+
 /************************************************/
 CREATE PROCEDURE spGetBandComments
       @ID INT
@@ -767,7 +771,8 @@ CREATE PROCEDURE spDeactivateUser
 AS
 BEGIN
 	SET NOCOUNT ON;
-	UPDATE MCUSER SET FK_ID_State=1 WHERE Email = @ID;
+	UPDATE MCUSER SET FK_ID_State=2 WHERE Email = @ID;
+	UPDATE MCUSER_ADMIN SET FK_ID_State=2 WHERE Email = @ID;
 END
 GO
 
@@ -777,7 +782,8 @@ CREATE PROCEDURE spActivateUser
 AS
 BEGIN
 	SET NOCOUNT ON;
-	UPDATE MCUSER SET FK_ID_State=2 WHERE Email = @ID;
+	UPDATE MCUSER SET FK_ID_State=1 WHERE Email = @ID;
+	UPDATE MCUSER_ADMIN SET FK_ID_State=1 WHERE Email = @ID;
 END
 GO
 
@@ -803,12 +809,49 @@ END
 GO
 
 /************************************************/
+CREATE PROCEDURE spAddBillboardPhoto
+	@BillboardID INT,
+	@Photo VARCHAR(100)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	UPDATE BILLBOARD SET BillboardPhoto=@Photo WHERE PK_ID_BILLBOARD=@BillboardID;
+END
+GO
 
 /************************************************/
+CREATE PROCEDURE spGetAdminInfo
+	@pEmail VARCHAR(50)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT PK_ID_MCUSER_ADMIN, MCUSER_ADMIN.Name, LastName, Email, MCpassword, USER_STATE.Name AS 'UserState',RegistrationDate FROM MCUSER_ADMIN 
+	INNER JOIN USER_STATE ON PK_ID_USER_STATE=FK_ID_State
+	WHERE Email=@pEmail;
+END
+GO
 
 /************************************************/
+CREATE PROCEDURE spDeactivateBillboard
+	@pID INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	UPDATE BILLBOARD SET FK_ID_EventState = 3 WHERE PK_ID_BILLBOARD=@pID;
+END
+GO
+
 
 /************************************************/
+CREATE PROCEDURE spDeactivateFestival
+	@pID INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE FESTIVAL SET FK_ID_EventState = 3 WHERE PK_ID_FESTIVAL = @pID;
+END
+GO
 
 /************************************************/
 
