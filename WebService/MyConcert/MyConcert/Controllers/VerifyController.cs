@@ -28,48 +28,11 @@ namespace MyConcert.Controllers
         [Route("api/Verify/User")]
         public string verifyUser([FromBody] dynamic pJson)
         {
-            using (SqlConnection conn = new SqlConnection())
-            {
-                conn.ConnectionString = _dbConectionString; //conectionString;
-                try
-                {
-                    conn.Open();
-                    string dbQuery = "spUserExists";
-
-                    SqlCommand command = new SqlCommand(); // DB Call. dbQuery, conn
-
-                    command.Connection = conn;
-                    command.CommandType = System.Data.CommandType.StoredProcedure;
-                    command.CommandText = dbQuery;//                   
-
-                    command.Parameters.AddWithValue("@pEmail", (string)(pJson.Email));                     
-
-                    var details = new Dictionary<string, object>();                    
-
-                    // Create new SqlDataReader object and read data from the command.
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (reader.HasRows && reader.Read())
-                        {
-                            for (int i = 0; i < reader.FieldCount; i++)
-                            {
-                                details.Add(reader.GetName(i), reader.IsDBNull(i) ? null : reader.GetValue(i));
-                            }
-                        }
-
-                        JavaScriptSerializer jss = new JavaScriptSerializer();
-                        string jsonDoc = jss.Serialize(details);
-                        return jsonDoc;
-
-                    }
-                }
-                catch (SqlException e)
-                {
-                    return e.Message;
-                }
-            }
-
-        }
+            Models.RegisterMethods registerMethod = new Models.RegisterMethods();
+            return registerMethod.verifyUser(pJson);
+        } 
+            
+        
 
 
         /********************************************************        
@@ -572,10 +535,10 @@ namespace MyConcert.Controllers
 
                     var spotifyInfoObject = new Dictionary<string, object>();
                     JavaScriptSerializer oJS = new JavaScriptSerializer();
-                    spotifyInfoObject = oJS.Deserialize<Dictionary<string, object>>(spotifyInfo);                                       
+                    spotifyInfoObject = oJS.Deserialize<Dictionary<string, object>>(spotifyInfo);       
 
                     command.Parameters.AddWithValue("@pName", (string)pJson.name);
-                    command.Parameters.AddWithValue("@pSpotifyID", (spotifyInfoObject["ID"]));
+                    command.Parameters.AddWithValue("@pSpotifyID", (string)(spotifyInfoObject["ID"]));
 
                     string bandID = string.Empty;                    
 
@@ -621,7 +584,7 @@ namespace MyConcert.Controllers
 
                             string url = "http://myconcert1.azurewebsites.net/api/Funcs/AddGenreToBand";
                             response = Models.UtilityMethods.postMethod(JsonC, url);                           
-                        }                        
+                        }
 
                         return response;
 
@@ -713,24 +676,3 @@ namespace MyConcert.Controllers
 }
 
 
-
-/*
- * COMO LEER DE LA BASE.
- * var details = new Dictionary<string, object>();
-
-            // Create new SqlDataReader object and read data from the command.
-            using (SqlDataReader reader = command.ExecuteReader())
-            {
-                if (reader.HasRows && reader.Read())
-                {
-                    for (int i = 0; i < reader.FieldCount; i++)
-                    {
-                        details.Add(reader.GetName(i), reader.IsDBNull(i) ? null : reader.GetValue(i));
-                    }
-
-
-                }
-
-                JavaScriptSerializer jss = new JavaScriptSerializer();
-                string jsonDoc = jss.Serialize(details);
-                return jsonDoc;*/

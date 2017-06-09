@@ -39,7 +39,7 @@ namespace MyConcert.Controllers
             Token token = auth.DoAuth();
             spotify.TokenType = token.TokenType;
             spotify.AccessToken = token.AccessToken;
-            spotify.UseAuth = true;
+            spotify.UseAuth = true;            
         }
 /**************************************************************************        
 *                  Search Artist ID with name                             *
@@ -47,10 +47,18 @@ namespace MyConcert.Controllers
         [HttpGet]
         [Route("api/Spotify/getArtistID/{pMethod}")]
         public string getArtistID(string pMethod) {
-            SearchItem item = spotify.SearchItems(pMethod, SearchType.Artist);
-            var idDic = new Dictionary<string, object>();
-            idDic.Add("ID", item.Artists.Items[0].Id);
-            return (Models.UtilityMethods.diccTOstrinJson(idDic)); 
+            //try
+            //{
+                SearchItem item = spotify.SearchItems(pMethod, SearchType.Artist);
+                var idDic = new Dictionary<string, object>();
+                idDic.Add("ID", item.Artists.Items[0].Id);
+                return (Models.UtilityMethods.diccTOstrinJson(idDic));
+           /* }
+            catch (Exception e)
+            {
+                return "{\"ID\":\"\"}";
+            }*/ 
+            
         }
 /**************************************************************************        
 *                  Get the top 5 songs with the Artist ID                 *
@@ -71,7 +79,7 @@ namespace MyConcert.Controllers
             return (Models.UtilityMethods.diccTOstrinJson(Songs));
         }
 /**************************************************************************        
-*                  Get the top 5 songs with the Artist ID                 *
+*                  Get IMAGE from Artist                  *
 **************************************************************************/
         [HttpGet]
         [Route("api/Spotify/getImage/{artistID}")]
@@ -88,14 +96,30 @@ namespace MyConcert.Controllers
         [HttpGet]
         [Route("api/Spotify/getArtistInfo/{artistID}")]
         public string getArtistInfo(string artistID)
-        {
-            FullArtist artist = spotify.GetArtist(artistID);
-            var info = new Dictionary<string, object>();
-            info.Add("followers", artist.Followers.Total);
-            info.Add("popularity", artist.Popularity);
-            info.Add("image", artist.Images[0].Url);
-            info.Add("spotifyID", artistID);
-            return (Models.UtilityMethods.diccTOstrinJson(info));
+        {                       
+            FullArtist artist = spotify.GetArtist(artistID);            
+
+            if ((artist.StatusCode().ToString()) == "OK")
+            {
+                var info = new Dictionary<string, object>();
+
+                info.Add("followers", artist.Followers.Total);
+                info.Add("popularity", artist.Popularity);
+                info.Add("image", artist.Images[0].Url);
+                info.Add("spotifyID", artistID);
+                return(Models.UtilityMethods.diccTOstrinJson(info));
+                
+            }
+            else {
+                return "{\"followers\":\"\",\"popularity\":\"\",\"image\":\"\",\"spotifyID\":\"\"}";
+
+            }
+           /*}             
+           catch (Exception e)
+           {
+               return "{\"followers\":\"\",\"popularity\":\"\",\"image\":\"\",\"spotifyID\":\"\"}";
+           }*/
+
         }
 
         [HttpGet]
@@ -109,6 +133,32 @@ namespace MyConcert.Controllers
                 var individualValue = 0.0;
                 AudioFeatures audio = spotify.GetAudioFeatures(tracks.Tracks[1].Id);
                 individualValue = (audio.Speechiness * 20)+ (audio.Instrumentalness * 20)+ (audio.Valence * 20)
+                    + (audio.Energy * 20) + (audio.Danceability * 20);
+                average += individualValue;
+            }
+            chefAverage.Add("average", average);
+            return (Models.UtilityMethods.diccTOstrinJson(chefAverage));
+        }
+
+
+
+
+
+        /**************************************************************************        
+*                               Get artist info                           *
+**************************************************************************/
+        [HttpGet]
+        [Route("api/Spotify/getChef/{artistID}")]
+        public string getChef(string artistID)
+        {
+            var chefAverage = new Dictionary<string, object>();
+            SeveralTracks tracks = spotify.GetArtistsTopTracks(artistID, "CR");
+            var average = 0.0;
+            for (int i = 0; i < 3; i++)
+            {
+                var individualValue = 0.0;
+                AudioFeatures audio = spotify.GetAudioFeatures(tracks.Tracks[1].Id);
+                individualValue = (audio.Speechiness * 20) + (audio.Instrumentalness * 20) + (audio.Valence * 20)
                     + (audio.Energy * 20) + (audio.Danceability * 20);
                 average += individualValue;
             }

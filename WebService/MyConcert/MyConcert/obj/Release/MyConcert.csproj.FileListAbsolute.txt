@@ -63,3 +63,8 @@ C:\Users\David\documents\visual studio 2015\Projects\MyConcert\MyConcert\bin\Ent
 C:\Users\David\documents\visual studio 2015\Projects\MyConcert\MyConcert\bin\EntityFramework.SqlServer.xml
 C:\Users\David\documents\visual studio 2015\Projects\MyConcert\MyConcert\bin\SpotifyAPI.dll
 C:\Users\David\documents\visual studio 2015\Projects\MyConcert\MyConcert\bin\SpotifyAPI.xml
+C:\Users\David\documents\visual studio 2015\Projects\MyConcert\MyConcert\bin\ClosedXML.dll
+C:\Users\David\documents\visual studio 2015\Projects\MyConcert\MyConcert\bin\DocumentFormat.OpenXml.dll
+C:\Users\David\documents\visual studio 2015\Projects\MyConcert\MyConcert\bin\SautinSoft.ExcelToPdf.dll
+C:\Users\David\documents\visual studio 2015\Projects\MyConcert\MyConcert\bin\ClosedXML.pdb
+C:\Users\David\documents\visual studio 2015\Projects\MyConcert\MyConcert\bin\ClosedXML.xml
