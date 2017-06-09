@@ -1,7 +1,7 @@
-var app = angular.module('mainModule', ['angular-loading-bar','ngSecurity']);
+var app = angular.module('mainModule', ['angular-loading-bar','ui-notification','ngSecurity']);
 
 
-app.controller('festivalesController',['$scope','$http','Security',function ($scope,$http,Security) {
+app.controller('festivalesController',['$scope','$http','Security','Notification',function ($scope,$http,Security,Notification) {
 
     $scope.festivales = [];
     $scope.visibleFestivalModal = false;
@@ -12,6 +12,10 @@ app.controller('festivalesController',['$scope','$http','Security',function ($sc
     $scope.currentFestivalCategory = -1;
     $scope.categories = [];
 
+    $scope.playingSong = false;
+    $scope.audio = new Audio();
+    $scope.data = [];
+    $scope.songs = [];
     $scope.selectedBand = [];
     $scope.completeStars = [];
     $scope.blankStars = [];
@@ -21,6 +25,9 @@ app.controller('festivalesController',['$scope','$http','Security',function ($sc
     $scope.currentComment.prevrating = 0;
     $scope.currentComment.data = "";
     $scope.currentComment.title = "";
+    $scope.audio.addEventListener('ended', function(){
+        $scope.playingSong = false;
+    });
 
     $scope.userType = Security.getCurrentUserType();
 
@@ -51,8 +58,6 @@ app.controller('festivalesController',['$scope','$http','Security',function ($sc
         //$http.get("../assets/docs/festival2.txt").success(function (response) {
         $http.get("https://myconcert1.azurewebsites.net/api/Main/GET/FestivalInfo/"+pFestivalID).success(function (responseStr) {
             var response = JSON.parse(responseStr);
-            console.log(response);
-
 
             $scope.categories = [];
             $scope.currentFestivalCategory = -1;
@@ -67,6 +72,7 @@ app.controller('festivalesController',['$scope','$http','Security',function ($sc
                     for(k = 0; k < response.categories[j].bands.length; k++){
                         var band = new Object();
                         band.localID = k;
+                        band.id = response.categories[j].bands[k].id;
                         band.name = response.categories[j].bands[k].name;
                         band.spotifyID = response.categories[j].bands[k].spotifyID;
                         band.rating = response.categories[j].bands[k].rating;
@@ -86,6 +92,65 @@ app.controller('festivalesController',['$scope','$http','Security',function ($sc
         });
     };
 
+    $scope.readSongsData = function() {
+        $http.get("https://myconcert1.azurewebsites.net/api/Spotify/getSongs/"+$scope.selectedBand.spotifyID).success(function (response) {
+            console.log(response);
+            var response = JSON.parse(response);
+
+            if (response.songs.length > 0) {
+                for (j = 0; j < response.songs.length; j++) {
+                    var song = {};
+
+                    song.localIndex = j;
+                    song.name = response.songs[j].name;
+                    song.url = response.songs[j].url;
+                    if(song.url != null)
+                        $scope.songs.push(song);
+                }
+            }
+        });
+    };
+
+
+    $scope.playSong = function () {
+        if($scope.data.SelectedSong != undefined && $scope.data.SelectedSong.url != "") {
+            $scope.playingSong = true;
+            $scope.audio.src = $scope.data.SelectedSong.url.toString();
+            $scope.audio.play();
+        }
+        else
+            Notification.error({message: 'Por favor seleccione una canción',title: 'Error de Reprodución', delay: 2000});
+    };
+
+    $scope.pauseSong = function() {
+        if ($scope.audio.src) {
+            $scope.playingSong = false;
+            $scope.audio.pause();
+        }
+    };
+
+    $scope.nextSong = function () {
+        if(($scope.data.SelectedSong.localIndex+1) < $scope.songs.length){
+            $scope.data.SelectedSong = $scope.songs[$scope.data.SelectedSong.localIndex+1];
+            $scope.playSong();
+        }
+        else{
+            $scope.data.SelectedSong = $scope.songs[0];
+            $scope.playSong();
+        }
+    };
+
+    $scope.prevSong = function () {
+        if(($scope.data.SelectedSong.localIndex-1) >= 0){
+            $scope.data.SelectedSong = $scope.songs[$scope.data.SelectedSong.localIndex-1];
+            $scope.playSong();
+        }
+        else{
+            $scope.data.SelectedSong = $scope.songs[$scope.songs.length-1];
+            $scope.playSong();
+        }
+    };
+
     $scope.closeFestivalModal = function () {
         $scope.visibleFestivalModal = false;
         $scope.categories = [];
@@ -100,7 +165,11 @@ app.controller('festivalesController',['$scope','$http','Security',function ($sc
     };
 
     $scope.closeBandModal = function () {
+        $scope.pauseSong();
+        $scope.audio = new Audio();
         $scope.visibleBandModal = false;
+        $scope.data = [];
+        $scope.songs = [];
         $scope.selectedBand = [];
         $scope.completeStars = [];
         $scope.blankStars = [];
@@ -115,8 +184,9 @@ app.controller('festivalesController',['$scope','$http','Security',function ($sc
 
     $scope.showBandModal = function (pBandIndex,pCategoryIndex) {
         $scope.visibleBandModal = true;
-        $scope.selectedBand = $scope.categories[pCategoryIndex].bands[pBandIndex];
 
+        $scope.selectedBand = $scope.categories[pCategoryIndex].bands[pBandIndex];
+        $scope.readSongsData();
         for(i = 0; i< $scope.selectedBand.rating; i++){
             $scope.completeStars.push(i);
         }
@@ -129,10 +199,24 @@ app.controller('festivalesController',['$scope','$http','Security',function ($sc
     $scope.sendNewComment = function () {
         if($scope.currentComment.rating != 0){
             if($scope.currentComment.title){
-                if($scope.currentComment.title) {
-                    console.log("Calificación: " + $scope.currentComment.rating);
-                    console.log("Titulo: " + $scope.currentComment.title);
-                    console.log("Datos: " + $scope.currentComment.data);
+                if($scope.currentComment.data) {
+
+                    var parameter = JSON.stringify({
+                        userID: Security.getCurrentUserEmail().toString(),
+                        bandID: $scope.selectedBand.id.toString(),
+                        points: $scope.currentComment.rating.toString(),
+                        comment: $scope.currentComment.title+": "+ $scope.currentComment.data.toString()
+                    });
+
+                    $http.post('https://myconcert1.azurewebsites.net/api/Funcs/addCommentCalification', parameter).success(function (response, status, headers, config) {
+                        $scope.closeBandModal();
+                        $scope.closeFestivalModal();
+                    }).error(function (data, status, headers, config) {
+                        console.log(data);
+                    });
+
+
+
                     $scope.closeBandModal();
                     Notification.success({message: 'Comentario enviado...', delay: 2000});
                 }
@@ -144,8 +228,6 @@ app.controller('festivalesController',['$scope','$http','Security',function ($sc
         }
         else
             Notification.error({message: 'Ingrese una calificación', delay: 2000});
-
-
     };
 
     $scope.changeCurrentFestivalCategory = function (pCurrentCategoryID) {

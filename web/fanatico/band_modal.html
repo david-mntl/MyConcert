@@ -59,11 +59,11 @@
             <div class="comments-box-holder">
                 <div class="comment-box" ng-repeat="comment in selectedBand.comments">
                     <div class="comment-box-title">{{comment.title}} |
-                        <i ng-repeat="i in getNumber(comment.rating)" class="fa fa-star fa-1x" style="color: black"></i><i ng-repeat="i in getNumber(5-comment.rating)" class="fa fa-star-o fa-1x" style="color: black"></i> |
-                        {{comment.user}}
+                        <i ng-repeat="i in getNumber(comment.Score)" class="fa fa-star fa-1x" style="color: black"></i><i ng-repeat="i in getNumber(5-comment.Score)" class="fa fa-star-o fa-1x" style="color: black"></i> |
+                        {{comment.name}}
                     </div>
                     <div class="comment-box-data">
-                        {{comment.data}}
+                        {{comment.comment}}
                     </div>
                 </div>
             </div>

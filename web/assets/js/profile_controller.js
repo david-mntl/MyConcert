@@ -8,6 +8,7 @@ app.controller('mainController',['$scope','$http','$window','Security','Notifica
     $scope.genres = [];
     $scope.choosedGenres = [];
 
+    $scope.userType = Security.getCurrentUserType();
     $scope.editingProfile = false;
     $scope.loading = true;
 
@@ -57,30 +58,26 @@ app.controller('mainController',['$scope','$http','$window','Security','Notifica
     };
 
     $scope.loadUserInfo = function () {
-        var userType = Security.getCurrentUserType();
-
         var parameter = JSON.stringify({
             Email: Security.getCurrentUserEmail()
         });
 
-        if(userType == 1){
+        if($scope.userType == 1){
             $http.post('https://myconcert1.azurewebsites.net/api/GET/adminInfo', parameter).success(function (data, status, headers, config) {
-                console.log(data);
                 var response = JSON.parse(data);
 
                 $scope.choosedGenres = [];
                 $scope.data.Name = response.Name;
                 $scope.data.LastName = response.LastName;
                 $scope.data.Email = response.Email;
-                $scope.data.Password = response.Password;
-                console.log(response);
+                $scope.data.Password = response.MCPassword;
                 $scope.loading = false;
 
             }).error(function (data, status, headers, config) {
                 console.log(data);
             });
         }
-        else if(userType == 2){
+        else if($scope.userType == 2){
             $scope.data.University = [];
             $scope.data.Genre = [];
             $http.post('https://myconcert1.azurewebsites.net/api/GET/userInfo', parameter).success(function (data, status, headers, config) {
@@ -93,7 +90,7 @@ app.controller('mainController',['$scope','$http','$window','Security','Notifica
                 $scope.data.Birthdate = response.Birthdate;
                 $scope.data.University.id = response.FK_ID_University;
                 $scope.data.Country.id = response.FK_ID_Country;
-
+                $scope.data.Password = response.MCPassword;
                 $scope.data.Email = response.Email;
                 $scope.data.Place = response.Residence;
                 $scope.data.Description = response.PersonalDescription;
@@ -148,21 +145,22 @@ app.controller('mainController',['$scope','$http','$window','Security','Notifica
 
 
     $scope.sendRegisterForm = function() {
-        var userType = Security.getCurrentUserType();
 
-        if (userType == 1) {
+        if ($scope.userType == 1) {
             if (!$scope.isValid($scope.data.Name)) {
                 if (!$scope.isValid($scope.data.LastName)) {
                     if (!$scope.isValid($scope.data.Email)) {
                         if (!$scope.isValid($scope.data.Password)) {
                             var parameter = JSON.stringify({
-                                Name: $scope.data.Name.toString(),
-                                Lastname: $scope.data.LastName.toString(),
-                                Email: $scope.data.Email.toString(),
-                                Password: $scope.data.Password.toString()
+                                name: $scope.data.Name.toString(),
+                                lastName: $scope.data.LastName.toString(),
+                                email: $scope.data.Email.toString(),
+                                pass: $scope.data.Password.toString()
                             });
 
+
                             $http.post('https://myconcert1.azurewebsites.net/api/Funcs/EditPerfilAdmin', parameter).success(function (data, status, headers, config) {
+
                                 if (data.State == "error") {
                                     Notification.error({message: 'Ha ocurrido un error. Por favor inténtelo más tarde.',delay: 2000});
                                 }
