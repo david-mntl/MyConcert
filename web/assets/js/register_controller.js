@@ -70,11 +70,12 @@ app.controller('mainController',['$scope','$http','$window','Notification','Secu
                             if (!$scope.isValid($scope.data.LastName)) {
                                 if (!$scope.isValid($scope.data.Email)) {
                                     if (!$scope.isValid($scope.data.Password)) {
+                                        var pass =CryptoJS.SHA256( $scope.data.Password.toString());
                                         var parameter = JSON.stringify({
                                             Name: $scope.data.Name.toString(),
                                             Lastname: $scope.data.LastName.toString(),
                                             Email: $scope.data.Email.toString(),
-                                            Password: $scope.data.Password.toString()
+                                            Password: pass.toString()
                                         });
 
                                          $http.post('https://myconcert1.azurewebsites.net/api/Verify/RegisterAdmin', parameter).success(function (data, status, headers, config) {
@@ -111,6 +112,7 @@ app.controller('mainController',['$scope','$http','$window','Notification','Secu
                                 $scope.data.Place = "";
                             if ($scope.data.University == undefined)
                                 $scope.data.University = {id: '1', name: 'null'};
+                            var pass =CryptoJS.SHA256( $scope.data.Password.toString());
 
                             var parameter = JSON.stringify({
                                 Name: $scope.data.Name.toString(),
@@ -121,7 +123,7 @@ app.controller('mainController',['$scope','$http','$window','Notification','Secu
                                 Email: $scope.data.Email.toString(),
                                 Phone: $scope.data.Phone.toString(),
                                 Photo: $scope.data.Email.toString(),
-                                Pass: $scope.data.Password.toString(),
+                                Pass: pass.toString(),
                                 Description: $scope.data.Description.toString(),
                                 Birthdate: $scope.data.BirthDate.toString(),
                                 Genres: $scope.data.GenresList.toString()
@@ -129,6 +131,7 @@ app.controller('mainController',['$scope','$http','$window','Notification','Secu
 
                              $http.post('https://myconcert1.azurewebsites.net/api/Verify/RegisterUser', parameter).success(function (data, status, headers, config) {
                                 if (data == "error") {
+                                    console.log(data);
                                     Notification.error({message: 'Ha ocurrido un error. Por favor inténtelo más tarde.', delay: 2000});
                                 }
                                 else {

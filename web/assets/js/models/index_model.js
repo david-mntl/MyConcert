@@ -10,10 +10,11 @@ app.service("indexModel",['$http','Security','Notification',function ($http,Secu
         }
         else{
             Notification.success({message: 'Iniciando Sesión', delay: 2000});
-
+            var pass =CryptoJS.SHA256( data.Password.toString());
+            console.log(pass.toString());
             var parameter = JSON.stringify({
                 Email: data.Username.toString(),
-                Password: data.Password.toString()
+                Password: pass.toString()
             });
 
             $http.post('https://myconcert1.azurewebsites.net/api/Verify/Login', parameter).success(function (response, status, headers, config) {

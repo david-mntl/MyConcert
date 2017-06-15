@@ -25,6 +25,60 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
     $scope.audio.addEventListener('ended', function(){
         $scope.playingSong = false;
     });
+    $scope.countries = [];
+
+
+    $scope.getCountriesFromServer = function () {
+        $http.get('https://myconcert1.azurewebsites.net/api/Main/GET/spGetCountries').success(function (data, status, headers, config) {
+            var response = JSON.parse(data);
+            for(i = 0; i < response.spGetCountries.length; i++){
+                var country = {};
+                country.name = response.spGetCountries[i].Name;
+                country.id = response.spGetCountries[i].PK_ID_COUNTRY;
+                $scope.countries.push(country);
+            }
+
+        }).error(function (data, status, headers, config) {
+            console.log(data);
+        });
+    };
+
+    $scope.addCartelera = function () {
+        console.log($scope.data.Country.id.toString());
+        console.log($scope.data.Name);
+        console.log($scope.data.Description);
+        console.log($scope.data.Begin);
+        console.log($scope.data.Final);
+        for (i = 0; i<$scope.categoriasIncluidas.length; i++){
+            delete $scope.categoriasIncluidas[i].localID;
+        }
+
+        var parameter = JSON.stringify({
+            Name: $scope.data.Name,
+            SVoteDate : $scope.data.Begin,
+            EVoteDate : $scope.data.Final,
+            Categorias : $scope.categoriasIncluidas,
+            PlaceID :$scope.data.Country.id.toString(),
+            Description : $scope.data.Description
+        });
+        console.log(parameter);
+
+        /*$http.post('https://myconcert1.azurewebsites.net/api/Verify/Login', parameter).success(function (response, status, headers, config) {
+            var response = JSON.parse(response);
+            if(response.State == 0){
+                Notification.error({message: 'Credenciales Inválidas', title: 'Error', delay: 2000});
+            }
+            else{
+                Security.initSession(data.Username,response.State);
+            }
+        }).error(function (data, status, headers, config) {
+            console.log(data);
+        });
+*/
+
+
+    }
+
 
     $scope.addBanda = function (name) {
         var flag = 0;
@@ -39,7 +93,9 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
             $scope.regBandas.push(name);
             var foundItem = $filter('filter')($scope.categoriasIncluidas, { localID: $scope.currentCategory}, true)[0];
             var index = $scope.categoriasIncluidas.indexOf(foundItem );
-            $scope.categoriasIncluidas[index].bandas.push(name);
+            var bandName = {};
+            bandName.name = name;
+            $scope.categoriasIncluidas[index].bandas.push(bandName);
         }
 
 
@@ -61,6 +117,8 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
     };
 
     $scope.addCategoria = function (name,localid) {
+        console.log(name);
+        console.log(localid);
         var flag = 0;
         if(typeof $scope.categoriasIncluidas[0] != 'undefined'){
 
@@ -71,7 +129,7 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
             }
         }if(flag == 0){
             var catTemp = new Object();
-            //catTemp.localID = localid;
+            catTemp.localID = localid;
             catTemp.name = name;
             catTemp.bandas = [];
             $scope.categoriasIncluidas.push(catTemp);
@@ -83,6 +141,7 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
         var url = 'https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllCategories/';
         $http.get(url).success(function (data, status, headers, config) {
             var response = JSON.parse(data);
+            console.log(response);
             for (j = 0; j < response.spGetAllCategories.length; j++) {
                 var category = new Object();
                 category.name = response.spGetAllCategories[j].Name;
@@ -242,6 +301,7 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
     };
 
     $scope.changeCurrentCategory = function (pCurrentCategoryID) {
+        console.log(pCurrentCategoryID);
         $scope.currentCategory = pCurrentCategoryID;
     };
 
@@ -413,6 +473,7 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
     $scope.readBandas();
     $scope.readCategorias();
     $scope.readCartelerasData();
+    $scope.getCountriesFromServer();
 
     $scope.postArtista = function(){
         console.log("Hola");

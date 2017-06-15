@@ -15,16 +15,33 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label for="nameCartelera">Nombre de la cartelera:</label>
-                                <input ng-model="inputName" type="text" class="form-control" id="nameCartelera">
+                                <input ng-model="data.Name" type="text" class="form-control" id="nameCartelera">
                             </div>
                             <div class="col-md-4">
                                 <label for="ubicacionCartelera">Ubicación:</label>
-                                <input ng-model="inputUbicacion" type="text" class="form-control" id="ubicacionCartelera">
+                                <select  class="form-control" style="width: 178px;" ng-model="data.Country" ng-options="country.name for country in countries track by country.id">
+                                    <option value="">País</option>
+                                </select>
                             </div>
-                            <div class="col-md-4">
-                                <label for="fechaCartelera">Fecha:</label>
-                                <input ng-model="inputFecha" type="text" class="form-control" id="fechaCartelera">
+                            <div class="col-md-2">
+                                <label  for="fechaCartelera">Inicio: </label>
+                                <datepicker date-format="MM/d/y">
+                                    <input style="width: 120px"  class="form-control" ng-model="data.Begin" type="text" readonly/>
+                                </datepicker>
                             </div>
+                            <div class="col-md-2">
+                                <label  for="fechaCartelera">Finalización :</label>
+                                <datepicker date-format="MM/d/y">
+                                    <input style="width: 120px"  class="form-control" ng-model="data.Final" type="text" readonly/>
+                                </datepicker>
+                            </div>
+                            <div class="col-md-6">
+                                <label  for="fechaCartelera">Descripción :</label>
+                                <textarea style="resize: none" rows="5" ng-model="data.Description" type="text" class="form-control" id="description"></textarea>
+
+                            </div>
+
+
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -46,7 +63,7 @@
                                     <button data-toggle="modal" data-target="#addBanda"  ng-click="" class="sAddBanda"><span class="glyphicon glyphicon-plus"></span></button>
                                     <div class="bandname" ng-repeat="band in x.bandas">
                                         <button ng-click="borrar(band)" style="float: left"><span class="glyphicon glyphicon-remove"></span></button>
-                                        <h3>{{band}}</h3>
+                                        <h3>{{band.name}}</h3>
 
                                     </div>
                                 </div>
@@ -57,7 +74,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button ng-click="postArtista()" type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
+                <button ng-click="addCartelera()" type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
             </div>
         </div>
 
