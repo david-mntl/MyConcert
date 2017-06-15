@@ -543,10 +543,11 @@ CREATE PROCEDURE spGetAllFestivals
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT PK_ID_FESTIVAL AS 'id', BILLBOARD.Name AS 'name', BILLBOARD.BillboardDescription AS 'description', PLACE.Name AS 'location', FESTIVAL.FestivalStart AS 'date', BILLBOARD.BillboardPhoto AS 'image'
+	SELECT PK_ID_FESTIVAL AS 'id', BILLBOARD.Name AS 'name', BILLBOARD.BillboardDescription AS 'description', PLACE.Name AS 'location', FESTIVAL.FestivalStart AS 'date', BILLBOARD.BillboardPhoto AS 'image', EVENT_STATE.Name AS 'state'
 	FROM FESTIVAL
 	INNER JOIN BILLBOARD ON FESTIVAL.FK_ID_Billboard=BILLBOARD.PK_ID_BILLBOARD
-	INNER JOIN PLACE ON BILLBOARD.FK_ID_Place=PLACE.PK_ID_PLACE;
+	INNER JOIN PLACE ON BILLBOARD.FK_ID_Place=PLACE.PK_ID_PLACE
+	INNER JOIN EVENT_STATE ON FESTIVAL.FK_ID_EventState=FK_ID_Billboard;
 END
 GO
 
@@ -555,12 +556,11 @@ CREATE PROCEDURE spGetAllBillboards
 AS 
 BEGIN
 	SET NOCOUNT ON;
-
-	SELECT PK_ID_BILLBOARD AS 'id', BILLBOARD.Name AS 'name', PLACE.Name AS 'location', (EndVotingDate) AS 'timeLeft', BillboardPhoto AS 'image' 
+	SELECT PK_ID_BILLBOARD AS 'id', BILLBOARD.Name AS 'name', PLACE.Name AS 'location', (EndVotingDate) AS 'timeLeft', BillboardPhoto AS 'image', EVENT_STATE.Name AS 'state'
 	FROM BILLBOARD 
 	INNER JOIN EVENT_STATE ON BILLBOARD.FK_ID_EventState=EVENT_STATE.PK_ID_EVENT_STATE
 	INNER JOIN PLACE ON BILLBOARD.FK_ID_Place=PLACE.PK_ID_PLACE
-	WHERE EVENT_STATE.Name='Votation';
+	WHERE EVENT_STATE.PK_ID_EVENT_STATE=1 OR EVENT_STATE.PK_ID_EVENT_STATE=2;
 END
 GO
 
@@ -579,13 +579,12 @@ CREATE PROCEDURE spAddBillboard
      @pStartVotingDate DATE,
      @pEndVotingDate DATE,
      @pPlaceID INT,
-	 @pState INT,
 	 @pDescription VARCHAR(300)
 AS
 BEGIN
 	SET NOCOUNT ON;
 	INSERT INTO BILLBOARD(Name, StartVotingDate, EndVotingDate, FK_ID_Place, FK_ID_EventState, BillboardDescription) 
-	VALUES(@pName, @pStartVotingDate, @pEndVotingDate, @pPlaceID, @pState, @pDescription);
+	VALUES(@pName, @pStartVotingDate, @pEndVotingDate, @pPlaceID, 3, @pDescription);
 	SELECT PK_ID_BILLBOARD FROM BILLBOARD WHERE PK_ID_BILLBOARD= SCOPE_IDENTITY();
 END
 GO
@@ -656,12 +655,12 @@ GO
 
 
 /************************************************/
-CREATE PROCEDURE spGetCategoriesFromFest 6
+CREATE PROCEDURE spGetCategoriesFromFest
      @ID INT
 AS 
 BEGIN
 	SET NOCOUNT ON;
-	FROM FESTIVAL_CATEGORY_LIST
+	SELECT * FROM FESTIVAL_CATEGORY_LIST
 	INNER JOIN CATEGORY ON FESTIVAL_CATEGORY_LIST.FK_ID_FestivalCategory = CATEGORY.PK_ID_CATEGORY
 	WHERE FK_ID_Festival=@ID;
 END
@@ -740,14 +739,19 @@ GO
 /************************************************/
 CREATE PROCEDURE spPostUserVote
      @UserID VARCHAR(30),
-     @BillboardID INT
+     @BillboardID INT,
+	 @pBandID INT,
+	 @pAmount INT
 AS
 BEGIN
 	SET NOCOUNT ON;
 	INSERT INTO USER_VOTE(FK_ID_Billboard, FK_ID_User) VALUES (@BillboardID, (SELECT PK_ID_MCUSER FROM MCUSER WHERE @UserID=Email));
+	DECLARE @money INT;
+	SET @money = (SELECT RaisedMoney FROM BILLBOARD_BANDS_LIST WHERE FK_ID_Band=@pBandID);
+	UPDATE BILLBOARD_BANDS_LIST SET RaisedMoney=(@money+@pAmount);
 END
 GO
-
+ 
 /************************************************/
 CREATE PROCEDURE spAddPointsToBillboardBand
 	@Billboard INT,
@@ -832,26 +836,70 @@ END
 GO
 
 /************************************************/
-CREATE PROCEDURE spDeactivateBillboard
-	@pID INT
+ALTER PROCEDURE spDeactivateBillboard
+	@ID INT
 AS
 BEGIN
 	SET NOCOUNT ON;
-	UPDATE BILLBOARD SET FK_ID_EventState = 3 WHERE PK_ID_BILLBOARD=@pID;
+	UPDATE BILLBOARD SET FK_ID_EventState = 2 WHERE PK_ID_BILLBOARD=@ID;
 END
 GO
 
 
 /************************************************/
 CREATE PROCEDURE spDeactivateFestival
-	@pID INT
+	@ID INT
 AS
 BEGIN
 	SET NOCOUNT ON;
 
-	UPDATE FESTIVAL SET FK_ID_EventState = 3 WHERE PK_ID_FESTIVAL = @pID;
+	UPDATE FESTIVAL SET FK_ID_EventState = 3 WHERE PK_ID_FESTIVAL = @ID;
 END
 GO
 
-/************************************************/
+/***********************************************/
+ALTER PROCEDURE spAddBandToBillboard
+        @BillboardCategoryID INT,
+        @CategoryID INT,
+        @BandID INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	INSERT INTO BILLBOARD_BANDS_LIST(FK_ID_BillboardCategory, FK_ID_Band, RaisedMoney) 
+	VALUES (@BillboardCategoryID ,@BandID , 0); 
+
+END
+GO
+
+/************************************************ /
+CREATE PROCEDURE spGetCategoriesFromBillboard
+     @ID INT
+AS 
+BEGIN
+	SET NOCOUNT ON;
+	SELECT * FROM CATEGORY_LIST
+	INNER JOIN CATEGORY ON FESTIVAL_CATEGORY_LIST.FK_ID_FestivalCategory = CATEGORY.PK_ID_CATEGORY
+	WHERE FK_ID_Festival=@ID;
+END
+GO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

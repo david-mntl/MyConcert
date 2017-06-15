@@ -18,8 +18,9 @@ EXEC spRegisterUniversity 'Universidade de São Paulo';
 EXEC spRegisterUniversity 'Universidad Autónoma de México';
 EXEC spRegisterUniversity 'Universidad Tecnológica de Panamá';
 
-EXEC spRegisterEventState 'Activate';
-EXEC spRegisterEventState 'Deactive';
+EXEC spRegisterEventState 'Votation';
+EXEC spRegisterEventState 'Cancelled';
+EXEC spRegisterEventState 'Confirmed';
 
 EXEC spRegisterPlace 'Tecnológico de Costa Rica';
 EXEC spRegisterPlace 'Parque de Diversiones';
@@ -30,42 +31,42 @@ EXEC spRegisterPlace 'Estadio Nacional';
 EXEC spRegisterCategory 'Headliners';
 EXEC spRegisterCategory 'Locals';
 
-EXEC spRegisterBand 'Megadeath','SID';
-EXEC spRegisterBand 'Carbonica','SID';
-EXEC spRegisterBand 'Aluminica','SID';
+EXEC spRegisterBand 'Metallica','2ye2Wgw4gimLv2eAKyk1NB';
+EXEC spRegisterBand 'Coldplay','4gzpq5DPGxSnKTe4SA8HAU';
+EXEC spRegisterBand 'Pink Floyd','0k17h0D3J5VfsdmQ1iZtE9';
 
 EXEC spRegisterGenre 'Rock';
 EXEC spRegisterGenre 'Salsa';
 EXEC spRegisterGenre 'Pop';
 
+EXEC spRegisterUserState 'Activate';
+EXEC spRegisterUserState 'Deactive';
+
 EXEC spRegisterAdmin 'admin','sudo','admin@gmail.com','123';
 EXEC spRegisterUser 'user', '1', 'Costa Rica','100m Este de la Basílica de los Ángeles',1,'user@gmail.com','+506','photo.jpg','123','Me gusta la salsa',"12/12/12";
 
+EXEC spAddGenreToUser 1, 'Rock';
+EXEC spAddGenreToUser 1, 'Pop';
 
-EXEC spAddGenreToUser 4, 'Rock';
-EXEC spAddGenreToUser 4, 'Pop';
-
-EXEC spRegisterUserState 'Activate';
-EXEC spRegisterUserState 'Deactive';
 
 INSERT INTO EVENT_STATE(Name) VALUES ('Votation');
 INSERT INTO EVENT_STATE(Name) VALUES ('Confirmed');
 INSERT INTO EVENT_STATE(Name) VALUES ('Cancelled');
 
 -- Carteleras --
-EXEC spAddBillboard 'Speed Sound',"01/01/2017","02/02/2017",1,1,'description';
-EXEC spAddBillboard 'Festival Imperial',"02/02/2017","03/03/2017",2,1,'description';
-EXEC spAddBillboard 'Jazz Fest',"03/03/2017","04/04/2017",3,1,'description';
-EXEC spAddBillboard 'Picnic Fest',"04/04/2017","05/05/2017",4,1,'description';
-EXEC spAddBillboard 'Jungle Jam',"05/05/2017","06/06/2017",5,1,'description';
-EXEC spAddBillboard 'Blues Xtreme Fest',"06/06/2017","08/08/2017",6,1,'description';
+EXEC spAddBillboard 'Speed Sound',"01/01/2017","02/02/2017",1,3,'description';
+EXEC spAddBillboard 'Festival Imperial',"02/02/2017","03/03/2017",2,3,'description';
+EXEC spAddBillboard 'Jazz Fest',"03/03/2017","04/04/2017",3,3,'description';
+EXEC spAddBillboard 'Picnic Fest',"04/04/2017","05/05/2017",4,3,'description';
+EXEC spAddBillboard 'Jungle Jam',"05/05/2017","06/06/2017",5,3,'description';
+EXEC spAddBillboard 'Blues Xtreme Fest',"06/06/2017","08/08/2017",6,3,'description';
 
-EXEC spAddBillboardPhoto 1, 'imgs/blue.png';
-EXEC spAddBillboardPhoto 2, 'imgs/color.png';
-EXEC spAddBillboardPhoto 3, 'imgs/horizon.png';
-EXEC spAddBillboardPhoto 4, 'imgs/spark.png';
-EXEC spAddBillboardPhoto 5, 'imgs/street.png';
-EXEC spAddBillboardPhoto 6, 'imgs/jump.png';
+EXEC spAddBillboardPhoto 1, 'imgs/speed.png';
+EXEC spAddBillboardPhoto 2, 'imgs/imperial.png';
+EXEC spAddBillboardPhoto 3, '';
+EXEC spAddBillboardPhoto 4, 'imgs/picnic.png';
+EXEC spAddBillboardPhoto 5, 'imgs/jungle.png';
+EXEC spAddBillboardPhoto 6, '';
 
 
 --Festivales--
@@ -75,17 +76,31 @@ INSERT INTO FESTIVAL_UBICATION(Name) VALUES ('Parque de Diversiones');
 INSERT INTO FESTIVAL_UBICATION(Name) VALUES ('Centro de Eventos Pedregal');
 INSERT INTO FESTIVAL_UBICATION(Name) VALUES ('Parque presas');
 
-EXEC spAddFestival 2,"03/03/18","04/04/18", 'Tecnológico, Costa Rica','This fesitival will be cool';
-EXEC spAddFestival 3,"04/04/18","05/05/18", 'Parque de Diversiones','This fesitival will be not so awesome';
-EXEC spAddFestival 4,"05/05/18","06/06/18", 'Centro de Eventos Pedregal','This fesitival will be great';
-EXEC spAddFestival 5,"06/06/18","07/07/18", 'Parque presas','This fesitival will be incredible';
-EXEC spAddFestival 6,"07/07/18","08/08/18", 'Estadio Nacional','This fesitival will be the worst';
+EXEC spAddFestival 3,"02/02/18","03/03/18", 'Estadio Nacional','This fesitival will be awesome';
+EXEC spAddCategoryToFestival 1,1;
+EXEC spAddBandToFestival 1,1;
+
+EXEC spAddFestival 4,"03/03/18","04/04/18", 'Tecnológico, Costa Rica','This fesitival will be cool';
+EXEC spAddFestival 5,"04/04/18","05/05/18", 'Parque de Diversiones','This fesitival will be not so awesome';
+EXEC spAddFestival 6,"05/05/18","06/06/18", 'Centro de Eventos Pedregal','This fesitival will be great';
+
+SELECT * FROM BILLBOARD
+SELECT * FROM FESTIVAL
+SELECT * FROM BAND
+
+UPDATE BILLBOARD SET FK_ID_EventState=3 WHERE PK_ID_BILLBOARD =2;
 
 
-EXEC spAddFestival 1,"02/02/18","03/03/18", 'Estadio Nacional','This fesitival will be awesome';
-EXEC spAddCategoryToFestival 6,1;
-EXEC spAddBandToFestival 3,1;
-	
+SELECT BAND.PK_ID_BAND AS 'id', BAND.Name AS 'name', BAND.Calification AS 'calification', BAND.N_Calification AS 'numberC', BAND.ID_Spotify AS 'spotifyID', BAND.BandState as 'state' 
+FROM FESTIVAL_CATEGORY_LIST 
+INNER JOIN FESTIVAL_BANDS_LIST ON FESTIVAL_BANDS_LIST.FK_ID_FestivalCategory = FESTIVAL_CATEGORY_LIST.PK_ID_FESTIVAL_CATEGORY_LIST
+INNER JOIN BAND ON FESTIVAL_BANDS_LIST.FK_ID_Band = BAND.PK_ID_BAND
+WHERE FESTIVAL_CATEGORY_LIST.FK_ID_Festival = 1 AND FESTIVAL_CATEGORY_LIST.FK_ID_FestivalCategory = 1;
+
+SELECT * FROM BILLBOARD_BANDS_LIST;
+
+
+/*	
 
 SELECT * FROM CATEGORY
 select * from band
@@ -117,15 +132,11 @@ select * from mcuser
 select * from USER_GENRE_LIST
 select * from band
 select * from FESTIVAL_BANDS_LIST
+*/
 
 
 
-
-
-
-
-
-
+/*
 INSERT INTO ARTIST (NAME) VALUES ('a')
 INSERT INTO ARTIST (NAME) VALUES ('aa')
 INSERT INTO ARTIST (NAME) VALUES ('aaa')
@@ -162,7 +173,7 @@ insert into FESTIVAL_BANDS_LIST (FK_ID_FestivalCategory, FK_ID_Band) VALUES(1,10
 insert into billboard (Name,StartVotingDate,Endvotingdate,FK_ID_Place,FK_ID_EventState) Values ('billN',getDate(),getDate(),2,1)
 insert into festival_category(FK_ID_Category) VALUES (4)
 insert into FESTIVAL_CATEGORY_LIST(FK_ID_Festival, FK_ID_FestivalCategory) VALUES (2,4)
-
+*/
 
 
 
