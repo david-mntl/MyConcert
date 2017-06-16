@@ -9,6 +9,10 @@
     <script src="../assets/js/libs/loading-bar.js"></script>
     <script src="../assets/js/libs/slides.js"></script>
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
     <script src="../assets/js/libs/angular-notify.js"></script>
     <script src="../assets/js/libs/angular-cookies.js"></script>
     <script src="../assets/js/libs/angular-ui-notification.min.js"></script>
@@ -18,7 +22,7 @@
     <link href='../assets/styles/loading-bar.css' rel='stylesheet' />
     <link rel="stylesheet" href="../assets/styles/basicStyles.css" />
     <link rel="stylesheet" href="../assets/styles/font-awesome.min.css" />
-    <link rel="stylesheet" href="../assets/styles/modalStyle.css" />
+    <link rel="stylesheet" href="../assets/styles/zModalStyle.css" />
     <script>
         var counter = 0;
         function textCounter( field, maxlimit, text) {
@@ -63,8 +67,9 @@
                         <div class="box-cartelera-info-text">{{festival.place}}</div>
                     </div>
                 </div>
-                <div ng-click="showFestivalModal(festival.localIndex)" class="box-festival-button">Ver más</div>
-                <div ng-click="cancelFest"ng-if="userType == 1" href="#" class="box-cartelera-button">Cancelar</div>
+                <div  ng-click="showFestivalModal(festival.localIndex)" class="box-festival-button">Ver más</div>
+                <div data-toggle="modal" data-target="#cancelarFestivalModal" ng-click="cancelFestivalAux(festival.id)"ng-if="userType == 1 && festival.state !='Cancelled' "  class="box-cartelera-button">Cancelar</div>
+                <h6><span style="font-size: 20px" ng-if="festival.state =='Cancelled'" class="label label-danger">Cancelado</span></h6>
             </div>
         </div>
     </div>
@@ -79,5 +84,37 @@
         </div>
     </footer>
 
+
+
+
+
 </body>
+
+
+
+<div  class="container" >
+    <!-- Trigger the modal with a button -->
+    <!-- Modal -->
+    <div  class="modal fade" id="cancelarFestivalModal" role="dialog">
+        <div style="width: 30%" class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3>Está seguro?</h3>
+                    <button style="float: right" type="button" data-dismiss="modal" ng-click="cancelFestival()" class="btn btn-success">Sí</button>
+                    <button style="float: right" type="button" data-dismiss="modal" class="btn btn-danger">No</button>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+
 </html>

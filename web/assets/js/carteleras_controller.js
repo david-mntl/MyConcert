@@ -2,8 +2,16 @@ var app = angular.module('mainModule', ['720kb.datepicker','spotify','angular-lo
 
 
 app.controller('cartelerasController',['$scope','$http','Security','$filter',"Notification","cartelerasModel",
-                            function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
+function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
 
+    $.clearInput = function () {
+        $('form').find('input[type=text], input[type=password], input[type=number], input[type=email], textarea').val('');
+    };
+    $('addCartelera').on('hidden', function () {
+        $.clearInput();
+    });
+
+    $scope.idCancelar = 0;
     $scope.currentCategory = -1;
     $scope.carteleras = [];
     $scope.selectedCartelera = [];
@@ -27,7 +35,19 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
     });
     $scope.countries = [];
 
+    $scope.cancelarCarteleraAux = function(id){
+        $scope.idCancelar = id;
 
+    };
+    $scope.cancelarCartelera = function(){
+        console.log("JOJOJ");
+        var url = 'https://myconcert1.azurewebsites.net/api/Main/GET/spDeactivateBillboard/'+$scope.idCancelar;
+        $http.get(url).success(function (data, status, headers, config) {
+        }).error(function (data, status, headers, config) {
+            console.log("Error cancelando la cartelera...");
+        });
+
+    };
     $scope.getCountriesFromServer = function () {
         $http.get('https://myconcert1.azurewebsites.net/api/Main/GET/spGetCountries').success(function (data, status, headers, config) {
             var response = JSON.parse(data);
@@ -44,48 +64,40 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
     };
 
     $scope.addCartelera = function () {
-        console.log($scope.data.Country.id.toString());
-        console.log($scope.data.Name);
-        console.log($scope.data.Description);
-        console.log($scope.data.Begin);
-        console.log($scope.data.Final);
         for (i = 0; i<$scope.categoriasIncluidas.length; i++){
             delete $scope.categoriasIncluidas[i].localID;
+            delete $scope.categoriasIncluidas[i].name;
         }
 
         var parameter = JSON.stringify({
-            Name: $scope.data.Name,
-            SVoteDate : $scope.data.Begin,
-            EVoteDate : $scope.data.Final,
-            Categorias : $scope.categoriasIncluidas,
-            PlaceID :$scope.data.Country.id.toString(),
-            Description : $scope.data.Description
+            name: $scope.data.Name,
+            sVoteDate : $scope.data.Begin,
+            eVoteDate : $scope.data.Final,
+            categories : $scope.categoriasIncluidas,
+            placeID :$scope.data.Country.id.toString(),
+            description : $scope.data.Description
         });
         console.log(parameter);
 
-        /*$http.post('https://myconcert1.azurewebsites.net/api/Verify/Login', parameter).success(function (response, status, headers, config) {
-            var response = JSON.parse(response);
-            if(response.State == 0){
-                Notification.error({message: 'Credenciales Inválidas', title: 'Error', delay: 2000});
-            }
-            else{
-                Security.initSession(data.Username,response.State);
-            }
+        $http.post('https://myconcert1.azurewebsites.net/api/Funcs/AddBillboard', parameter).success(function (response, status, headers, config) {
+            //var response = JSON.parse(response);
+            console.log(response);
         }).error(function (data, status, headers, config) {
-            console.log(data);
+            Notification.error({message: 'No se puede agregar la cartelera', title: 'Error', delay: 2000});
         });
-*/
+
 
 
     }
 
 
-    $scope.addBanda = function (name) {
+    $scope.addBanda = function (name,id) {
         var flag = 0;
         if($scope.regBandas.length != 0){
             for(i = 0; i<$scope.regBandas.length; i++){
                 if($scope.regBandas[i] == name){
                     flag = 1;
+                    Notification.error({message: 'La banda ya pertenece a una categoria', title: 'Banda ya existente', delay: 2000});
                 }
             }
 
@@ -95,11 +107,12 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
             var index = $scope.categoriasIncluidas.indexOf(foundItem );
             var bandName = {};
             bandName.name = name;
-            $scope.categoriasIncluidas[index].bandas.push(bandName);
+            bandName.ID = id;
+            $scope.categoriasIncluidas[index].bands.push(bandName);
         }
 
 
-        console.log(JSON.stringify($scope.categoriasIncluidas,null,""));
+        //console.log(JSON.stringify($scope.categoriasIncluidas,null,""));
     };
 
     $scope.borrar = function (name) {
@@ -116,22 +129,24 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
 
     };
 
-    $scope.addCategoria = function (name,localid) {
-        console.log(name);
-        console.log(localid);
+    $scope.addCategoria = function (name,localid,id) {
+        //console.log(name);
+        //console.log(localid);
         var flag = 0;
         if(typeof $scope.categoriasIncluidas[0] != 'undefined'){
 
             for ( i = 0;i<$scope.categoriasIncluidas.length; i++){
                 if(name == $scope.categoriasIncluidas[i].name){
                     flag=1;
+                    Notification.error({message: 'La categoria ya pertenece a la cartelera', title: 'Categoria ya existente', delay: 2000});
                 }
             }
         }if(flag == 0){
             var catTemp = new Object();
             catTemp.localID = localid;
             catTemp.name = name;
-            catTemp.bandas = [];
+            catTemp.ID = id;
+            catTemp.bands = [];
             $scope.categoriasIncluidas.push(catTemp);
         }
     };
@@ -141,11 +156,12 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
         var url = 'https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllCategories/';
         $http.get(url).success(function (data, status, headers, config) {
             var response = JSON.parse(data);
-            console.log(response);
+            //console.log(response);
             for (j = 0; j < response.spGetAllCategories.length; j++) {
                 var category = new Object();
+                category.localID = j;
                 category.name = response.spGetAllCategories[j].Name;
-                category.localID  = response.spGetAllCategories[j].PK_ID_CATEGORY;
+                category.id  = response.spGetAllCategories[j].PK_ID_CATEGORY;
                 $scope.listaCategorias.push(category);
             }
         }).error(function (data, status, headers, config) {
@@ -164,11 +180,13 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
 
                     cartelera.localIndex = j;
                     cartelera.id = response.spGetAllBillboards[j].id;
+                    cartelera.state = response.spGetAllBillboards[j].state;
                     cartelera.name = response.spGetAllBillboards[j].name;
                     cartelera.location = response.spGetAllBillboards[j].location;
                     cartelera.leftTime = response.spGetAllBillboards[j].timeLeft;
                     cartelera.image = "../assets/"+response.spGetAllBillboards[j].image;
                     $scope.carteleras.push(cartelera);
+                    //console.log(cartelera.state);
                 }
             }
         });
@@ -176,15 +194,15 @@ app.controller('cartelerasController',['$scope','$http','Security','$filter',"No
 
     $scope.readBandas = function () {
         $scope.bandas = [];
-        var url = 'https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllBands/';
+        var url = 'https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllActiveBands/';
         $http.get(url).success(function (data, status, headers, config) {
             var response = JSON.parse(data);
-            for (j = 0; j < response.spGetAllBands.length; j++) {
+            for (j = 0; j < response.spGetAllActiveBands.length; j++) {
                 var bands = new Object();
-                bands.name = response.spGetAllBands[j].Name;
-                bands.id  = response.spGetAllBands[j].ID_Spotify;
-                bands.idBand  = response.spGetAllBands[j].PK_ID_BAND;
-                bands.status = response.spGetAllBands[j].BandState;
+                bands.name = response.spGetAllActiveBands[j].Name;
+                bands.id  = response.spGetAllActiveBands[j].ID_Spotify;
+                bands.idBand  = response.spGetAllActiveBands[j].PK_ID_BAND;
+                bands.status = response.spGetAllActiveBands[j].BandState;
                 $scope.bandas.push(bands);
             }
         }).error(function (data, status, headers, config) {

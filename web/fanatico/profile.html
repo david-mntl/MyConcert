@@ -67,12 +67,12 @@
                 </div>
                 <div class="user_info_holder">
                     <div class="user_info_holder_name"><a class="txt_c">Teléfono:</a> </div>
-                    <div class="user_info_holder_input"><input ng-disabled="!editingProfile" class="pInput pIBlue" type="text"  ng-model="data.Phone"></div>
+                    <div class="user_info_holder_input"><input ng-disabled="(!editingProfile) || !(userType==2)" class="pInput pIBlue" type="text"  ng-model="data.Phone"></div>
                 </div>
                 <div class="user_info_holder">
                     <div class="user_info_holder_name"><a class="txt_c">País:</a></div>
                     <div class="user_info_holder_input">
-                        <select ng-disabled="data.ProfileType.id == 1 || !editingProfile" class="pInput pIBlue" style="width: 178px; float:left;" ng-model="data.Country" ng-options="country.name for country in countries track by country.id">
+                        <select ng-disabled="data.ProfileType.id == 1 || !editingProfile || !(userType==2)" class="pInput pIBlue" style="width: 178px; float:left;" ng-model="data.Country" ng-options="country.name for country in countries track by country.id">
                             <option value="">País</option>
                         </select>
                     </div>
@@ -91,7 +91,7 @@
                 <div class="user_info_holder">
                     <div class="user_info_holder_name"><a class="txt_c">Universidad:</a></div>
                     <div class="user_info_holder_input">
-                        <select ng-disabled="!editingProfile" class="pInput pIBlue" ng-model="data.University" ng-options="university.name for university in universities track by university.id">
+                        <select ng-disabled="!editingProfile || !(userType==2)" class="pInput pIBlue" ng-model="data.University" ng-options="university.name for university in universities track by university.id">
                             <option value="">Universidad</option>
                         </select>
                     </div>
@@ -102,7 +102,7 @@
                 </div>
                 <div class="user_info_holder">
                     <div class="user_info_holder_name"><a class="txt_c">Correo Electrónico:</a></div>
-                    <div class="user_info_holder_input"> <input ng-model="data.Email"  class="pInput pIRed" type="text" disabled> </div>
+                    <div class="user_info_holder_input"> <input ng-disabled="!editingProfile || (userType==2)" ng-model="data.Email"  class="pInput pIRed" type="text" disabled> </div>
                 </div>
                 <div class="user_info_holder">
                     <div class="user_info_holder_name"><a class="txt_c">Contraseña:</a></div>
@@ -110,14 +110,14 @@
                 </div>
                 <div class="user_info_holder">
                     <div class="user_info_holder_name"><a class="txt_c">Ubicación:</a></div>
-                    <div class="user_info_holder_input"> <input ng-disabled="!editingProfile" ng-model="data.Place" class="pInput pIBlue" type="text"> </div>
+                    <div class="user_info_holder_input"> <input ng-disabled="!editingProfile || !(userType==2)" ng-model="data.Place" class="pInput pIBlue" type="text"> </div>
                 </div>
             </div>
             <div class="bodyreg_column" style="margin-top: 15px;">
                 <div class="user_info_holder2">
                     <div class="user_info_holder_name"><a class="txt_c">Géneros Musicales Favoritos:</a></div>
                     <div class="user_info_holder_input">
-                        <select ng-disabled="!editingProfile" class="pInput pIBlue" style="float:left;" ng-model="data.Genre" ng-options="genre.name for genre in genres track by genre.id">
+                        <select ng-disabled="!editingProfile || !(userType==2)" class="pInput pIBlue" style="float:left;" ng-model="data.Genre" ng-options="genre.name for genre in genres track by genre.id">
                             <option value="">Género</option>
                         </select>
                         <div style="margin-top: 4px; float: left; color: #0E8012; margin-left: 5px; cursor:pointer;" ng-click="addGenre()">
@@ -126,14 +126,14 @@
                         <div style="margin-top: 4px; float: left; color: #0E8012; margin-left: 5px; cursor:pointer;" ng-click="removeGenre()">
                             <i class="fa fa-minus-circle fa-2x" style="display: inline-flex;"></i>
                         </div>
-                        <input ng-disabled="!editingProfile" ng-model="data.GenresList" class="pInput pIBlue" type="text" style="margin-top: 5px;" aria-readonly="true" readonly>
+                        <input ng-disabled="!editingProfile || !(userType==2)" ng-model="data.GenresList" class="pInput pIBlue" type="text" style="margin-top: 5px;" aria-readonly="true" readonly>
                     </div>
                 </div>
                 <div class="user_info_holder3">
                     <div class="user_info_holder_name"><a class="txt_c">Descripción Personal:</a></div>
                     <div class="user_info_holder_input">
                         <form>
-                            <textarea ng-disabled="!editingProfile" ng-model="data.Description" class="pInput pIBlue" maxlength="300" onblur="textCounter(this.form.counter_txt,300,this.form.message);" onkeyup="textCounter(this.form.counter_txt,300,this.form.message);" style="width: 100%; height: 90px; resize:none;" name="message" rows="1" cols="15" ></textarea>
+                            <textarea ng-disabled="!editingProfile || !(userType==2)" ng-model="data.Description" class="pInput pIBlue" maxlength="300" onblur="textCounter(this.form.counter_txt,300,this.form.message);" onkeyup="textCounter(this.form.counter_txt,300,this.form.message);" style="width: 100%; height: 90px; resize:none;" name="message" rows="1" cols="15" ></textarea>
                             <input onblur="textCounter(this.form.counter_txt,300,this.form.message);" disabled  onfocus="this.blur();" tabindex="999" maxlength="3" size="3" value="300" name="counter_txt">
                         </form>
                     </div>

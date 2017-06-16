@@ -59,6 +59,7 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
                     for(k = 0; k < response.categories[j].bands.length; k++){
                         var band = new Object();
                         band.localID = k;
+                        band.id = response.categories[j].bands[k].id;
                         band.name = response.categories[j].bands[k].name;
                         band.spotifyID = response.categories[j].bands[k].spotifyID;
                         band.rating = response.categories[j].bands[k].rating;
@@ -81,7 +82,9 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
 
 
     $scope.readSongsData = function() {
-        $http.get("../assets/docs/songs.txt").success(function (response) {
+        $http.get("https://myconcert1.azurewebsites.net/api/Spotify/getSongs/"+$scope.selectedBand.spotifyID).success(function (response) {
+            console.log(response);
+            var response = JSON.parse(response);
 
             if (response.songs.length > 0) {
                 for (j = 0; j < response.songs.length; j++) {
@@ -90,8 +93,8 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
                     song.localIndex = j;
                     song.name = response.songs[j].name;
                     song.url = response.songs[j].url;
-
-                    $scope.songs.push(song);
+                    if(song.url != null)
+                        $scope.songs.push(song);
                 }
             }
         });
@@ -266,10 +269,24 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
     $scope.sendNewComment = function () {
         if($scope.currentComment.rating != 0){
             if($scope.currentComment.title){
-                if($scope.currentComment.title) {
-                    console.log("Calificación: " + $scope.currentComment.rating);
-                    console.log("Titulo: " + $scope.currentComment.title);
-                    console.log("Datos: " + $scope.currentComment.data);
+                if($scope.currentComment.data) {
+
+                    var parameter = JSON.stringify({
+                        userID: Security.getCurrentUserEmail().toString(),
+                        bandID: $scope.selectedBand.id.toString(),
+                        points: $scope.currentComment.rating.toString(),
+                        comment: $scope.currentComment.title+": "+ $scope.currentComment.data.toString()
+                    });
+
+                    $http.post('https://myconcert1.azurewebsites.net/api/Funcs/addCommentCalification', parameter).success(function (response, status, headers, config) {
+                        $scope.closeBandModal();
+                        $scope.closeFestivalModal();
+                    }).error(function (data, status, headers, config) {
+                        console.log(data);
+                    });
+
+
+
                     $scope.closeBandModal();
                     Notification.success({message: 'Comentario enviado...', delay: 2000});
                 }
@@ -281,8 +298,6 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
         }
         else
             Notification.error({message: 'Ingrese una calificación', delay: 2000});
-
-
     };
 
     $scope.changeCurrentFestivalCategory = function (pCurrentCategoryID) {

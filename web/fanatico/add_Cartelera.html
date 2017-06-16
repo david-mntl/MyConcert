@@ -10,7 +10,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">Agregar nuevo Cartelera</h4>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="height: 600px">
                     <div class="form-group">
                         <div class="row">
                             <div class="col-md-4">
@@ -54,28 +54,28 @@
                                 <button style="float: right"  data-toggle="modal" data-target="#addCategoria" ng-click="" class="sAddCategoria"><span class="glyphicon glyphicon-plus-sign"></span></button>
                             </div>
                         </div>
-                        <div STYLE="overflow: scroll;height: 300px" class="row">
+                        <div STYLE="overflow: scroll;height: 250px" class="row">
                             <div ng-repeat="x in categoriasIncluidas | filter: buscarCat">
                                 <button ng-click="changeCurrentCategory(x.localID)" class="accordion">
                                     {{x.name}}
                                 </button>
                                 <div   ng-if="currentCategory == x.localID">
                                     <button data-toggle="modal" data-target="#addBanda"  ng-click="" class="sAddBanda"><span class="glyphicon glyphicon-plus"></span></button>
-                                    <div class="bandname" ng-repeat="band in x.bandas">
+                                    <div class="bandname" ng-repeat="band in x.bands">
                                         <button ng-click="borrar(band)" style="float: left"><span class="glyphicon glyphicon-remove"></span></button>
                                         <h3>{{band.name}}</h3>
 
                                     </div>
                                 </div>
                             </div>
+
                         </div>
+                        <button style="float: right" ng-click="addCartelera()" type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
                     </div>
 
                 </div>
             </div>
-            <div class="modal-footer">
-                <button ng-click="addCartelera()" type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
-            </div>
+
         </div>
 
     </div>
@@ -96,7 +96,7 @@
                     <h4 class="modal-title">Buscar banda</h4>
                     <input ng-model="inputBanda" type="text" class="form-control" id="inputBanda">
                     <div class="addBandasContenedor ">
-                        <button ng-repeat="x in bandas | filter: inputBanda" ng-click="addBanda(x.name)" data-dismiss="modal" class="buttonBandas" type="button">{{x.name}}</button>
+                        <button ng-repeat="x in bandas | filter: inputBanda" ng-click="addBanda(x.name,x.idBand)" data-dismiss="modal" class="buttonBandas" type="button">{{x.name}}</button>
                     </div>
                 </div>
             </div>
@@ -106,6 +106,7 @@
     </div>
 </div>
 <!--Form para buscar categoria-->
+
 <div  class="container" >
     <!-- Trigger the modal with a button -->
     <!-- Modal -->
@@ -119,7 +120,7 @@
                     <h4 class="modal-title">Buscar Categoria</h4>
                     <input ng-model="inputCategoria" type="text" class="form-control" id="inputCategoria">
                     <div class="addBandasContenedor ">
-                        <button ng-repeat="x in listaCategorias | filter: inputCategoria" ng-click="addCategoria(x.name,x.localID)" data-dismiss="modal" class="buttonBandas" type="button">{{x.name}}</button>
+                        <button ng-repeat="x in listaCategorias | filter: inputCategoria" ng-click="addCategoria(x.name,x.localID,x.id)" data-dismiss="modal" class="buttonBandas" type="button">{{x.name}}</button>
                     </div>
                 </div>
             </div>

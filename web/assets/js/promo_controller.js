@@ -3,7 +3,7 @@ var app = angular.module('mainModule', ['spotify','angular-loading-bar','ngSecur
 
 
 
-app.controller('mainController',['$scope','$http','Spotify','Security',function ($scope,$http,Spotify,Security,$timeout) {
+app.controller('mainController',['$scope','$http','Spotify','Security','$window',function ($scope,$http,Spotify,Security,$window,$timeout) {
     var url1 = 'https://myconcert1.azurewebsites.net/api/Spotify/main/';
     $http.get(url1).success(function (data, status, headers, config) {
     }).error(function (data, status, headers, config) {
@@ -192,15 +192,20 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
     $scope.xExitSession = function () { Security.exitSession(); };
 
     $scope.actionBand = function (dato,id) {
+
         if(dato == 1){
             var url = 'https://myconcert1.azurewebsites.net/api/Main/GET/spActivateBand/'+id;
             $http.get(url).success(function (data, status, headers, config) {
+                $window.location.reload();
             }).error(function (data, status, headers, config) {
                 console.log("Error retrieving data from Spotify...");
             });
         }else{
+
             var url = 'https://myconcert1.azurewebsites.net/api/Main/GET/spDeactivateBand/'+id;
             $http.get(url).success(function (data, status, headers, config) {
+                $window.location.reload();
+
             }).error(function (data, status, headers, config) {
                 console.log("Error retrieving data from Spotify...");
             });
