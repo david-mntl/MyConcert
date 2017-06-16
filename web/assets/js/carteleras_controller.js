@@ -4,6 +4,7 @@ var app = angular.module('mainModule', ['720kb.datepicker','spotify','angular-lo
 app.controller('cartelerasController',['$scope','$http','Security','$filter',"Notification","cartelerasModel",
 function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
 
+
     $.clearInput = function () {
         $('form').find('input[type=text], input[type=password], input[type=number], input[type=email], textarea').val('');
     };
@@ -21,6 +22,7 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
     $scope.userType =  Security.getCurrentUserType();
     $scope.listaCategorias = [];
     $scope.categoriasIncluidas = [];
+    $scope.finalCategoriesToCreateFestival = [];
     $scope.regBandas = [];
     $scope.visibleFestivalModal = false;
     $scope.currentCarteleraCategory = -1;
@@ -30,6 +32,7 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
     $scope.data = [];
     $scope.songs = [];
     $scope.confirmFestival = false;
+    $scope.loadingChef = false;
     $scope.audio.addEventListener('ended', function(){
         $scope.playingSong = false;
     });
@@ -88,7 +91,7 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
 
 
 
-    }
+    };
 
 
     $scope.addBanda = function (name,id) {
@@ -153,10 +156,9 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
 
     $scope.readCategorias = function () {
         $scope.listaCategorias = [];
-        var url = 'https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllCategories/';
-        $http.get(url).success(function (data, status, headers, config) {
+        $http.get("https://myconcert1.azurewebsites.net/api/Main/GET/spGetAllCategories/").success(function (data, status, headers, config) {
             var response = JSON.parse(data);
-            //console.log(response);
+
             for (j = 0; j < response.spGetAllCategories.length; j++) {
                 var category = new Object();
                 category.localID = j;
@@ -165,7 +167,7 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
                 $scope.listaCategorias.push(category);
             }
         }).error(function (data, status, headers, config) {
-            console.log("Error retrieving data from Spotify...");
+            console.log("Error retrieving data from server...");
         });
 
     };
@@ -212,11 +214,10 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
     };
 
     $scope.readCategoriesData = function(pCarteleraID) {
-        $http.get("../assets/docs/cartelera_inf.txt").success(function (response) {
-            //$http.get("https://myconcert1.azurewebsites.net/api/Main/GET/FestivalInfo/"+pCarteleraID).success(function (responseStr) {
+        //$http.get("../assets/docs/cartelera_inf.txt").success(function (response) {
+        $http.get("https://myconcert1.azurewebsites.net/api/Main/GET/CarteleraInfoDetailed/"+pCarteleraID).success(function (response) {
 
-            //var response = JSON.parse(response);
-
+            var response = JSON.parse(response);
             $scope.selectedCartelera.categories = [];
             if (response.categories.length > 0) {
                 for (j = 0; j < response.categories.length; j++) {
@@ -230,9 +231,10 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
                         var band = new Object();
                         band.localID = k;
                         band.id = response.categories[j].bands[k].id;
+                        band.spotifyID = response.categories[j].bands[k].spotifyID;
                         band.name = response.categories[j].bands[k].name;
                         band.image = response.categories[j].bands[k].image;
-                        band.votes = response.categories[j].bands[k].votes;
+                        band.money = response.categories[j].bands[k].money;
                         band.percentage = response.categories[j].bands[k].percentage;
                         bands.push(band);
                     }
@@ -245,10 +247,73 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
         });
     };
 
-    $scope.readChefBandData = function(pCarteleraID) {
-        $http.get("../assets/docs/bandd.txt").success(function (response) {
-            //$http.get("https://myconcert1.azurewebsites.net/api/Main/GET/FestivalInfo/"+pCarteleraID).success(function (responseStr) {
+    $scope.readChefBandData = function() {
+        $scope.finalCategoriesToCreateFestival = [];
+        for(z=0; z < $scope.selectedCartelera.categories.length; z++){
+            var category = new Object();
+            category.name = $scope.selectedCartelera.categories[z].name;
+            var bands = [];
+            for(k=0; k < $scope.selectedCartelera.categories[z].winningNumber; k++){
+                var band = new Object();
+                band.id = $scope.selectedCartelera.categories[z].bands[k].id;
+                band.name = $scope.selectedCartelera.categories[z].bands[k].name;
+                band.money = $scope.selectedCartelera.categories[z].bands[k].votes;
+                band.spotifyID = $scope.selectedCartelera.categories[z].bands[k].spotifyID;
+                bands.push(band);
+            }
+            category.bands = bands;
+            $scope.finalCategoriesToCreateFestival.push(category);
+        }
 
+
+        var parameter = JSON.stringify({
+            billboardID: $scope.selectedCartelera.id,
+            categories: $scope.finalCategoriesToCreateFestival
+        });
+
+
+        console.log("AQUI DEBERIA AGREGAR FESTIVAL");
+
+
+
+         $http.post('https://myconcert1.azurewebsites.net/api/Funcs/addCheffSugg', parameter).success(function (response, status, headers, config) {
+             var response = JSON.parse(response);
+             //Ejemplo response: {"ID":"4","spotifyID":"2i0fdBIVqs33fA1HiynUPj","name":"Shaki"}
+
+             var currentURL = 'http://myconcert1.azurewebsites.net/api/GET/bandInfo/'+response.ID+"/"+response.spotifyID;
+             console.log(currentURL);
+
+             $http.get(currentURL).success(function (responseBand, status, headers, config) {
+
+                 console.log(responseBand);
+                 var responseB = JSON.parse(responseBand);
+
+                 $scope.chefBand = [];
+                 $scope.chefBand.id = response.ID;
+                 $scope.chefBand.spotifyID = response.spotifyID;
+                 $scope.chefBand.name = response.name;
+                 $scope.chefBand.image = responseB.image;
+                 $scope.chefBand.followers = responseB.followers;
+                 $scope.chefBand.popularity = responseB.popularity;
+                 $scope.chefBand.rating = responseB.rating;
+                 $scope.chefBand.members = responseB.members;
+                 $scope.chefBand.genres = responseB.genres;
+                 $scope.chefBand.songs = responseB.songs;
+
+                 $scope.loadingChef = false;
+             }).error(function (data, status, headers, config) {
+                 console.log(data);
+             });
+
+
+         }).error(function (data, status, headers, config) {
+         console.log(data);
+         });
+
+
+
+        /*$http.get("../assets/docs/bandd.txt").success(function (response) {
+            //$http.get("https://myconcert1.azurewebsites.net/api/Main/GET/FestivalInfo/"+pCarteleraID).success(function (responseStr) {
             //var response = JSON.parse(response);
 
             $scope.chefBand = [];
@@ -261,26 +326,12 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
             $scope.chefBand.members = response.members;
             $scope.chefBand.genres = response.genres;
             $scope.chefBand.songs = response.songs;
-        });
+        });*/
     };
 
     $scope.writeCreateFestival = function () {
-        var categories = [];
-        for(z=0; z < $scope.selectedCartelera.categories.length; z++){
-            var category = new Object();
-            category.name = $scope.selectedCartelera.categories[z].name;
-            var bands = [];
-            for(k=0; k < $scope.selectedCartelera.categories[z].winningNumber; k++){
-                var band = new Object();
-                band.id = $scope.selectedCartelera.categories[z].bands[k].id;
-                band.name = $scope.selectedCartelera.categories[z].bands[k].name;
-                band.money = $scope.selectedCartelera.categories[z].bands[k].votes;
-                bands.push(band);
-            }
-            category.bands = bands;
-            categories.push(category);
-        }
 
+        /** Añadir la recomendación del Chef **/
         var chefCategory = new Object();
         chefCategory.name = "Recomendación del Chef";
         var chefBands = [];
@@ -290,31 +341,28 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
         chefBand.money = 0;
         chefBands.push(chefBand);
         chefCategory.bands = chefBands;
-        categories.push(chefCategory);
+        $scope.finalCategoriesToCreateFestival.push(chefCategory);
+
 
 
         var festival = JSON.stringify({
             name: $scope.selectedCartelera.name,
+            billboardID: $scope.selectedCartelera.id,
             location: $scope.selectedCartelera.location,
-            date: $scope.data.Date,
+            startDate: $scope.data.StartDate,
+            endDate: $scope.data.EndDate,
             place: $scope.data.Place,
             description: $scope.data.Description,
-            categories: categories
+            categories: $scope.finalCategoriesToCreateFestival
         });
 
-        console.log(festival);
 
-        /*$http.post('https://myconcert1.azurewebsites.net/api/Verify/Login', parameter).success(function (data, status, headers, config) {
-            var response = JSON.parse(data);
-            if(response.State == 0){
-                $scope.showMessage('error','Error','Credenciales Inválidas',2000);
-            }
-            else{
-                Security.initSession($scope.data.Username.toString(),response.State);
-            }
+        $http.post('https://myconcert1.azurewebsites.net/api/Funcs/AddFestival', festival).success(function (data, status, headers, config) {
+            console.log("FESTIVAL AGREGADO.");
+            console.log(data);
         }).error(function (data, status, headers, config) {
             console.log(data);
-        });*/
+        });
 
     };
 
@@ -324,6 +372,7 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
     };
 
     $scope.closeCreateFestivalModal = function () {
+        $scope.loadingChef = false;
         $scope.playingSong = false;
         $scope.visibleFestivalModal = false;
         $scope.selectedCartelera = [];
@@ -331,6 +380,7 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
         $scope.currentCarteleraCategory = -1;
         $scope.currentStep = 1;
         $scope.data=[];
+        $scope.finalCategoriesToCreateFestival = [];
     };
 
     $scope.showCreateFestivalModal = function (pCarteleraIndex) {
@@ -424,26 +474,32 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
         $scope.checkDoneCategory(currentCategory);
     };
     $scope.changeStep = function (pRightOrLeft) {
-        if(pRightOrLeft == 0){
-            if($scope.currentStep==1){
-                if($scope.checkCategories()){
-                    if($scope.currentStep + 1  <= 3) {
+        if(!$scope.loadingChef) {
+            if (pRightOrLeft == 0) {
+                if ($scope.currentStep == 1) {
+                    if ($scope.checkCategories()) {
+                        if ($scope.currentStep + 1 <= 3) {
+                            $scope.currentStep += 1;
+                            $scope.loadingChef = true;
+                            $scope.readChefBandData();
+                        }
+                    }
+                }
+                else {
+                    if ($scope.currentStep + 1 <= 3) {
                         $scope.currentStep += 1;
-                        $scope.readChefBandData();
+                        //$scope.readChefBandData();
+                        $scope.pauseSong();
                     }
                 }
             }
-            else{
-                if($scope.currentStep + 1  <= 3) {
-                    $scope.currentStep += 1;
-                    $scope.readChefBandData();
-                    $scope.pauseSong();
-                }
+            else if (pRightOrLeft == 1) {
+                if ($scope.currentStep - 1 >= 1)
+                    $scope.currentStep -= 1;
             }
         }
-        else if(pRightOrLeft == 1){
-            if($scope.currentStep -1  >= 1)
-                $scope.currentStep-=1;
+        else{
+            Notification.warning({message: 'Se está generando la recomendación del chef.',title: '¡Atención',delay: 2000});
         }
     };
     $scope.toggleConfirmFestival = function () {
@@ -458,23 +514,36 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
     $scope.checkCategories = function () {
         var categories = $scope.selectedCartelera.categories;
         var done = true;
-        if($scope.data.Date != undefined && $scope.data.Date != "") {
-            if ($scope.data.Place != undefined && $scope.data.Place != "") {
-                if ($scope.data.Description != undefined && $scope.data.Description != "") {
-                    done = true;
+        if($scope.data.StartDate != undefined && $scope.data.StartDate != "") {
+            if($scope.data.EndDate != undefined && $scope.data.EndDate != "") {
+                if($scope.compareDate($scope.data.EndDate,$scope.data.StartDate) || $scope.data.EndDate==$scope.data.StartDate){
+                    if ($scope.data.Place != undefined && $scope.data.Place != "") {
+                        if ($scope.data.Description != undefined && $scope.data.Description != "") {
+                            done = true;
+                        }
+                        else {
+                            Notification.error({message: 'Ingrese una descripción.',title: 'Información incompleta',delay: 2000});
+                            done = false;
+                        }
+                    }
+                    else {
+                        Notification.error({message: 'Ingrese un lugar para el evento.', title: 'Información incompleta', delay: 2000});
+                        done = false;
+                    }
                 }
-                else {
-                    Notification.error({message: 'Ingrese una descripción.',title: 'Información incompleta',delay: 2000});
+                else{
+                    Notification.error({message: 'La fecha de finalización es anterior a la fecha de inicio',title: 'Información inválida', delay: 2000});
                     done = false;
                 }
+
             }
-            else {
-                Notification.error({message: 'Ingrese una lugar para el evento.', title: 'Información incompleta', delay: 2000});
+            else{
+                Notification.error({message: 'Ingrese una fecha de finalización para el evento.',title: 'Información incompleta', delay: 2000});
                 done = false;
             }
         }
         else{
-            Notification.error({message: 'Ingrese una fecha para el evento.',title: 'Información incompleta', delay: 2000});
+            Notification.error({message: 'Ingrese una fecha de inicio para el evento.',title: 'Información incompleta', delay: 2000});
             done = false;
         }
 
@@ -487,6 +556,10 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
         return done;
     };
 
+    $scope.compareDate = function(time1, time2) {
+        return new Date(time1) > new Date(time2); // true if time1 is later
+    };
+
     Security.verifySession();
     $scope.readBandas();
     $scope.readCategorias();
@@ -494,7 +567,6 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
     $scope.getCountriesFromServer();
 
     $scope.postArtista = function(){
-        console.log("Hola");
         console.log(JSON.stringify($scope.categoriasIncluidas[0].bandas[0]));
     }
 }]);
