@@ -6,6 +6,7 @@ app.controller('festivalesController',['$scope','$http','Security','Notification
     $scope.festivales = [];
     $scope.visibleFestivalModal = false;
     $scope.visibleBandModal = false;
+    $scope.visibleHowtoChef = false;
 
     $scope.userType =  Security.getCurrentUserType();
     $scope.selectedFestival = [];
@@ -254,6 +255,7 @@ app.controller('festivalesController',['$scope','$http','Security','Notification
     };
     $scope.xExitSession = function () { Security.exitSession(); };
     $scope.xGotoProfile = function () { Security.gotoProfile(); };
+    $scope.toggleHowToChef = function () { $scope.visibleHowtoChef = !$scope.visibleHowtoChef; };
 
     Security.verifySession();
     $scope.readFestivalesData();

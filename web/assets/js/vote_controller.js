@@ -6,6 +6,7 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
     $scope.cartelera = [];
     $scope.categories = [];
     $scope.currentCarteleraCategory = -1;
+    $scope.visibleHowVoteModal = false;
 
     $scope.playingSong = false;
     $scope.audio = new Audio();
@@ -35,10 +36,11 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
 
     $scope.readCategoriesData = function(pCarteleraID) {
         //$http.get(pURL).success(function (response) {
-        $http.get("../assets/docs/cartelera.txt").success(function (response) {
+        //$http.get("../assets/docs/cartelera.txt").success(function (response) {
+        $http.get("https://myconcert1.azurewebsites.net/api/Main/GET/CarteleraInfoDetailed/" + pCarteleraID).success(function (response) {
             $scope.categories = [];
             $scope.currentCarteleraCategory = -1;
-
+            var response = JSON.parse(response);
 
             $scope.cartelera.id = response.id;
             $scope.cartelera.name = response.name;
@@ -52,6 +54,7 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
                     var bands = [];
 
                     category.localID = j;
+                    category.id = response.categories[j].id;
                     category.name = response.categories[j].name;
                     category.done = false;
                     category.money = 100;
@@ -167,8 +170,25 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
                 ready = false;
             }
         }
-        if(ready)
-            Notification.success({message: 'Enviando voto...' ,title:'¡Completado!', delay: 2000});
+        if(ready){
+            var categoriesLocalInfo = $scope.categories;
+
+            delete categoriesLocalInfo.localID;
+
+            var parameter = JSON.stringify({
+                email: Security.getCurrentUserEmail(),
+                billboardID: $scope.cartelera.id,
+                categories: $scope.categories
+            });
+
+            console.log(parameter);
+            $http.post('https://myconcert1.azurewebsites.net/api/Funcs/AddVoteToBillboard', parameter).success(function (response, status, headers, config) {
+                console.log(response);
+            }).error(function (data, status, headers, config) {
+                console.log(data);
+            });
+            //Notification.success({message: 'Enviando voto...' ,title:'¡Completado!', delay: 2000});
+        }
     };
     
     $scope.addMoneyToCurrentBand = function (bandLocalID,pQuantity) {
@@ -228,12 +248,8 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
 
     /******************* *****************/
 
-    $scope.closeHowVoteModal = function () {
-        $scope.visibleHowVoteModal = false;
-    };
-
-    $scope.showHowVoteModal = function () {
-        $scope.visibleHowVoteModal = true;
+    $scope.toggleHowToVoteModal = function () {
+        $scope.visibleHowVoteModal = !$scope.visibleHowVoteModal;
     };
 
     $scope.closeBandModal = function () {

@@ -21,6 +21,13 @@
     color: white;
 }
 
+.noselect{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -ms-user-select:none;
+}
+
 /***************************************************/
 /******************* Register **********************/
 .txt_a{

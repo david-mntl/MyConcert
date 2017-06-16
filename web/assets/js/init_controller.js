@@ -11,6 +11,9 @@ app.controller('cartelerasController',['$scope','$http','$interval','Notificatio
 
     $scope.visibleFestivalModal = false;
     $scope.visibleBandModal = false;
+    $scope.visibleHowtoCarteleras = false;
+    $scope.visibleHowtoFestivales = false;
+    $scope.visibleHowtoChef = false;
 
     $scope.selectedFestival = [];
     $scope.currentFestivalCategory = -1;
@@ -282,26 +285,31 @@ app.controller('cartelerasController',['$scope','$http','$interval','Notificatio
         return obj;
     };
 
+    $scope.toggleHowToCarteleras = function () { $scope.visibleHowtoCarteleras = !$scope.visibleHowtoCarteleras; };
+    $scope.toggleHowToFestivales = function () { $scope.visibleHowtoFestivales = !$scope.visibleHowtoFestivales; };
+    $scope.toggleHowToChef = function () { $scope.visibleHowtoChef = !$scope.visibleHowtoChef; };
+
     $scope.xExitSession = function () { Security.exitSession(); };
     $scope.xGotoProfile = function () { Security.gotoProfile(); };
 
     /************************** Festivales/Carteleras Carrousel *********************************/
     $scope.changeCurrentCartelerasAuto = function () { $scope.changeCurrentCarteleras(1); };
     $scope.changeCurrentCarteleras = function(mode){
+        if($scope.carteleras.length > 2){
+            if($scope.currentCarteleraIndex >= $scope.carteleras.length){
+                $scope.currentCarteleraIndex = 0;
+            }
 
-       if($scope.currentCarteleraIndex >= $scope.carteleras.length){
-            $scope.currentCarteleraIndex = 0;
-       }
-
-       $scope.currentCarteleras[0] = $scope.carteleras[$scope.currentCarteleraIndex];
-       if($scope.currentCarteleraIndex+1 < $scope.carteleras.length) {
-            $scope.currentCarteleras[1] = $scope.carteleras[$scope.currentCarteleraIndex + 1];
-       }
-       else{
-           $scope.currentCarteleras[1] = $scope.carteleras[0];
-       }
-       if(mode==1)
-           $scope.currentCarteleraIndex += 1;
+            $scope.currentCarteleras[0] = $scope.carteleras[$scope.currentCarteleraIndex];
+            if($scope.currentCarteleraIndex+1 < $scope.carteleras.length) {
+                $scope.currentCarteleras[1] = $scope.carteleras[$scope.currentCarteleraIndex + 1];
+            }
+            else{
+                $scope.currentCarteleras[1] = $scope.carteleras[0];
+            }
+            if(mode==1)
+                $scope.currentCarteleraIndex += 1;
+        }
     };
 
 

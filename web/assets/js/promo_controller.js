@@ -192,7 +192,6 @@ app.controller('mainController',['$scope','$http','Spotify','Security',function 
     $scope.xExitSession = function () { Security.exitSession(); };
 
     $scope.actionBand = function (dato,id) {
-        console.log(dato)
         if(dato == 1){
             var url = 'https://myconcert1.azurewebsites.net/api/Main/GET/spActivateBand/'+id;
             $http.get(url).success(function (data, status, headers, config) {
