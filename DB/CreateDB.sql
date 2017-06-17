@@ -18,10 +18,10 @@ CREATE TABLE MCUSER(
 	Email VARCHAR(50) NOT NULL,
 	Phone VARCHAR(15) NOT NULL,
 	Photo VARCHAR(30),
-	RegistrationDate date NOT NULL,
+	RegistrationDate varchar(11) NOT NULL,
 	MCPassword varchar(64) NOT NULL,
 	PersonalDescription varchar(300) NOT NULL,
-	Birthdate date,
+	Birthdate varchar(11),
 	FK_ID_State int
 );
 
@@ -43,7 +43,7 @@ CREATE TABLE MCUSER_ADMIN(
 	Email VARCHAR(50) NOT NULL,
 	MCPassword VARCHAR(64) NOT NULL,
 	FK_ID_State INT NOT NULL,
-	RegistrationDate DATE NOT NULL
+	RegistrationDate varchar(20) NOT NULL
 );
 
 CREATE TABLE PLACE(
@@ -54,8 +54,8 @@ CREATE TABLE PLACE(
 CREATE TABLE BILLBOARD(
 	PK_ID_BILLBOARD INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	Name VARCHAR(30),
-	StartVotingDate DATE,
-	EndVotingDate DATE,
+	StartVotingDate varchar(20),
+	EndVotingDate varchar(20),
 	FK_ID_Place INT,
 	FK_ID_EventState int,
 	BillboardDescription VARCHAR(300),
@@ -140,8 +140,8 @@ CREATE TABLE Festival_Ubication(
 CREATE TABLE FESTIVAL(
 	PK_ID_FESTIVAL INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	FK_ID_Billboard INT,
-	FestivalStart Date,
-	FestivalEnd Date,
+	FestivalStart varchar(20),
+	FestivalEnd varchar(20),
 	FK_ID_EventState INT,
 	FK_ID_Ubication INT,
 	FestivalDescription VARCHAR(300)

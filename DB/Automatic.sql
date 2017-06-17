@@ -1,3 +1,508 @@
+ALTER TABLE MCUSER
+DROP CONSTRAINT FK_MCUserCountry;
+
+ALTER TABLE MCUSER
+DROP CONSTRAINT FK_MCUser_University;
+
+ALTER TABLE MCUSER
+DROP CONSTRAINT FK_MCUser_State;
+
+ALTER TABLE MCUSER
+DROP CONSTRAINT MCUSER_Unique_Email;
+
+ALTER TABLE MCUSER_ADMIN
+DROP CONSTRAINT FK_MCUSER_ADMIN_State;
+
+ALTER TABLE MCUSER_ADMIN
+DROP CONSTRAINT MCUSER_ADMIN_Unique_Email;
+
+ALTER TABLE USER_GENRE_LIST
+DROP CONSTRAINT FK_Genre_List_User;
+
+ALTER TABLE USER_GENRE_LIST
+DROP CONSTRAINT FK_Genre_List_Genre;
+
+ALTER TABLE BILLBOARD
+DROP CONSTRAINT FK_Billboard_EventState;
+
+ALTER TABLE FESTIVAL
+DROP CONSTRAINT FK_Festival_Billboard;
+
+ALTER TABLE FESTIVAL
+DROP CONSTRAINT FK_Festival_EventState;
+
+ALTER TABLE FESTIVAL 
+DROP CONSTRAINT FK_Festival_Ubication;
+
+ALTER TABLE USER_VOTE
+DROP CONSTRAINT FK_USER_VOTE_Billboard;
+
+ALTER TABLE USER_VOTE
+DROP CONSTRAINT FK_USER_VOTE_User;
+
+ALTER TABLE CATEGORY_LIST
+DROP CONSTRAINT FK_ID_CATEGORY_LIST_Billboard;
+
+ALTER TABLE CATEGORY_LIST
+DROP CONSTRAINT FK_ID_CATEGORY_LIST_Category;
+
+ALTER TABLE FESTIVAL_CATEGORY_LIST
+DROP CONSTRAINT FK_FESTIVAL_CATEGORY_LIST_Festival;
+
+ALTER TABLE FESTIVAL_CATEGORY_LIST
+DROP CONSTRAINT FK_FESTIVAL_CATEGORY_LIST_FestivalCategory;
+
+ALTER TABLE FESTIVAL_BANDS_LIST
+DROP CONSTRAINT FK_FESTIVAL_BANDS_LIST_FestivalCategory;
+
+ALTER TABLE FESTIVAL_BANDS_LIST
+DROP CONSTRAINT FK_FESTIVAL_BANDS_LIST_Band;
+
+ALTER TABLE BILLBOARD_BANDS_LIST
+DROP CONSTRAINT FK_BILLBOARD_BANDS_LIST_Category;
+
+ALTER TABLE BILLBOARD_BANDS_LIST
+DROP CONSTRAINT FK_BILLBOARD_BANDS_LIST_Band;
+
+ALTER TABLE BAND_GENRE_LIST
+DROP CONSTRAINT FK_BAND_GENRE_LIST_Band;
+
+ALTER TABLE BAND_GENRE_LIST
+DROP CONSTRAINT FK_BAND_GENRE_LIST_Genre;
+
+ALTER TABLE BAND_ARTIST
+DROP CONSTRAINT FK_BAND_ARTIST_Artist;
+
+ALTER TABLE BAND_ARTIST
+DROP CONSTRAINT FK_BAND_ARTIST_Band;
+
+ALTER TABLE COMMENT_LIST
+DROP CONSTRAINT FK_COMMMENT_LIST_Band;
+
+ALTER TABLE COMMENT_LIST
+DROP CONSTRAINT FK_COMMENT_LIST_Comment;
+
+ALTER TABLE COMMENT
+DROP CONSTRAINT FK_COMMENT_User;
+
+ALTER TABLE SONG_LIST
+DROP CONSTRAINT FK_SONG_LIST_Band;
+
+ALTER TABLE SONG_LIST
+DROP CONSTRAINT FK_SONG_LIST_Song;
+
+
+----------------------------------------------- TABLES ----------------------------------------
+DROP TABLE COUNTRY;
+DROP TABLE UNIVERSITY;
+DROP TABLE MCUSER;
+DROP TABLE USER_STATE;
+DROP TABLE USER_GENRE_LIST;
+DROP TABLE MCUSER_ADMIN;
+DROP TABLE PLACE;
+DROP TABLE BILLBOARD;
+DROP TABLE USER_VOTE;
+DROP TABLE CATEGORY_LIST;
+DROP TABLE CATEGORY;
+DROP TABLE BILLBOARD_BANDS_LIST;
+DROP TABLE BAND;
+DROP TABLE BAND_GENRE_LIST;
+DROP TABLE BAND_ARTIST;
+DROP TABLE ARTIST;
+DROP TABLE GENRE;
+DROP TABLE COMMENT;
+DROP TABLE COMMENT_LIST;
+DROP TABLE FESTIVAL;
+DROP TABLE FESTIVAL_CATEGORY_LIST;
+DROP TABLE FESTIVAL_BANDS_LIST;
+DROP TABLE EVENT_STATE;
+DROP TABLE Festival_Ubication;
+DROP TABLE SONG_LIST;
+DROP TABLE SONG;
+
+
+----------------------------------------------- TABLES ----------------------------------------
+DROP PROCEDURE spUserExists;
+DROP PROCEDURE spLogin;
+DROP PROCEDURE spRegisterUser;
+DROP PROCEDURE spEditUser;
+DROP PROCEDURE spDeleteUserGenres;
+DROP PROCEDURE spAddGenreToUser;
+DROP PROCEDURE spRegisterAdmin;
+DROP PROCEDURE spEditAdmin;
+DROP PROCEDURE spRegisterCountry;
+DROP PROCEDURE spRegisterUniversity;
+DROP PROCEDURE spRegisterUserState;
+DROP PROCEDURE spRegisterEventState;
+DROP PROCEDURE spRegisterPlace;
+DROP PROCEDURE spRegisterCategory;
+DROP PROCEDURE spActivateBand;
+DROP PROCEDURE spDeactivateBand;
+DROP PROCEDURE spRegisterBand;
+DROP PROCEDURE spRegisterGenre;
+DROP PROCEDURE spGetCountries;
+DROP PROCEDURE spGetUniversities;
+DROP PROCEDURE spGetGenres;
+DROP PROCEDURE spGetCommentsFromBand;
+DROP PROCEDURE spGetGenresFromBand;
+DROP PROCEDURE spGetArtistsFromBand;
+DROP PROCEDURE spAddMemberToBand;
+DROP PROCEDURE spAddGenreToBand;
+DROP PROCEDURE spAddSongToBand;
+DROP PROCEDURE spGetBandsFromFestivalCategory;
+DROP PROCEDURE spGetFestivalCategoryName;
+DROP PROCEDURE spGetBillboardInfo;
+DROP PROCEDURE spGetFestivalInfo;
+DROP PROCEDURE spGetUserInfo;
+DROP PROCEDURE spGetAllCategories;
+DROP PROCEDURE spGetUserCategories;
+DROP PROCEDURE spGetAllFestivals;
+DROP PROCEDURE spGetAllBillboards;
+DROP PROCEDURE spGetAllBands;
+DROP PROCEDURE spGetAllBandsWithoutBillboard;
+DROP PROCEDURE spGetAllActiveBands;
+DROP PROCEDURE spAddBillboard;
+DROP PROCEDURE spAddFestival;
+DROP PROCEDURE spAddCategoryToFestival;
+DROP PROCEDURE spAddBandToFestival;
+DROP PROCEDURE spGetCategoriesFromFest;
+DROP PROCEDURE spGetBandsFromCategory;
+DROP PROCEDURE spGetBandComments;
+DROP PROCEDURE spaddCommentToBand;
+DROP PROCEDURE spAddCommentCalification;
+DROP PROCEDURE spCheckUserVoteBillboard;
+DROP PROCEDURE spPostUserVote;
+DROP PROCEDURE spAddPointsToBillboardBand;
+DROP PROCEDURE spDeactivateUser;
+DROP PROCEDURE spActivateUser;
+DROP PROCEDURE spVerifyUserState;
+DROP PROCEDURE spGetChefRecommendation;
+DROP PROCEDURE spAddCategoryToBillboard;
+DROP PROCEDURE spAddBillboardPhoto;
+DROP PROCEDURE spGetAdminInfo;
+DROP PROCEDURE spDeactivateBillboard;
+DROP PROCEDURE spDeactivateFestival;
+DROP PROCEDURE spAddBandToBillboard;
+DROP PROCEDURE spGetCategoriesFromBillboard;
+DROP PROCEDURE spAddVote;
+DROP PROCEDURE spGetBandsFromBillboardCategoryOrderByMoney;
+
+
+
+
+
+
+
+
+
+
+
+
+--CREATE-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE COUNTRY(
+	PK_ID_COUNTRY INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Name VARCHAR(30) NOT NULL 
+);
+
+CREATE TABLE UNIVERSITY(
+	PK_ID_UNIVERSITY INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Name varchar(30)
+);
+
+CREATE TABLE MCUSER(
+	PK_ID_MCUSER INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Name VARCHAR(30) NOT NULL,
+	LastName VARCHAR(30) NOT NULL,
+	FK_ID_Country INT NOT NULL,
+	Residence VARCHAR(100),
+	FK_ID_University INT,
+	Email VARCHAR(50) NOT NULL,
+	Phone VARCHAR(15) NOT NULL,
+	Photo VARCHAR(30),
+	RegistrationDate date NOT NULL,
+	MCPassword varchar(64) NOT NULL,
+	PersonalDescription varchar(300) NOT NULL,
+	Birthdate date,
+	FK_ID_State int
+);
+
+CREATE TABLE USER_STATE(
+	PK_ID_USER_STATE INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Name varchar(30)
+)
+
+CREATE TABLE USER_GENRE_LIST(
+	PK_ID_USER_GENRE INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	FK_ID_User INT,
+	FK_ID_Genre INT
+);
+
+CREATE TABLE MCUSER_ADMIN(
+	PK_ID_MCUSER_ADMIN INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Name VARCHAR(30)NOT NULL,
+	LastName VARCHAR(30) NOT NULL,
+	Email VARCHAR(50) NOT NULL,
+	MCPassword VARCHAR(64) NOT NULL,
+	FK_ID_State INT NOT NULL,
+	RegistrationDate DATE NOT NULL
+);
+
+CREATE TABLE PLACE(
+	PK_ID_PLACE INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Name VARCHAR(30)
+);
+
+CREATE TABLE BILLBOARD(
+	PK_ID_BILLBOARD INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Name VARCHAR(30),
+	StartVotingDate DATE,
+	EndVotingDate DATE,
+	FK_ID_Place INT,
+	FK_ID_EventState int,
+	BillboardDescription VARCHAR(300),
+	BillboardPhoto VARCHAR(30)
+);
+
+CREATE TABLE USER_VOTE(
+	PK_ID_VOTE INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	FK_ID_Billboard INT,
+	FK_ID_User INT
+);
+
+CREATE TABLE CATEGORY_LIST(
+	PK_ID_CATEGORY INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	FK_ID_Billboard INT,
+	FK_ID_BillboardCategory INT
+);
+
+CREATE TABLE CATEGORY(
+	PK_ID_CATEGORY INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Name VARCHAR(30)
+);
+
+CREATE TABLE BILLBOARD_BANDS_LIST(
+	PK_ID_BILLBOARD_BANDS_LIST INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	FK_ID_BillboardCategory INT,
+	FK_ID_Band INT,
+	RaisedMoney INT,
+	FK_ID_User_Vote INT
+);
+
+CREATE TABLE BAND(
+	PK_ID_BAND INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Name VARCHAR(30),
+	Calification FLOAT,
+	N_Calification INT,
+	FK_ID_GenreList INT,
+	ID_Spotify VARCHAR(30),
+	BandState BIT 
+);
+
+CREATE TABLE BAND_GENRE_LIST(
+	PK_ID_BAND_GENRE INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	FK_ID_Band INT,
+	FK_ID_Genre INT
+);
+
+CREATE TABLE BAND_ARTIST(
+	PK_ID_BAND_ARTIST INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	FK_ID_Band INT,
+	FK_ID_Artist INT
+);
+
+CREATE TABLE ARTIST(
+	PK_ID_ARTIST INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Name VARCHAR(30)
+);
+
+CREATE TABLE GENRE(
+	PK_ID_GENRE INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Name VARCHAR(30)
+);
+
+CREATE TABLE COMMENT(
+	PK_ID_COMMENTS INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Comment VARCHAR(300),
+	Score int,
+	FK_ID_User INT
+);
+
+CREATE TABLE COMMENT_LIST(
+	PK_ID_COMMENT_LIST INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	FK_ID_Band INT,
+	FK_ID_Comment INT
+);
+
+CREATE TABLE Festival_Ubication(
+	PK_ID_FESTIVAL_UBICATION INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Name VARCHAR(300)
+);
+
+CREATE TABLE FESTIVAL(
+	PK_ID_FESTIVAL INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	FK_ID_Billboard INT,
+	FestivalStart Date,
+	FestivalEnd Date,
+	FK_ID_EventState INT,
+	FK_ID_Ubication INT,
+	FestivalDescription VARCHAR(300)
+);
+
+CREATE TABLE FESTIVAL_CATEGORY_LIST(
+	PK_ID_FESTIVAL_CATEGORY_LIST INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	FK_ID_Festival INT,
+	FK_ID_FestivalCategory INT,
+);
+
+CREATE TABLE FESTIVAL_BANDS_LIST(
+	FK_ID_FESTIVAL_BANDS_LIST INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	FK_ID_FestivalCategory INT,
+	FK_ID_Band INT
+);
+
+CREATE TABLE EVENT_STATE(
+	PK_ID_EVENT_STATE INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Name VARCHAR(30)
+);
+
+CREATE TABLE SONG_LIST(
+	PK_ID_SONG_LIST INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	FK_ID_Band INT,
+	FK_ID_Song INT
+);
+
+CREATE TABLE SONG(
+	PK_ID_SONG INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Name VARCHAR(100)
+);
+
+
+--ALTER-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE MCUSER
+ADD CONSTRAINT FK_MCUserCountry
+FOREIGN KEY (FK_ID_Country) REFERENCES COUNTRY(PK_ID_COUNTRY);
+
+ALTER TABLE MCUSER
+ADD CONSTRAINT FK_MCUser_University
+FOREIGN KEY (FK_ID_University) REFERENCES UNIVERSITY(PK_ID_UNIVERSITY);
+
+ALTER TABLE MCUSER
+ADD CONSTRAINT FK_MCUser_State
+FOREIGN KEY (FK_ID_State) REFERENCES USER_STATE(PK_ID_USER_STATE);
+
+ALTER TABLE MCUSER
+ADD CONSTRAINT MCUSER_Unique_Email 
+Unique (Email);
+
+ALTER TABLE MCUSER_ADMIN
+ADD CONSTRAINT FK_MCUSER_ADMIN_State
+FOREIGN KEY (FK_ID_State) REFERENCES USER_STATE(PK_ID_USER_STATE);
+
+ALTER TABLE MCUSER_ADMIN
+ADD CONSTRAINT MCUSER_ADMIN_Unique_Email 
+Unique (Email);
+
+ALTER TABLE USER_GENRE_LIST
+ADD CONSTRAINT FK_Genre_List_User
+FOREIGN KEY (FK_ID_User) REFERENCES MCUSER(PK_ID_MCUSER);
+
+ALTER TABLE USER_GENRE_LIST
+ADD CONSTRAINT FK_Genre_List_Genre
+FOREIGN KEY (FK_ID_Genre) REFERENCES GENRE(PK_ID_GENRE);
+
+ALTER TABLE BILLBOARD
+ADD CONSTRAINT FK_Billboard_EventState
+FOREIGN KEY (FK_ID_EventState) REFERENCES EVENT_STATE(PK_ID_EVENT_STATE);
+
+ALTER TABLE FESTIVAL
+ADD CONSTRAINT FK_Festival_Billboard
+FOREIGN KEY (FK_ID_Billboard) REFERENCES BILLBOARD(PK_ID_BILLBOARD);
+
+ALTER TABLE FESTIVAL
+ADD CONSTRAINT FK_Festival_EventState
+FOREIGN KEY (FK_ID_EventState) REFERENCES EVENT_STATE(PK_ID_EVENT_STATE);
+
+ALTER TABLE FESTIVAL 
+ADD CONSTRAINT FK_Festival_Ubication
+FOREIGN KEY (FK_ID_Ubication) REFERENCES FESTIVAL_UBICATION(PK_ID_FESTIVAL_UBICATION);
+
+ALTER TABLE USER_VOTE
+ADD CONSTRAINT FK_USER_VOTE_Billboard
+FOREIGN KEY (FK_ID_Billboard) REFERENCES BILLBOARD(PK_ID_BILLBOARD);
+
+ALTER TABLE USER_VOTE
+ADD CONSTRAINT FK_USER_VOTE_User
+FOREIGN KEY (FK_ID_User) REFERENCES MCUSER(PK_ID_MCUSER);
+
+ALTER TABLE CATEGORY_LIST
+ADD CONSTRAINT FK_ID_CATEGORY_LIST_Billboard
+FOREIGN KEY (FK_ID_Billboard) REFERENCES BILLBOARD(PK_ID_BILLBOARD);
+
+ALTER TABLE CATEGORY_LIST
+ADD CONSTRAINT FK_ID_CATEGORY_LIST_Category  --Borre FK_ID_CATEGORY_LIST_BillboardCategory
+FOREIGN KEY (FK_ID_BillboardCategory) REFERENCES CATEGORY(PK_ID_CATEGORY);
+
+ALTER TABLE FESTIVAL_CATEGORY_LIST
+ADD CONSTRAINT FK_FESTIVAL_CATEGORY_LIST_Festival
+FOREIGN KEY (FK_ID_Festival) REFERENCES FESTIVAL(PK_ID_FESTIVAL);
+
+ALTER TABLE FESTIVAL_CATEGORY_LIST
+ADD CONSTRAINT FK_FESTIVAL_CATEGORY_LIST_FestivalCategory
+FOREIGN KEY (FK_ID_FestivalCategory) REFERENCES CATEGORY(PK_ID_CATEGORY);
+
+ALTER TABLE FESTIVAL_BANDS_LIST
+ADD CONSTRAINT FK_FESTIVAL_BANDS_LIST_FestivalCategory
+FOREIGN KEY (FK_ID_FestivalCategory) REFERENCES FESTIVAL_CATEGORY_LIST(PK_ID_FESTIVAL_CATEGORY_LIST);
+
+ALTER TABLE FESTIVAL_BANDS_LIST
+ADD CONSTRAINT FK_FESTIVAL_BANDS_LIST_Band
+FOREIGN KEY (FK_ID_Band) REFERENCES BAND(PK_ID_BAND);
+
+ALTER TABLE BILLBOARD_BANDS_LIST
+ADD CONSTRAINT FK_BILLBOARD_BANDS_LIST_Category
+FOREIGN KEY (FK_ID_BillboardCategory) REFERENCES CATEGORY_LIST(PK_ID_CATEGORY);
+
+ALTER TABLE BILLBOARD_BANDS_LIST
+ADD CONSTRAINT FK_BILLBOARD_BANDS_LIST_Band 
+FOREIGN KEY (FK_ID_Band) REFERENCES BAND(PK_ID_BAND);
+
+ALTER TABLE BAND_GENRE_LIST 
+ADD CONSTRAINT FK_BAND_GENRE_LIST_Band
+FOREIGN KEY (FK_ID_Band) REFERENCES BAND(PK_ID_BAND);
+
+ALTER TABLE BAND_GENRE_LIST 
+ADD CONSTRAINT FK_BAND_GENRE_LIST_Genre
+FOREIGN KEY (FK_ID_Genre) REFERENCES GENRE(PK_ID_GENRE);
+
+ALTER TABLE BAND_ARTIST
+ADD CONSTRAINT FK_BAND_ARTIST_Band
+FOREIGN KEY (FK_ID_Band) REFERENCES BAND(PK_ID_BAND);
+
+ALTER TABLE BAND_ARTIST
+ADD CONSTRAINT FK_BAND_ARTIST_Artist
+FOREIGN KEY (FK_ID_Artist) REFERENCES ARTIST(PK_ID_ARTIST);
+
+ALTER TABLE COMMENT_LIST
+ADD CONSTRAINT FK_COMMMENT_LIST_Band
+FOREIGN KEY (FK_ID_Band) REFERENCES BAND(PK_ID_BAND);
+
+ALTER TABLE COMMENT_LIST
+ADD CONSTRAINT FK_COMMENT_LIST_Comment
+FOREIGN KEY (FK_ID_Comment) REFERENCES COMMENT(PK_ID_COMMENTS);
+
+ALTER TABLE COMMENT
+ADD CONSTRAINT FK_COMMENT_User
+FOREIGN KEY (FK_ID_User) REFERENCES MCUSER(PK_ID_MCUSER);
+
+ALTER TABLE SONG_LIST
+ADD CONSTRAINT FK_SONG_LIST_Song
+FOREIGN KEY (FK_ID_Song) REFERENCES SONG(PK_ID_SONG);
+
+ALTER TABLE SONG_LIST
+ADD CONSTRAINT FK_SONG_LIST_Band
+FOREIGN KEY (FK_ID_Band) REFERENCES BAND(PK_ID_BAND);
+
+--SP-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 /************************************************/
 CREATE PROCEDURE spUserExists
      @pEmail VARCHAR(50)
@@ -52,7 +557,7 @@ CREATE PROCEDURE spRegisterUser
 	@pPhoto VARCHAR(30),
 	@pPass VARCHAR(64),
 	@pDescription VARCHAR(300),
-	@pBirthdate varchar(20)	
+	@pBirthdate DATETIME	
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -88,7 +593,7 @@ CREATE PROCEDURE spEditUser
 	@pPhoto VARCHAR(30),
 	@pPass VARCHAR(8),
 	@pDescription VARCHAR(300),
-	@pBirthdate varchar(20)	
+	@pBirthdate DATETIME	
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -294,7 +799,7 @@ BEGIN
 	DECLARE @id INT;
 	SET @c = (SELECT COUNT(*) FROM BAND WHERE Name=@pName);
 	IF ( @c=0) BEGIN
-		INSERT INTO BAND (Name, ID_Spotify, BandState, N_Calification, Calification) VALUES(@pName, @pSpotifyID, 1,5,0);
+		INSERT INTO BAND (Name, ID_Spotify, BandState, N_Calification, Calification) VALUES(@pName, @pSpotifyID, 1,0,0);
 	END
 	SET @id = (SELECT PK_ID_BAND FROM BAND WHERE Name=@pName);
 	SELECT @id AS 'PK_ID_BAND'
@@ -525,7 +1030,7 @@ CREATE PROCEDURE spGetAllCategories
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT * FROM CATEGORY WHERE PK_ID_CATEGORY<>1;
+	SELECT * FROM CATEGORY;
 END
 GO
 
@@ -546,7 +1051,7 @@ CREATE PROCEDURE spGetAllFestivals
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT PK_ID_FESTIVAL AS 'id', BILLBOARD.Name AS 'name', BILLBOARD.BillboardDescription AS 'description', FESTIVAL.FestivalStart AS 'date', BILLBOARD.BillboardPhoto AS 'image', EVENT_STATE.Name AS 'state', Festival_Ubication.Name AS 'place', Place.Name AS 'location' 
+	SELECT PK_ID_FESTIVAL AS 'id', BILLBOARD.Name AS 'name', BILLBOARD.BillboardDescription AS 'description', FESTIVAL.FestivalStart AS 'date', BILLBOARD.BillboardPhoto AS 'image', EVENT_STATE.Name AS 'state', PLACE.Name AS 'location', Festival_Ubication.Name AS 'place' 
 	FROM FESTIVAL
 	INNER JOIN BILLBOARD ON FESTIVAL.FK_ID_Billboard = BILLBOARD.PK_ID_BILLBOARD
 	INNER JOIN PLACE ON FESTIVAL.FK_ID_Ubication = PLACE.PK_ID_PLACE
@@ -560,13 +1065,11 @@ CREATE PROCEDURE spGetAllBillboards
 AS 
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @daysleft INT;
-	SELECT PK_ID_BILLBOARD AS 'id', BILLBOARD.Name AS 'name', PLACE.Name AS 'location', Billboard.EndVotingDate AS 'timeLeft' , BillboardPhoto AS 'image', EVENT_STATE.Name AS 'state'
+	SELECT PK_ID_BILLBOARD AS 'id', BILLBOARD.Name AS 'name', PLACE.Name AS 'location', (EndVotingDate) AS 'timeLeft', BillboardPhoto AS 'image', EVENT_STATE.Name AS 'state'
 	FROM BILLBOARD 
 	INNER JOIN EVENT_STATE ON BILLBOARD.FK_ID_EventState=EVENT_STATE.PK_ID_EVENT_STATE
 	INNER JOIN PLACE ON BILLBOARD.FK_ID_Place=PLACE.PK_ID_PLACE
-	WHERE EVENT_STATE.PK_ID_EVENT_STATE=1 OR EVENT_STATE.PK_ID_EVENT_STATE=2
-	;
+	WHERE EVENT_STATE.PK_ID_EVENT_STATE=1 OR EVENT_STATE.PK_ID_EVENT_STATE=2;
 END
 GO
 
@@ -585,10 +1088,10 @@ CREATE PROCEDURE spGetAllBandsWithoutBillboard
 AS
 BEGIN
 	SET NOCOUNT ON;
-	((SELECT PK_ID_BAND AS 'ID',ID_Spotify AS 'spotifyID', Band.Name AS 'name', (Calification/N_Calification) AS 'rating'
+	((SELECT PK_ID_BAND AS 'ID',ID_Spotify AS 'spotifyID', Band.Name AS 'name' 
 	FROM BAND)
 	EXCEPT
-	(SELECT BILLBOARD_BANDS_LIST.FK_ID_Band, BAND.ID_Spotify, BAND.Name, Calification/N_Calification
+	(SELECT BILLBOARD_BANDS_LIST.FK_ID_Band, BAND.ID_Spotify, BAND.Name
 	FROM BILLBOARD_BANDS_LIST
 	INNER JOIN CATEGORY_LIST ON CATEGORY_LIST.PK_ID_CATEGORY = BILLBOARD_BANDS_LIST.FK_ID_BillboardCategory
 	INNER JOIN BAND ON BILLBOARD_BANDS_LIST.FK_ID_Band = BAND.PK_ID_BAND
@@ -608,8 +1111,8 @@ GO
 /************************************************/
 CREATE PROCEDURE spAddBillboard
      @pName VARCHAR(30),
-     @pStartVotingDate varchar(20),
-     @pEndVotingDate varchar(20),
+     @pStartVotingDate DATE,
+     @pEndVotingDate DATE,
      @pPlaceID INT,
 	 @pDescription VARCHAR(300)
 AS
@@ -631,16 +1134,15 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 	INSERT INTO CATEGORY_LIST(FK_ID_Billboard, FK_ID_BillboardCategory) 
-	VALUES (@BillboardID, @CategoryID);
-	SELECT SCOPE_IDENTITY() AS 'id';
+	VALUES (@BillboardID, @CategoryID)
 END
 GO
 
 /************************************************/
 CREATE PROCEDURE spAddFestival
            @pBillboardID INT,
-           @pStartDate varchar(20),
-		   @pEndDate varchar(20),
+           @pStartDate DATE,
+		   @pEndDate DATE,
 		   @pUbication VARCHAR(100),
            @pDescription VARCHAR (300)
 AS
@@ -654,11 +1156,9 @@ BEGIN
 		IF(@c=0) BEGIN
 			INSERT INTO Festival_Ubication (Name) VALUES (@pUbication)
 		END
-		DECLARE @newplace INT;
-		SET @newplace = (SELECT PK_ID_FESTIVAL_UBICATION FROM Festival_Ubication WHERE Name=@pUbication);
 		UPDATE BILLBOARD SET FK_ID_EventState=3 WHERE BILLBOARD.PK_ID_BILLBOARD=@pBillboardID;
 		INSERT INTO FESTIVAL(FK_ID_Billboard, FestivalStart, FestivalEnd, FK_ID_EventState, FK_ID_Ubication,FestivalDescription)
-		VALUES (@pBillboardID, @pStartDate, @pEndDate, 1,@newplace,@pDescription);
+		VALUES (@pBillboardID, @pStartDate, @pEndDate, 1,SCOPE_IDENTITY(),@pDescription);
 		SELECT SCOPE_IDENTITY() AS 'FestivalID'
 	END ELSE BEGIN
 		SELECT 'error' AS 'State'
@@ -675,7 +1175,6 @@ BEGIN
 	SET NOCOUNT ON;
 	INSERT INTO FESTIVAL_CATEGORY_LIST(FK_ID_Festival, FK_ID_FestivalCategory)
 	VALUES (@pFestivalID,@pCategoryID );
-	SELECT SCOPE_IDENTITY() AS 'ID';
 END
 GO
 
@@ -688,7 +1187,6 @@ BEGIN
 	SET NOCOUNT ON;
 	INSERT INTO FESTIVAL_BANDS_LIST(FK_ID_FestivalCategory, FK_ID_Band) 
 	VALUES (@pCategoryID, @pBandID);
-	--SELECT 'ok' AS 'state';
 END
 GO
 
@@ -770,14 +1268,14 @@ GO
 
 /************************************************/
 CREATE PROCEDURE spCheckUserVoteBillboard
-     @UserID VARCHAR(50),
+     @UserID INT,
      @BillboardID INT
+
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT COUNT(*) AS 'vote' FROM USER_VOTE
-	JOIN MCUSER ON USER_VOTE.FK_ID_User = MCUSER.PK_ID_MCUSER
-	WHERE FK_ID_Billboard=@BillboardID AND	MCUSER.Email=@UserID;
+	SELECT COUNT(*) FROM USER_VOTE
+	WHERE FK_ID_Billboard=@BillboardID AND	FK_ID_User=@UserID;
 END
 GO
 
@@ -971,60 +1469,74 @@ BEGIN
 END
 GO
 
-/************************************************/
-CREATE PROCEDURE spGetBandRating
-	@ID INT
-AS
-BEGIN
-	SET NOCOUNT ON;
-	DECLARE @r INT;
-	SET @r= (SELECT BAND.N_Calification  FROM BAND WHERE PK_ID_BAND=@ID);
-	IF(@r=0) BEGIN
-		SELECT 0 AS 'rating';
-	END ELSE BEGIN
-		SELECT BAND.Calification/@r AS 'rating' FROM BAND WHERE PK_ID_BAND=@ID
-	END
-END
-GO
-
-/************************************************/
-CREATE PROCEDURE spBandAvailable
-	@BandID INT,
-	@Start varchar(20),
-	@End varchar(20)
-AS
-BEGIN
-	SET NOCOUNT ON;
-	SELECT 0 AS 'status'
---	SELECT COUNT(*) AS 'status'
---	FROM FESTIVAL
---	INNER JOIN FESTIVAL_CATEGORY_LIST ON FK_ID_Festival=PK_ID_FESTIVAL
---	INNER JOIN FESTIVAL_BANDS_LIST ON FESTIVAL_BANDS_LIST.FK_ID_FestivalCategory =FESTIVAL_CATEGORY_LIST.PK_ID_FESTIVAL_CATEGORY_LIST
---	INNER JOIN BAND ON FK_ID_Band=PK_ID_BAND
---	WHERE PK_ID_BAND=@BandID 
---	AND ((DATEDIFF(day,FestivalStart,@End)>0)
---		OR (DATEDIFF(day,FestivalEnd,@Start)>0)); 
-END
-GO
 
 
 
+--POB-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+EXEC spRegisterCountry 'Argentina';
+EXEC spRegisterCountry 'Chile';
+EXEC spRegisterCountry 'Costa Rica';
+EXEC spRegisterCountry 'Colombia';
+EXEC spRegisterCountry 'Brazil';
+EXEC spRegisterCountry 'México';
+EXEC spRegisterCountry 'Panamá';
+EXEC spRegisterCountry 'Canadá';
+
+EXEC spRegisterUniversity 'TEC';
+EXEC spRegisterUniversity 'UNA';
+EXEC spRegisterUniversity 'UCR';
+EXEC spRegisterUniversity 'University of Waterloo';
+EXEC spRegisterUniversity 'Universidad de Buenos Aires';
+EXEC spRegisterUniversity 'Universidad de Chile';
+EXEC spRegisterUniversity 'Universidad de los Andes';
+EXEC spRegisterUniversity 'Universidade de São Paulo';
+EXEC spRegisterUniversity 'Universidad Autónoma de México';
+EXEC spRegisterUniversity 'Universidad Tecnológica de Panamá';
+
+EXEC spRegisterEventState 'Votation';
+EXEC spRegisterEventState 'Cancelled';
+EXEC spRegisterEventState 'Confirmed';
+
+EXEC spRegisterPlace 'Argentina';
+EXEC spRegisterPlace 'Chile';
+EXEC spRegisterPlace 'Costa Rica';
+EXEC spRegisterPlace 'Colombia';
+EXEC spRegisterPlace 'Brazil';
+EXEC spRegisterPlace 'México';
+EXEC spRegisterPlace 'Panamá';
+EXEC spRegisterPlace 'Canadá';
+
+EXEC spRegisterCategory 'Headliners';
+EXEC spRegisterCategory 'Locals';
+
+EXEC spRegisterBand 'Metallica','2ye2Wgw4gimLv2eAKyk1NB';
+EXEC spRegisterBand 'Coldplay','4gzpq5DPGxSnKTe4SA8HAU';
+EXEC spRegisterBand 'Pink Floyd','0k17h0D3J5VfsdmQ1iZtE9';
+
+EXEC spRegisterGenre 'Rock';
+EXEC spRegisterGenre 'Salsa';
+EXEC spRegisterGenre 'Pop';
+
+EXEC spRegisterUserState 'Activate';
+EXEC spRegisterUserState 'Deactive';
+
+EXEC spRegisterAdmin 'admin','sudo','admin@gmail.com','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3';
+EXEC spRegisterUser 'user', '1', 'Costa Rica','100m Este de la Basílica de los Ángeles',1,'user@gmail.com','+506','photo.jpg','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','Me gusta la salsa',"12/12/12";
+
+EXEC spAddGenreToUser 1, 'Rock';
+EXEC spAddGenreToUser 1, 'Pop';
+
+INSERT INTO FESTIVAL_UBICATION(Name) VALUES ('Estadio Nacional');
+INSERT INTO FESTIVAL_UBICATION(Name) VALUES ('Tecnológico, Costa Rica');
+INSERT INTO FESTIVAL_UBICATION(Name) VALUES ('Parque de Diversiones');
+INSERT INTO FESTIVAL_UBICATION(Name) VALUES ('Centro de Eventos Pedregal');
+INSERT INTO FESTIVAL_UBICATION(Name) VALUES ('Parque presas');
+
+INSERT INTO EVENT_STATE(Name) VALUES ('Votation');
+INSERT INTO EVENT_STATE(Name) VALUES ('Confirmed');
+INSERT INTO EVENT_STATE(Name) VALUES ('Cancelled');
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
