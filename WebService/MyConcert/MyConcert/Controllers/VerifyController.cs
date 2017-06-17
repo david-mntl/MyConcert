@@ -608,7 +608,7 @@ namespace MyConcert.Controllers
         ********************************************************/
         [HttpPost]
         [Route("api/Verify/RegisterGenre")]
-        public string spRegisterGenre([FromBody] dynamic pJson)
+        public string registerGenre([FromBody] dynamic pJson)
         {
             using (SqlConnection conn = new SqlConnection())
             {

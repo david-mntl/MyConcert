@@ -22,7 +22,7 @@ namespace MyConcert.Controllers
        ********************************************************/
         [HttpGet]
         [Route("api/Main/GET/{pMethod}")]
-        public string get(string pMethod)
+        public string getMethod(string pMethod)
         {
             using (SqlConnection conn = new SqlConnection())
             {
@@ -246,7 +246,7 @@ namespace MyConcert.Controllers
          ********************************************************/
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/GET/bandsFromFestCategory/{IDFest}/{IDCategory}")]
-        public string spGetBandsFromFestivalCategory(string IDFest, string IDCategory)
+        public string bandsFromFestivalCategory(string IDFest, string IDCategory)
         {
             using (SqlConnection conn = new SqlConnection())
             {
@@ -281,6 +281,9 @@ namespace MyConcert.Controllers
                                 details.Add(reader.GetName(i), reader.IsDBNull(i) ? null : reader.GetValue(i));
                             }
 
+                            string ratingUrl = "http://myconcert1.azurewebsites.net/api/Main/GET/spGetBandRating/" + details["id"].ToString();
+                     
+
                             string membersUrl = "http://myconcert1.azurewebsites.net/api/Main/GET/spGetArtistsFromBand/" + details["id"].ToString();
                             string genresUrl = "http://myconcert1.azurewebsites.net/api/Main/GET/spGetGenresFromBand/" + details["id"].ToString();
                             string commentsUrl = "http://myconcert1.azurewebsites.net/api/Main/GET/spGetCommentsFromBand/" + details["id"].ToString();
@@ -304,10 +307,16 @@ namespace MyConcert.Controllers
                              membersObject = oJS.Deserialize<Dictionary<string, object>>(members);
                              genresObject = oJS.Deserialize<Dictionary<string, object>>(genres);
                              commentsObject = oJS.Deserialize<Dictionary<string, object>>(comments);
-                             spotifyInfoObject = oJS.Deserialize<Dictionary<string, object>>(spotifyInfo); 
+                             spotifyInfoObject = oJS.Deserialize<Dictionary<string, object>>(spotifyInfo);
 
 
-                             details.Add("members", membersObject["members"]);
+                            string ratingJson = Models.UtilityMethods.getMethod(ratingUrl);
+                            Dictionary < string, object> ratingDynamic = oJS.Deserialize<Dictionary<string, object>>(ratingJson);
+                            dynamic rating = ratingDynamic["Default"];
+                            details.Add("rating", rating[0]);
+
+
+                            details.Add("members", membersObject["members"]);
                              details.Add("genres", genresObject["Default"]);
                              details.Add("comments", commentsObject["comments"]);
                              details.Add("followers", spotifyInfoObject["followers"]);
@@ -373,7 +382,7 @@ namespace MyConcert.Controllers
                         string url = "http://myconcert1.azurewebsites.net/api/Main/GET/spGetCategoriesFromFest/" + pId ;
                         string json = Models.UtilityMethods.getMethod(url);                        
                         dynamic infoCategories = JsonConvert.DeserializeObject(json);                                                                        
-                        var diccCategories = new Dictionary<string, object>();
+                        var diccCategories = new Dictionary<string, object>();                                                
 
                         ArrayList categories = new ArrayList();
                         ArrayList catBands = new ArrayList();
@@ -608,7 +617,7 @@ namespace MyConcert.Controllers
                 string membersUrl = "http://myconcert1.azurewebsites.net/api/Main/GET/spGetArtistsFromBand/" + IDBand.ToString();
                 string genresUrl = "http://myconcert1.azurewebsites.net/api/Main/GET/spGetGenresFromBand/" + IDBand.ToString();
                 string commentsUrl = "http://myconcert1.azurewebsites.net/api/Main/GET/spGetCommentsFromBand/" + IDBand.ToString();
-                //string songsUrl = "http://myconcert1.azurewebsites.net/api/Spotify/getSongs/" + IDSpotify.ToString();
+                string songsUrl = "http://myconcert1.azurewebsites.net/api/Spotify/getSongs/" + IDSpotify.ToString();
                 string mainSpotifyUrl = "http://myconcert1.azurewebsites.net/api/Spotify/main";
                 string spotifyInfoUrl = "http://myconcert1.azurewebsites.net/api/Spotify/getArtistInfo/" + IDSpotify.ToString();
                 string ratingUrl = "http://myconcert1.azurewebsites.net/api/Main/GET/spGetBandRating/" + IDBand.ToString();
@@ -621,21 +630,21 @@ namespace MyConcert.Controllers
                 //Spotify Token
                 Models.UtilityMethods.getMethod(mainSpotifyUrl);
                 string spotifyInfo = Models.UtilityMethods.getMethod(spotifyInfoUrl);
-                //string songs = Models.UtilityMethods.getMethod(songsUrl);
+                string songs = Models.UtilityMethods.getMethod(songsUrl);
 
                 var membersObject = new Dictionary<string, object>();
                 var genresObject = new Dictionary<string, object>();
                 var spotifyInfoObject = new Dictionary<string, object>();
                 var commentsObject = new Dictionary<string, object>();
                 var ratingObject = new Dictionary<string, object>();
-               // var songsObject = new Dictionary<string, object>();
+                var songsObject = new Dictionary<string, object>();
 
 
                 JavaScriptSerializer oJS = new JavaScriptSerializer();
                 membersObject = oJS.Deserialize<Dictionary<string, object>>(members);
                 genresObject = oJS.Deserialize<Dictionary<string, object>>(genres);
                 commentsObject = oJS.Deserialize<Dictionary<string, object>>(comments);
-                //songsObject = oJS.Deserialize<Dictionary<string, object>>(songs);
+                songsObject = oJS.Deserialize<Dictionary<string, object>>(songs);
                 spotifyInfoObject = oJS.Deserialize<Dictionary<string, object>>(spotifyInfo);
                 ratingObject = oJS.Deserialize<Dictionary<string, object>>(rating);
 
@@ -644,15 +653,13 @@ namespace MyConcert.Controllers
                 details.Add("members", membersObject["members"]);
                 details.Add("genres", genresObject["Default"]);
                 details.Add("comments", commentsObject["comments"]);
-                //details.Add("songs", songsObject["songs"]);
+                details.Add("songs", songsObject["songs"]);
                 details.Add("followers", spotifyInfoObject["followers"]);
                 details.Add("popularity", spotifyInfoObject["popularity"]);
                 details.Add("image", spotifyInfoObject["image"]);
-                details.Add("rating", ratingObject["Default"]);
-                //details.Add("spotifyID", spotifyInfoObject["spotifyID"]);
+                details.Add("rating", ratingObject["Default"]);                
 
                 //Bands.Add(details);
-
                 /*var diccA = new Dictionary<string, object>();
                 diccA.Add("bands", Bands);*/
                 var result = Models.UtilityMethods.diccTOstrinJson(details);

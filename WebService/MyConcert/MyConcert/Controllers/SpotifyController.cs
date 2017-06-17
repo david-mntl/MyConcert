@@ -23,7 +23,7 @@ namespace MyConcert.Controllers
 ***************************************************************************/
         [HttpGet]
         [Route("api/Spotify/main")]
-        public void main()
+        public void Token()
         {
             //Create the auth object
             auth = new ClientCredentialsAuth()

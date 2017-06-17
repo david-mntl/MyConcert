@@ -223,77 +223,102 @@ namespace MyConcert.Controllers
                 conn.ConnectionString = _dbConectionString;
                 try
                 {
-                    conn.Open();
-                    string dbQuery = "spAddFestival";
-                    SqlCommand command = new SqlCommand(); // 
-
-                    command.Connection = conn;
-                    command.CommandType = System.Data.CommandType.StoredProcedure;
-                    command.CommandText = dbQuery;//  
-
-                    command.Parameters.AddWithValue("@pStartDate", (string)pJson.startDate);
-                    command.Parameters.AddWithValue("@pEndDate", (string)pJson.endDate);
-                    command.Parameters.AddWithValue("@pUbication", (string)pJson.place);
-                    command.Parameters.AddWithValue("@pDescription", (string)pJson.description);
-                    command.Parameters.AddWithValue("@pBillboardID", (string)pJson.billboardID);
-
-
-                    var details = new Dictionary<string, object>();
-
-                    // Create new SqlDataReader object and read data from the command.
-                    using (SqlDataReader reader = command.ExecuteReader())
+                   /* string addFestivalBandsUrl = "http://myconcert1.azurewebsites.net/api/Funcs/verifyBandDisponibility";
+                    for (int i = 0; i < pJson.categories.Count; i++)
                     {
-                        if (reader.HasRows && reader.Read())
+
+                        for (int j = 0; j < pJson.categories[i].bands.Count; j++)
                         {
-                            for (int i = 0; i < reader.FieldCount; i++)
+                            Dictionary<string, object> jsonPost = new Dictionary<string, object>();
+
+                            jsonPost.Add("bandID", pJson.categories[i].bands[j].id.ToString());
+                            jsonPost.Add("dateStart", pJson.startDate.ToString());
+                            jsonPost.Add("dateEnd", pJson.endDate.ToString());
+
+                            string stringJson = Models.UtilityMethods.diccTOstrinJson(jsonPost);
+                            string average = Models.UtilityMethods.postMethod(stringJson, addFestivalBandsUrl);
+                            JavaScriptSerializer oJS1 = new JavaScriptSerializer();
+                            Dictionary<string, object> confirmation = oJS1.Deserialize<Dictionary<string, object>>(average);
+                            var msg = confirmation["status"].ToString();
+
+                            if (msg.CompareTo("0")!=0)
                             {
-                                details.Add(reader.GetName(i), reader.IsDBNull(i) ? null : reader.GetValue(i));
+                                return pJson.categories[i].bands[j].id.ToString() +" error la banda ya esta en otra cartelera para estas fechas";
                             }
-                        }                        
-                    }
-                    try
-                    {
-                        string festivalID = details["FestivalID"].ToString();                        
-                        dynamic categoriesList = pJson.categories;
+                        }
+                    }*/
 
-                         string addBandUrl = "http://myconcert1.azurewebsites.net/api/Funcs/addBandToFestival";
-                         string addCategorieUrl = "http://myconcert1.azurewebsites.net/api/Funcs/addCatToFestival";
+                     conn.Open();
+                     string dbQuery = "spAddFestival";
+                     SqlCommand command = new SqlCommand(); // 
 
-                         string response = string.Empty;
-                         for (int i = 0; i < categoriesList.Count; i++)
+                     command.Connection = conn;
+                     command.CommandType = System.Data.CommandType.StoredProcedure;
+                     command.CommandText = dbQuery;//  
+
+                     command.Parameters.AddWithValue("@pStartDate", (string)pJson.startDate);
+                     command.Parameters.AddWithValue("@pEndDate", (string)pJson.endDate);
+                     command.Parameters.AddWithValue("@pUbication", (string)pJson.place);
+                     command.Parameters.AddWithValue("@pDescription", (string)pJson.description);
+                     command.Parameters.AddWithValue("@pBillboardID", (string)pJson.billboardID);
+
+
+                     var details = new Dictionary<string, object>();
+
+                     // Create new SqlDataReader object and read data from the command.
+                     using (SqlDataReader reader = command.ExecuteReader())
+                     {
+                         if (reader.HasRows && reader.Read())
                          {
-                             var diccA = new Dictionary<string, object>();
-                             diccA.Add("categoryID", categoriesList[i].id.ToString());
-                             diccA.Add("festivalID", festivalID);
-
-                             string jsonCategorie = Models.UtilityMethods.diccTOstrinJson(diccA);
-
-                             response = Models.UtilityMethods.postMethod(jsonCategorie, addCategorieUrl);
-                            JavaScriptSerializer oJS = new JavaScriptSerializer();                            
-                            Dictionary<string,object> diccComments = oJS.Deserialize<Dictionary<string, object>>(response);
-
-
-                            dynamic bandList = categoriesList[i].bands;
-
-                             for (int j = 0; j < bandList.Count; j++)
+                             for (int i = 0; i < reader.FieldCount; i++)
                              {
-                                 var diccB = new Dictionary<string, object>();
-                                 diccB.Add("categoryID", diccComments["ID"].ToString());                                
-                                 diccB.Add("bandID", bandList[j].id.ToString());
+                                 details.Add(reader.GetName(i), reader.IsDBNull(i) ? null : reader.GetValue(i));
+                             }
+                         }                        
+                     }
+                     try
+                     {
+                         string festivalID = details["FestivalID"].ToString();                        
+                         dynamic categoriesList = pJson.categories;
 
-                                 string jsonBand = Models.UtilityMethods.diccTOstrinJson(diccB);
-                                 response = Models.UtilityMethods.postMethod(jsonBand, addBandUrl);
-                             }                                                    
-                         }
+                          string addBandUrl = "http://myconcert1.azurewebsites.net/api/Funcs/addBandToFestival";
+                          string addCategorieUrl = "http://myconcert1.azurewebsites.net/api/Funcs/addCatToFestival";
 
-                        return "ok";
+                          string response = string.Empty;
+                          for (int i = 0; i < categoriesList.Count; i++)
+                          {
+                              var diccA = new Dictionary<string, object>();
+                              diccA.Add("categoryID", categoriesList[i].id.ToString());
+                              diccA.Add("festivalID", festivalID);
+
+                              string jsonCategorie = Models.UtilityMethods.diccTOstrinJson(diccA);
+
+                              response = Models.UtilityMethods.postMethod(jsonCategorie, addCategorieUrl);
+                             JavaScriptSerializer oJS = new JavaScriptSerializer();                            
+                             Dictionary<string,object> diccComments = oJS.Deserialize<Dictionary<string, object>>(response);
+
+
+                             dynamic bandList = categoriesList[i].bands;
+
+                              for (int j = 0; j < bandList.Count; j++)
+                              {
+                                  var diccB = new Dictionary<string, object>();
+                                  diccB.Add("categoryID", diccComments["ID"].ToString());                                
+                                  diccB.Add("bandID", bandList[j].id.ToString());
+
+                                  string jsonBand = Models.UtilityMethods.diccTOstrinJson(diccB);
+                                  response = Models.UtilityMethods.postMethod(jsonBand, addBandUrl);
+                              }                                                    
+                          }
+
+                    return "ok";
                     }
                     catch (Exception e)
                     {
                         return e.Message;
-                    }                    
+                    }   
                 }
-                catch (SqlException e)
+                catch (Exception e)
                 {
                     return e.Message;
                 }
@@ -1352,6 +1377,21 @@ namespace MyConcert.Controllers
                 double averageBand = 0;
                 double tempElected = 0;
 
+                string categoriesReport = string.Empty;
+                ExcelHandler doc = new ExcelHandler();
+
+                DateTime dateTime = DateTime.UtcNow.Date;
+
+                doc.addReportHeader(); //Crea los títulos del reporte
+                doc.addTableHeaders(XLColor.LightGray); //Añade los títulos de la tabla para las bandas
+                doc.addReportTitle(pJson.name.ToString()); //Añade el título del reporte
+                
+
+                //Aquí se añaden los artistas correspondientes al reporte. Deben estar ordenados por el último parámetro según especificaciones del proyecto. Esto es la calificación promedio obtenida por el algoritmo del chef. 
+                //Este proceso se puede realizar mediante un for, teniendo objetos artistas en un arreglo y recorriendolo.                
+
+                
+
                 string try1 = string.Empty;
 
                 string spotifyTOKEN = "http://myconcert1.azurewebsites.net/api/Spotify/main";
@@ -1360,6 +1400,7 @@ namespace MyConcert.Controllers
                 for (int i = 0; i < pJson.categories.Count; i++)
                 {
                     dynamic category = pJson.categories[i];
+                    categoriesReport = categoriesReport + ", " + category.name.ToString();
 
                     for (int j = 0; j < category.bands.Count; j++)
                     {
@@ -1430,8 +1471,22 @@ namespace MyConcert.Controllers
                         diccComments = serial.Deserialize<Dictionary<string, object>>(json);
                         dynamic comment = diccComments["comments"];
 
-                        totalAverage = totalAverage + comment.Count;
-                        totalBands = totalBands + 1;
+                        if (comment.Count > 5)
+                        {
+                            totalAverage = totalAverage + 50;
+                            totalBands = totalBands + 1;
+
+                            doc.addArtistToReport(bands[i].name.ToString(),"rock", bands[i].rating.ToString(), "50");
+                        }
+                        else
+                        {
+                            totalAverage = totalAverage + comment.Count*10;
+                            totalBands = totalBands + 1;
+                            int times = comment.Count * 10;
+                            doc.addArtistToReport(bands[i].name.ToString(), "rock", bands[i].rating.ToString(), (times).ToString());
+
+                        }
+                        
 
 
                     }
@@ -1448,6 +1503,8 @@ namespace MyConcert.Controllers
                         double result = Convert.ToDouble(bandAverageResult);                        
 
                         double resultTemp = Math.Abs(result - tempElected);
+
+                        doc.addArtistToReport(bands[i].name.ToString(), "rock", bands[i].rating.ToString(), result.ToString());
 
                         if (i == 0)
                         {
@@ -1475,6 +1532,14 @@ namespace MyConcert.Controllers
                     
                 }
 
+
+                doc.addReportInfo(dateTime.ToString("dd/MM/yyyy"), pJson.user.ToString(), "1", categoriesReport); //Añade info del reporte
+
+                doc.saveDocument(); //Guarda el documento                
+
+                doc.uploadFileToServer(); //Sube el documento al servidor para que el usuario lo pueda descargar.
+
+
                 return Models.UtilityMethods.diccTOstrinJson(cheffBand);                
             }
             catch (Exception e)
@@ -1485,6 +1550,52 @@ namespace MyConcert.Controllers
         }
 
 
+        /********************************************************        
+       *                  POST verify Band Disponibility
+       ********************************************************/
+        [HttpPost]
+        [Route("api/Funcs/verifyBandDisponibility")]
+        public string verifyBandDisponibility([FromBody]dynamic pJson)
+        {
+            using (SqlConnection conn = new SqlConnection())
+            {
+                //conectionString;
+                conn.ConnectionString = _dbConectionString;
+                try
+                {
+                    conn.Open();
+                    string dbQuery = "spBandAvailable";
+                    SqlCommand command = new SqlCommand(); // 
+
+                    command.Connection = conn;
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.CommandText = dbQuery;//  
+
+                    command.Parameters.AddWithValue("@BandID", (string)pJson.bandID);
+                    command.Parameters.AddWithValue("@Start", (string)pJson.dateStart);
+                    command.Parameters.AddWithValue("@End", (string)pJson.dateEnd);                    
+
+                    var details = new Dictionary<string, object>();
+
+                    // Create new SqlDataReader object and read data from the command.
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows && reader.Read())
+                        {
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                details.Add(reader.GetName(i), reader.IsDBNull(i) ? null : reader.GetValue(i));
+                            }
+                        }
+                        return Models.UtilityMethods.diccTOstrinJson(details);
+                    }
+                }
+                catch (SqlException e)
+                {
+                    return e.Message;
+                }
+            }
+        }
 
 
 
