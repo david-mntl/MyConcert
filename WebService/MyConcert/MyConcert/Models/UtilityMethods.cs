@@ -18,7 +18,7 @@ namespace MyConcert.Models
         {
             JavaScriptSerializer jss = new JavaScriptSerializer();
             string jsonDoc = jss.Serialize(pDiccionary);
-            return jsonDoc;                       
+            return jsonDoc;
         }
 
         public static string postMethod(string pJson, string pUrl)
@@ -50,10 +50,10 @@ namespace MyConcert.Models
 
         public static string getMethod(string pUrl)
         {
-            var request = (HttpWebRequest)WebRequest.Create(pUrl);            
+            var request = (HttpWebRequest)WebRequest.Create(pUrl);
             request.Method = "GET";
             request.ContentType = "application/json";
-                
+
             string message = string.Empty;
             JsonSerializer _serializer = new JsonSerializer();
 
@@ -62,12 +62,10 @@ namespace MyConcert.Models
             using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
             using (var json = new JsonTextReader(reader))
             {
-                message = _serializer.Deserialize<string>(json);                
+                message = _serializer.Deserialize<string>(json);
                 return message;
-            }            
+            }
         }
-
-
-
     }
+    
 }

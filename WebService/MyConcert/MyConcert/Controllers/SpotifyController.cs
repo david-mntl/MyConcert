@@ -136,7 +136,8 @@ namespace MyConcert.Controllers
                     + (audio.Energy * 20) + (audio.Danceability * 20);
                 average += individualValue;
             }
-            chefAverage.Add("average", average);
+
+            chefAverage.Add("average", average/3);
             return (Models.UtilityMethods.diccTOstrinJson(chefAverage));
         }
 
@@ -144,27 +145,6 @@ namespace MyConcert.Controllers
 
 
 
-        /**************************************************************************        
-*                               Get artist info                           *
-**************************************************************************/
-        [HttpGet]
-        [Route("api/Spotify/getChef/{artistID}")]
-        public string getChef(string artistID)
-        {
-            var chefAverage = new Dictionary<string, object>();
-            SeveralTracks tracks = spotify.GetArtistsTopTracks(artistID, "CR");
-            var average = 0.0;
-            for (int i = 0; i < 3; i++)
-            {
-                var individualValue = 0.0;
-                AudioFeatures audio = spotify.GetAudioFeatures(tracks.Tracks[1].Id);
-                individualValue = (audio.Speechiness * 20) + (audio.Instrumentalness * 20) + (audio.Valence * 20)
-                    + (audio.Energy * 20) + (audio.Danceability * 20);
-                average += individualValue;
-            }
-            chefAverage.Add("average", average);
-            return (Models.UtilityMethods.diccTOstrinJson(chefAverage));
-        }
 
 
 
