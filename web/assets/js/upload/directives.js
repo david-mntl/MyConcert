@@ -36,6 +36,9 @@ angular
                 if (!helper.isFile(params.file)) return;
                 if (!helper.isImage(params.file)) return;
 
+
+                console.log("FILE:" ,params.file);
+
                 var canvas = element.find('canvas');
                 var reader = new FileReader();
 

@@ -52,8 +52,9 @@ app.controller('cartelerasController',['$scope','$http','$interval','Notificatio
                     cartelera.image = "../assets/"+response.spGetAllBillboards[j].image;
                     $scope.carteleras.push(cartelera);
                 }
+                $scope.changeCurrentCarteleras(2);
             }
-            $scope.changeCurrentCarteleras(2);
+
         });
     };
 
@@ -76,8 +77,9 @@ app.controller('cartelerasController',['$scope','$http','$interval','Notificatio
                     festival.image = "../assets/"+response.spGetAllFestivals[j].image;
                     $scope.festivales.push(festival);
                 }
+                $scope.changeCurrentFestivales(2);
             }
-            $scope.changeCurrentFestivales(2);
+
         });
     };
 
@@ -102,7 +104,7 @@ app.controller('cartelerasController',['$scope','$http','$interval','Notificatio
                         band.id = response.categories[j].bands[k].id;
                         band.name = response.categories[j].bands[k].name;
                         band.spotifyID = response.categories[j].bands[k].spotifyID;
-                        band.rating = response.categories[j].bands[k].rating;
+                        band.rating = response.categories[j].bands[k].rating.rating;
                         band.members = response.categories[j].bands[k].members;
                         band.genders = response.categories[j].bands[k].genres;
                         band.comments = response.categories[j].bands[k].comments;
@@ -121,7 +123,6 @@ app.controller('cartelerasController',['$scope','$http','$interval','Notificatio
 
     $scope.readSongsData = function() {
         $http.get("https://myconcert1.azurewebsites.net/api/Spotify/getSongs/"+$scope.selectedBand.spotifyID).success(function (response) {
-            console.log(response);
             var response = JSON.parse(response);
 
             if (response.songs.length > 0) {
@@ -219,6 +220,8 @@ app.controller('cartelerasController',['$scope','$http','$interval','Notificatio
 
         $scope.selectedBand = $scope.categories[pCategoryIndex].bands[pBandIndex];
         $scope.readSongsData();
+
+
         for(i = 0; i< $scope.selectedBand.rating; i++){
             $scope.completeStars.push(i);
         }
@@ -295,7 +298,14 @@ app.controller('cartelerasController',['$scope','$http','$interval','Notificatio
     /************************** Festivales/Carteleras Carrousel *********************************/
     $scope.changeCurrentCartelerasAuto = function () { $scope.changeCurrentCarteleras(1); };
     $scope.changeCurrentCarteleras = function(mode){
-        if($scope.carteleras.length > 2){
+        if($scope.carteleras.length == 1){
+            $scope.currentCarteleras[0] = $scope.carteleras[0];
+        }
+        else if($scope.carteleras.length == 2){
+            $scope.currentCarteleras[0] = $scope.carteleras[0];
+            $scope.currentCarteleras[1] = $scope.carteleras[1];
+        }
+        else{
             if($scope.currentCarteleraIndex >= $scope.carteleras.length){
                 $scope.currentCarteleraIndex = 0;
             }
@@ -315,20 +325,29 @@ app.controller('cartelerasController',['$scope','$http','$interval','Notificatio
 
     $scope.changeCurrentFestivalesAuto = function () { $scope.changeCurrentFestivales(1); };
     $scope.changeCurrentFestivales = function(mode){
-
-        if($scope.currentFestivalIndex >= $scope.festivales.length){
-            $scope.currentFestivalIndex = 0;
+        if($scope.festivales.length == 1){
+            $scope.currentFestivales[0] = $scope.festivales[0];
         }
-
-        $scope.currentFestivales[0] = $scope.festivales[$scope.currentFestivalIndex];
-        if($scope.currentFestivalIndex+1 < $scope.festivales.length) {
-            $scope.currentFestivales[1] = $scope.festivales[$scope.currentFestivalIndex + 1];
+        else if($scope.festivales.length == 2){
+            $scope.currentFestivales[0] = $scope.festivales[0];
+            $scope.currentFestivales[1] = $scope.festivales[1];
         }
         else{
-            $scope.currentFestivales[1] = $scope.festivales[0];
+            if($scope.currentFestivalIndex >= $scope.festivales.length){
+                $scope.currentFestivalIndex = 0;
+            }
+
+            $scope.currentFestivales[0] = $scope.festivales[$scope.currentFestivalIndex];
+            if($scope.currentFestivalIndex+1 < $scope.festivales.length) {
+                $scope.currentFestivales[1] = $scope.festivales[$scope.currentFestivalIndex + 1];
+            }
+            else{
+                $scope.currentFestivales[1] = $scope.festivales[0];
+            }
+            if(mode==1)
+                $scope.currentFestivalIndex += 1;
         }
-        if(mode==1)
-            $scope.currentFestivalIndex += 1;
+
     };
 
 

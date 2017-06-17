@@ -162,33 +162,53 @@ app.controller('mainController',['$scope','$http','$window','Notification','$loc
     };
 
     $scope.sendVote = function () {
-        var ready = true;
-        for(i = 0; i < $scope.categories.length; i++){
-            if($scope.categories[i].done == false){
-                var pMessage = 'Aún tiene $'+$scope.categories[i].money+' disponibles en la categoría ' + $scope.categories[i].name;
-                Notification.error({message: pMessage ,title:'¡Atención!', delay: 2000});
-                ready = false;
+        var parameter = JSON.stringify({
+            userID: Security.getCurrentUserEmail(),
+            billboardID: $scope.cartelera.id.toString()
+        });
+
+        $http.post('https://myconcert1.azurewebsites.net/api/Funcs/CheckUserVote', parameter).success(function (response, status, headers, config) {
+            var response = JSON.parse(response);
+            if(response.vote == 0){
+                 var ready = true;
+                 for(i = 0; i < $scope.categories.length; i++){
+                    if($scope.categories[i].done == false){
+                        var pMessage = 'Aún tiene $'+$scope.categories[i].money+' disponibles en la categoría ' + $scope.categories[i].name;
+                        Notification.error({message: pMessage ,title:'¡Atención!', delay: 2000});
+                        ready = false;
+                    }
+                 }
+                 if(ready){
+                    var categoriesLocalInfo = $scope.categories;
+
+                    delete categoriesLocalInfo.localID;
+
+                    var parameter = JSON.stringify({
+                        email: Security.getCurrentUserEmail(),
+                        billboardID: $scope.cartelera.id,
+                        categories: $scope.categories
+                     });
+                    $http.post('https://myconcert1.azurewebsites.net/api/Funcs/AddVoteToBillboard', parameter).success(function (response, status, headers, config) {
+                        Notification.success({
+                            message: 'Se ha registrado el voto. Redirigiendo al inicio...',
+                            delay: 2000
+                        });
+                        setTimeout(function () {
+                            location.href = "init.html"
+                        }, 2000);
+                    }).error(function (data, status, headers, config) {
+                        console.log(data);
+                    });
+                 }
             }
-        }
-        if(ready){
-            var categoriesLocalInfo = $scope.categories;
+            else{
+                Notification.error({message: '¡Ya has votado en esta cartelera!', title:'¡Atención!', delay: 2000});
+            }
+        }).error(function (data, status, headers, config) {
+            console.log(data);
+        });
 
-            delete categoriesLocalInfo.localID;
 
-            var parameter = JSON.stringify({
-                email: Security.getCurrentUserEmail(),
-                billboardID: $scope.cartelera.id,
-                categories: $scope.categories
-            });
-
-            console.log(parameter);
-            $http.post('https://myconcert1.azurewebsites.net/api/Funcs/AddVoteToBillboard', parameter).success(function (response, status, headers, config) {
-                console.log(response);
-            }).error(function (data, status, headers, config) {
-                console.log(data);
-            });
-            //Notification.success({message: 'Enviando voto...' ,title:'¡Completado!', delay: 2000});
-        }
     };
     
     $scope.addMoneyToCurrentBand = function (bandLocalID,pQuantity) {

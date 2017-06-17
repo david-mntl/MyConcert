@@ -27,13 +27,11 @@ app2.controller('AppController', [ 'FileUploader','$cookies','$scope', function(
             console.info('onWhenAddingFileFailed');
         };
         uploader.onAfterAddingFile = function(fileItem) {
-            console.info('onAfterAddingFile');
             $scope.isOneFile = true;
-            console.log($scope.uploader.queue);
-            console.log($scope.uploader.queue[0].file.name);
             var extension = $scope.uploader.queue[0].file.name.split('.');
             $scope.uploader.queue[0].file.name = $cookies.get("tempEmail") + "."+extension[extension.length-1];
             console.log($scope.uploader.queue[0].file.name);
+            $cookies.put('tempImage', $scope.uploader.queue[0].file.name,{path: '/'});
         };
         uploader.onAfterAddingAll = function(addedFileItems) {
             console.info('onAfterAddingAll');

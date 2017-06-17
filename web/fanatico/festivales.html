@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="../assets/styles/basicStyles.css" />
     <link rel="stylesheet" href="../assets/styles/font-awesome.min.css" />
     <link rel="stylesheet" href="../assets/styles/zModalStyle.css" />
+    <link rel="stylesheet" href="../assets/styles/modalStyle.css" />
     <script>
         var counter = 0;
         function textCounter( field, maxlimit, text) {
@@ -94,24 +95,17 @@
 
 
 <div  class="container" >
-    <!-- Trigger the modal with a button -->
-    <!-- Modal -->
     <div  class="modal fade" id="cancelarFestivalModal" role="dialog">
         <div style="width: 30%" class="modal-dialog">
-            <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
-
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h3>Está seguro?</h3>
                     <button style="float: right" type="button" data-dismiss="modal" ng-click="cancelFestival()" class="btn btn-success">Sí</button>
                     <button style="float: right" type="button" data-dismiss="modal" class="btn btn-danger">No</button>
-
                 </div>
             </div>
-
         </div>
-
     </div>
 </div>
 

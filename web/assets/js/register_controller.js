@@ -1,7 +1,7 @@
-var app = angular.module('mainModule', ['720kb.datepicker','angular-loading-bar','angularFileUpload','ui-notification','ngSecurity']);
+var app = angular.module('mainModule', ['720kb.datepicker','angular-loading-bar','angularFileUpload','ui-notification','ngSecurity','ngCookies']);
 
 
-app.controller('mainController',['$scope','$http','$window','Notification','Security',function ($scope,$http,$window,Notification,Security) {
+app.controller('mainController',['$scope','$http','$window','Notification','Security','$cookies',function ($scope,$http,$window,Notification,Security,$cookies) {
     $scope.profiles = [{id: '2',name: 'Fanático'}, {id: '1',name: 'Promoción'}];
     $scope.universities = [];
     $scope.countries = [];
@@ -57,99 +57,124 @@ app.controller('mainController',['$scope','$http','$window','Notification','Secu
 
     $scope.sendRegisterForm = function() {
         if($scope.data.ProfileType != undefined) {
+            if($scope.verifyForm()) {
+                var parameter = JSON.stringify({
+                    Email: $scope.data.Email.toString()
+                });
+                $http.post('https://myconcert1.azurewebsites.net/api/Verify/User', parameter).success(function (data, status, headers, config) {
+                    var response = JSON.parse(data);
 
-            var parameter = JSON.stringify({
-                Email: $scope.data.Email.toString()
-            });
-            $http.post('https://myconcert1.azurewebsites.net/api/Verify/User', parameter).success(function (data, status, headers, config) {
-                var response = JSON.parse(data);
+                    if (response.State == 0) {
+                        if ($scope.data.ProfileType.id == 1) {
+                            if (!$scope.isValid($scope.data.Name)) {
+                                if (!$scope.isValid($scope.data.LastName)) {
+                                    if (!$scope.isValid($scope.data.Email)) {
+                                        if (!$scope.isValid($scope.data.Password)) {
+                                            var pass = CryptoJS.SHA256($scope.data.Password.toString());
+                                            var parameter = JSON.stringify({
+                                                Name: $scope.data.Name.toString(),
+                                                Lastname: $scope.data.LastName.toString(),
+                                                Email: $scope.data.Email.toString(),
+                                                Password: pass.toString()
+                                            });
 
-                if(response.State == 0){
-                    if ($scope.data.ProfileType.id == 1) {
-                        if (!$scope.isValid($scope.data.Name)) {
-                            if (!$scope.isValid($scope.data.LastName)) {
-                                if (!$scope.isValid($scope.data.Email)) {
-                                    if (!$scope.isValid($scope.data.Password)) {
-                                        var pass =CryptoJS.SHA256( $scope.data.Password.toString());
-                                        var parameter = JSON.stringify({
-                                            Name: $scope.data.Name.toString(),
-                                            Lastname: $scope.data.LastName.toString(),
-                                            Email: $scope.data.Email.toString(),
-                                            Password: pass.toString()
-                                        });
-
-                                         $http.post('https://myconcert1.azurewebsites.net/api/Verify/RegisterAdmin', parameter).success(function (data, status, headers, config) {
-                                            if (data == "error") {
-                                                Notification.error({message: 'Ha ocurrido un error. Por favor inténtelo más tarde.',delay: 2000});
-                                            }
-                                            else {
-                                                Notification.success({message: 'Usuario registrado. Redirigiendolo a la página principal.',delay: 2000});
-                                                setTimeout(function () {location.href = "../index.html"}, 2000);
-                                            }
-                                         }).error(function (data, status, headers, config) {
-                                             console.log(data);
-                                         });
+                                            $http.post('https://myconcert1.azurewebsites.net/api/Verify/RegisterAdmin', parameter).success(function (data, status, headers, config) {
+                                                if (data == "error") {
+                                                    Notification.error({
+                                                        message: 'Ha ocurrido un error. Por favor inténtelo más tarde.',
+                                                        delay: 2000
+                                                    });
+                                                }
+                                                else {
+                                                    Notification.success({
+                                                        message: 'Usuario registrado. Redirigiendolo a la página principal.',
+                                                        delay: 2000
+                                                    });
+                                                    setTimeout(function () {
+                                                        location.href = "../index.html"
+                                                    }, 2000);
+                                                }
+                                            }).error(function (data, status, headers, config) {
+                                                console.log(data);
+                                            });
+                                        }
+                                        else {
+                                            Notification.error({message: 'Ingrese una contraseña.', delay: 2000});
+                                        }
                                     }
                                     else {
-                                        Notification.error({message: 'Ingrese una contraseña.', delay: 2000});
+                                        Notification.error({message: 'Ingrese un correo electróncio.', delay: 2000});
                                     }
                                 }
                                 else {
-                                    Notification.error({message: 'Ingrese un correo electróncio.', delay: 2000});
+                                    Notification.error({message: 'Ingrese un apellido.', delay: 2000});
                                 }
                             }
                             else {
-                                Notification.error({message: 'Ingrese un apellido.', delay: 2000});
+                                Notification.error({message: 'Ingrese un nombre.', delay: 2000});
                             }
                         }
                         else {
-                            Notification.error({message: 'Ingrese un nombre.', delay: 2000});
-                        }
-                    }
-                    else {
-                        if ($scope.verifyForm()) {
-                            if ($scope.data.Place == undefined)
-                                $scope.data.Place = "";
-                            if ($scope.data.University == undefined)
-                                $scope.data.University = {id: '1', name: 'null'};
-                            var pass =CryptoJS.SHA256( $scope.data.Password.toString());
+                            if ($scope.verifyForm()) {
+                                if ($scope.data.Place == undefined)
+                                    $scope.data.Place = "";
+                                if ($scope.data.University == undefined)
+                                    $scope.data.University = {id: '1', name: 'null'};
+                                var pass = CryptoJS.SHA256($scope.data.Password.toString());
 
-                            var parameter = JSON.stringify({
-                                Name: $scope.data.Name.toString(),
-                                Lastname: $scope.data.LastName.toString(),
-                                Country: $scope.data.Country.name.toString(),
-                                Residence: $scope.data.Place.toString(),
-                                ID_Uni: $scope.data.University.id.toString(),
-                                Email: $scope.data.Email.toString(),
-                                Phone: $scope.data.Phone.toString(),
-                                Photo: $scope.data.Email.toString(),
-                                Pass: pass.toString(),
-                                Description: $scope.data.Description.toString(),
-                                Birthdate: $scope.data.BirthDate.toString(),
-                                Genres: $scope.data.GenresList.toString()
-                            });
+                                var userImage = $cookies.get('tempImage', {path: '/'});
+                                if (userImage == undefined || userImage == "expired") {
+                                    userImage = "null";
+                                }
 
-                             $http.post('https://myconcert1.azurewebsites.net/api/Verify/RegisterUser', parameter).success(function (data, status, headers, config) {
-                                if (data == "error") {
+                                var parameter = JSON.stringify({
+                                    Name: $scope.data.Name.toString(),
+                                    Lastname: $scope.data.LastName.toString(),
+                                    Country: $scope.data.Country.name.toString(),
+                                    Residence: $scope.data.Place.toString(),
+                                    ID_Uni: $scope.data.University.id.toString(),
+                                    Email: $scope.data.Email.toString(),
+                                    Phone: $scope.data.Phone.toString(),
+                                    Photo: userImage,
+                                    Pass: pass.toString(),
+                                    Description: $scope.data.Description.toString(),
+                                    Birthdate: $scope.data.BirthDate.toString(),
+                                    Genres: $scope.data.GenresList.toString()
+                                });
+
+                                $http.post('https://myconcert1.azurewebsites.net/api/Verify/RegisterUser', parameter).success(function (data, status, headers, config) {
+                                    if (data == "error") {
+                                        console.log(data);
+                                        Notification.error({
+                                            message: 'Ha ocurrido un error. Por favor inténtelo más tarde.',
+                                            delay: 2000
+                                        });
+                                    }
+                                    else {
+                                        Notification.success({
+                                            message: 'Usuario registrado. Redirigiendolo a la página principal.',
+                                            delay: 2000
+                                        });
+                                        setTimeout(function () {
+                                            location.href = "../index.html"
+                                        }, 2000);
+                                    }
+                                }).error(function (data, status, headers, config) {
                                     console.log(data);
-                                    Notification.error({message: 'Ha ocurrido un error. Por favor inténtelo más tarde.', delay: 2000});
-                                }
-                                else {
-                                    Notification.success({message: 'Usuario registrado. Redirigiendolo a la página principal.', delay: 2000});
-                                    setTimeout(function(){location.href="../index.html"} , 2000);
-                                }
-                             }).error(function (data, status, headers, config) {
-                                console.log(data);
-                             });
+                                });
+                            }
                         }
                     }
-                }
-                else if(response.State == 1){
-                    Notification.error({message: 'El correo electrónico ya fue registrado.', delay: 2000});
-                }
-            }).error(function (data, status, headers, config) {
-                Notification.error({message: 'Error de comunicación con el servidor. Inténtelo más tarde.', delay: 2000});
-            });
+                    else if (response.State == 1) {
+                        Notification.error({message: 'El correo electrónico ya fue registrado.', delay: 2000});
+                    }
+                }).error(function (data, status, headers, config) {
+                    Notification.error({
+                        message: 'Error de comunicación con el servidor. Inténtelo más tarde.',
+                        delay: 2000
+                    });
+                });
+            }
 
 
         }
@@ -195,37 +220,44 @@ app.controller('mainController',['$scope','$http','$window','Notification','Secu
                 if(!$scope.isValid($scope.data.Phone) && $scope.isPhoneValid($scope.data.Phone)){
                     if(!$scope.isValid($scope.data.Country)){
                         if(!$scope.isValid($scope.data.BirthDate)){
-                            if(!$scope.isValid($scope.data.ProfileType)){
-                                if(!$scope.isValid($scope.data.Email) && $scope.isEmailValid($scope.data.Email)){
-                                    if(!$scope.isValid($scope.data.Password)){
-                                        if(!$scope.isValid($scope.data.GenresList)){
-                                            if(!$scope.isValid($scope.data.Description)){
-                                                return true;
+                            if($scope.compareDate($scope.data.BirthDate)){
+                                if(!$scope.isValid($scope.data.ProfileType)){
+                                    if(!$scope.isValid($scope.data.Email) && $scope.isEmailValid($scope.data.Email)){
+                                        if(!$scope.isValid($scope.data.Password)){
+                                            if(!$scope.isValid($scope.data.GenresList)){
+                                                if(!$scope.isValid($scope.data.Description)){
+                                                    return true;
+                                                }
+                                                else{
+                                                    Notification.error({message: 'Ingrese una descripción personal.', delay: 2000});
+                                                    return false;
+                                                }
                                             }
                                             else{
-                                                Notification.error({message: 'Ingrese una descripción personal.', delay: 2000});
+                                                Notification.error({message: 'Ingrese al menos un género.', delay: 2000});
                                                 return false;
                                             }
                                         }
                                         else{
-                                            Notification.error({message: 'Ingrese al menos un género.', delay: 2000});
+                                            Notification.error({message: 'Ingrese una contraseña.', delay: 2000});
                                             return false;
                                         }
                                     }
                                     else{
-                                        Notification.error({message: 'Ingrese una contraseña.', delay: 2000});
+                                        Notification.error({message: 'Ingrese un correo electrónico válido.', delay: 2000});
                                         return false;
                                     }
                                 }
                                 else{
-                                    Notification.error({message: 'Ingrese un correo electrónico válido.', delay: 2000});
+                                    Notification.error({message: 'Ingrese un tipo de perfil.', delay: 2000});
                                     return false;
                                 }
                             }
                             else{
-                                Notification.error({message: 'Ingrese un tipo de perfil.', delay: 2000});
+                                Notification.error({message: 'Debe tener al menos 18 años para ingresar al sistema.', delay: 2000});
                                 return false;
                             }
+
                         }
                         else{
                             Notification.error({message: 'Ingrese una fecha de nacimiento.', delay: 2000});
@@ -256,6 +288,12 @@ app.controller('mainController',['$scope','$http','$window','Notification','Secu
 
 
     /****************** Aux Functions ************************/
+
+    $scope.compareDate = function(birthDate) {
+        var currentTime = new Date();
+        currentTime.setFullYear( currentTime.getFullYear() - 18 );
+        return new Date(birthDate) < currentTime; // true if time1 is later
+    };
 
     $scope.openUploadWindow = function(files) {
         if($scope.verifyForm()){
