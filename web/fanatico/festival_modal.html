@@ -1,0 +1,54 @@
+<div id="myModal" class="zmodal" ng-show="visibleFestivalModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header green">
+            <span ng-click="closeFestivalModal()" class="close">&times;</span>
+            <h2>{{selectedFestival.name}}</h2>
+        </div>
+        <div class="modal-body">
+            <i ng-click="toggleHowToChef()" style="float:right; cursor: pointer;" class="fa fa-question fa-2x"></i>
+            <div class="modal-info-image" ><image ng-src={{selectedFestival.image}}></image></div>
+            <div style="margin-left: 15px" class="modal-info-box">
+                <div style="padding: 5px" class="box-cartelera-info-icon">
+                    <i class="fa fa-globe fa-3x"></i>
+                    <div class="modal-info-text">{{selectedFestival.location}}</div>
+                </div>
+                <div style="padding: 5px" class="box-cartelera-info-icon">
+                    <i class="fa fa-calendar fa-3x"></i>
+                    <div class="modal-info-text">{{selectedFestival.date}}</div>
+                </div>
+                <div style="padding: 5px" class="box-cartelera-info-icon">
+                    <i class="fa fa-map-marker fa-3x"></i>
+                    <div class="modal-info-text">{{selectedFestival.place}}</div>
+                </div>
+            </div>
+
+            <div style="margin-left: 15px" class="modal-info-box">
+                <div style="padding: 5px" class="box-cartelera-info-icon">
+                    <i class="fa fa-pencil fa-2x"></i>
+                    <div class="modal-info-text">Descripción</div>
+                </div>
+                <div style="padding: 5px" class="box-cartelera-info-icon">
+                    {{selectedFestival.description}}
+                </div>
+            </div>
+
+            <div style="margin-top: 250px">
+                <div class="modal-info-text" style="float: left;">Categorías</div>
+                <div  ng-repeat="category in categories">
+                    <button ng-click="changeCurrentFestivalCategory(category.localID)" class="accordion">
+                        {{category.name}}
+                    </button>
+                    <div class="panel"  ng-if="currentFestivalCategory == category.localID">
+                        <div ng-click="showBandModal(band.localID,category.localID)" class="bandname-box" ng-repeat="band in category.bands"> {{band.name}} </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer green">
+        </div>
+
+    </div>
+</div>

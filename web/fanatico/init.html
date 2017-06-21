@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="mainModule">
+<head>
+    <meta charset="UTF-8">
+    <title>MyConcert by X-Fest</title>
+
+    <script src="../assets/js/libs/angular.min.js"></script>
+    <script src="../assets/js/libs/angular-spotify.js"></script>
+    <script src="../assets/js/init_controller.js"></script>
+    <script src="../assets/js/models/init_model.js"></script>
+    <script src="../assets/js/libs/loading-bar.js"></script>
+    <script src="../assets/js/jquery/jquery-1.11.1.min.js"></script>
+
+    <script src="../assets/js/libs/angular-notify.js"></script>
+    <script src="../assets/js/libs/angular-cookies.js"></script>
+    <script src="../assets/js/libs/angular-ui-notification.min.js"></script>
+    <link rel="stylesheet" href="../assets/styles/angular-ui-notification.min.css" />
+    <script src="../assets/js/angular-session.js"></script>
+
+    <link href='../assets/styles/loading-bar.css' rel='stylesheet' />
+    <link rel="stylesheet" href="../assets/styles/basicStyles.css" />
+    <link rel="stylesheet" href="../assets/styles/font-awesome.min.css" />
+    <link rel="stylesheet" href="../assets/styles/modalStyle.css" />
+    <script>
+        var counter = 0;
+        function textCounter( field, maxlimit, text) {
+            counter = maxlimit - text.value.length;
+            field.value = counter;
+        }
+    </script>
+</head>
+<body ng-controller="cartelerasController" class="bodyall" >
+    <div class="header">
+        <a href="../index.html" style="float: left"><img src="../assets/imgs/logo.png" style="width: 100px; height: 100px"/></a>
+        <div class="header_center"><h1>MyConcert</h1></div>
+        <div class="header_right-profile" ng-include="'nav_profile.html'"></div>
+    </div>
+
+    <div class="bodycont">
+
+        <div ng-include="'festival_modal.html'"></div>
+        <div ng-include="'band_modal.html'"></div>
+        <div ng-include="'nav_menu.html'"></div>
+
+        <div ng-include="'help_modals/howto_carteleras.html'"></div>
+        <div ng-include="'help_modals/howto_festivales.html'"></div>
+        <div ng-include="'help_modals/howto_chef.html'"></div>
+
+
+        <div class="body-carteleras">
+            <div style="float:left;"><h2>Carteleras</h2></div>
+            <i ng-click="toggleHowToCarteleras()" style="float:right; cursor: pointer;" class="fa fa-question fa-2x"></i>
+            <div style="clear: both;">
+                <div class="navigation-buton-carteleras-left" ng-click="backwardCurrentSelection(1)"><i class="fa fa-caret-left fa-2x"></i></div>
+                <div class="box-cartelera" ng-repeat="cartelera in currentCarteleras">
+                    <div class="box-cartelera-title">{{cartelera.name}}</div>
+                    <div class="box-cartelera-image" ><image ng-if="cartelera.image != ''" ng-src={{cartelera.image}}></image></div>
+                    <div class="box-cartelera-info">
+                        <div class="box-cartelera-info-icon">
+                            <i class="fa fa-globe fa-2x"></i>
+                            <div class="box-cartelera-info-text">{{cartelera.location}}</div>
+                        </div>
+                        <div class="box-cartelera-info-icon">
+                            <i class="fa fa-clock-o fa-2x"></i>
+                            <div class="box-cartelera-info-text">{{cartelera.leftTime}} días restantes</div>
+                        </div>
+                    </div>
+                    <a ng-click="openVoteWindow(cartelera.id)" style="margin-top: 15px" class="box-cartelera-button">Votar</a>
+                </div>
+                <div class="navigation-buton-carteleras-right" ng-click="forwardCurrentSelection(1)"><i class="fa fa-caret-right fa-2x"></i></div>
+            </div>
+        </div>
+
+        <div class="body-festivales">
+            <div style="float:left;"><h2>Festivales</h2></div>
+            <i ng-click="toggleHowToFestivales()" style="float:right; cursor: pointer;" class="fa fa-question fa-2x"></i>
+            <div style="clear: both;">
+                <div class="navigation-buton-carteleras-left" ng-click="backwardCurrentSelection(2)"><i class="fa fa-caret-left fa-2x"></i></div>
+                <div class="box-cartelera" ng-repeat="festival in currentFestivales">
+                    <div class="box-cartelera-title">{{festival.name}}</div>
+                    <div class="box-cartelera-image" ><image ng-if="festival.image" ng-src={{festival.image}}></image></div>
+                    <div class="box-cartelera-info">
+                        <div class="box-cartelera-info-icon">
+                            <i class="fa fa-globe fa-2x"></i>
+                            <div class="box-cartelera-info-text">{{festival.location}}</div>
+                        </div>
+                        <div class="box-cartelera-info-icon">
+                            <i class="fa fa-calendar fa-2x"></i>
+                            <div class="box-cartelera-info-text">{{festival.date}}</div>
+                        </div>
+                        <div class="box-cartelera-info-icon">
+                            <i class="fa fa-map-marker fa-2x"></i>
+                            <div class="box-cartelera-info-text">{{festival.place}}</div>
+                        </div>
+                    </div>
+                    <a ng-click="showFestivalModal(festival.localIndex)" class="box-cartelera-button">Ver más</a>
+                </div>
+                <div class="navigation-buton-carteleras-right" ng-click="forwardCurrentSelection(2)"><i class="fa fa-caret-right fa-2x"></i></div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="footer">
+            <a class="socialicon-fb" href="#"><i class="fa fa-facebook-official fa-2x"></i></a>
+            <a class="socialicon-tw" href="#"><i class="fa fa-twitter-square fa-2x"></i></a>
+            <a class="socialicon-yt" href="#"><i class="fa fa-youtube-square fa-2x"></i></a>
+            <a class="socialicon-sp" href="#"><i class="fa fa-spotify fa-2x"></i></a><br>
+            <a style="color: white"> 2017 | MyConcert by X-Fest | Todos los derechos reservados.</a>
+        </div>
+    </footer>
+
+</body>
+</html>
