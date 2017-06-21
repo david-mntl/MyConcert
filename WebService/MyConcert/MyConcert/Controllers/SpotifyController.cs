@@ -66,18 +66,35 @@ namespace MyConcert.Controllers
         [HttpGet]
         [Route("api/Spotify/getSongs/{artistID}")]
         public string getSongs(string artistID){
-            SeveralTracks tracks = spotify.GetArtistsTopTracks(artistID, "CR");
-            var Songs = new Dictionary<string, object>();
-            ArrayList individualData = new ArrayList();
-            for (int t = 0; t < 5; t++){
-                var diccB = new Dictionary<string, object>();
-                diccB.Add("name", tracks.Tracks[t].Name);
-                diccB.Add("url", tracks.Tracks[t].PreviewUrl);
-                individualData.Add(diccB);
+
+            string url = "http://myconcert1.azurewebsites.net/api/Spotify/getArtistInfo/" + artistID;
+
+            string resp = Models.UtilityMethods.getMethod(url);
+
+            if (resp == "{\"followers\":\"\",\"popularity\":\"\",\"image\":\"\",\"spotifyID\":\"\"}")
+            {
+                return "{\"name\":\"\",\"songs\":\"\",\"url\":\"\"}";
             }
-            Songs.Add("songs", individualData);
-            return (Models.UtilityMethods.diccTOstrinJson(Songs));
-        }
+            else
+            {
+                SeveralTracks tracks = spotify.GetArtistsTopTracks(artistID, "CR");
+                var Songs = new Dictionary<string, object>();
+                ArrayList individualData = new ArrayList();
+                for (int t = 0; t < 5; t++)
+                {
+                    var diccB = new Dictionary<string, object>();
+                    diccB.Add("name", tracks.Tracks[t].Name);
+                    diccB.Add("url", tracks.Tracks[t].PreviewUrl);
+                    individualData.Add(diccB);
+                }
+                Songs.Add("songs", individualData);
+                return (Models.UtilityMethods.diccTOstrinJson(Songs));
+
+            }
+
+            }
+                       
+        
 /**************************************************************************        
 *                  Get IMAGE from Artist                  *
 **************************************************************************/
@@ -97,10 +114,11 @@ namespace MyConcert.Controllers
         [Route("api/Spotify/getArtistInfo/{artistID}")]
         public string getArtistInfo(string artistID)
         {                       
-            FullArtist artist = spotify.GetArtist(artistID);            
+            FullArtist artist = spotify.GetArtist(artistID);
+                        
 
             if ((artist.StatusCode().ToString()) == "OK")
-            {
+            {          
                 var info = new Dictionary<string, object>();
 
                 info.Add("followers", artist.Followers.Total);

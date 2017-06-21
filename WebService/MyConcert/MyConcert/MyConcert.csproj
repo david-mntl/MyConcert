@@ -189,7 +189,6 @@
     <Compile Include="Controllers\MainController.cs" />
     <Compile Include="Controllers\SpotifyController.cs" />
     <Compile Include="Controllers\twitterController.cs" />
-    <Compile Include="Controllers\utilityController.cs" />
     <Compile Include="Controllers\VerifyController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
