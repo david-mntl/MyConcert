@@ -1,6 +1,28 @@
 
+select * from mcuser
+select * from mcuser_admin
+select * from band
+select * from billboard
+select * from BILLBOARD_BANDS_LIST
+select * from CATEGORY
+spgetcategoriesfrombillboard 1
+spGetBandsFromBillboardCategoryOrderByMoney 1,3
+
+spgetallbands
+
+select * from festival
 
 
+
+EXEC spAddCategoryToBillboard 1,3;
+@BillboardID INT,
+     @CategoryID INT
+	 --1,
+
+EXEC spAddBandToBillboard 1,2,3;
+   @BillboardCategoryID INT,--ignorar
+        @CategoryID INT,
+        @BandID INT
 
 EXEC spRegisterCountry 'Argentina';
 EXEC spRegisterCountry 'Chile';
@@ -70,6 +92,9 @@ INSERT INTO EVENT_STATE(Name) VALUES ('Cancelled');
 EXEC spAddBillboard 'Speed Sound','01/01/2017','02/02/17',1,'description';
 EXEC spAddBillboard 'Festival Imperial','02/02/2017','03/03/17',2,'description';
 
+EXEC spAddBillboardPhoto 1, 'imgs/speed.png';
+EXEC spAddBillboardPhoto 2, 'imgs/imperial.png';
+
 EXEC spAddGenreToBand 1,'Rock';
 EXEC spAddGenreToBand 1,'Heavy';
 EXEC spAddGenreToBand 2,'Pop';
@@ -80,10 +105,13 @@ EXEC spaddCommentToBand 1, 'Luminica y Carbonica deberían tener mejor calificaci
 EXEC spaddCommentToBand 2, 'Es Chris Martin',5,1;
 EXEC spAddCategoryToBillboard 1,2;
 EXEC spAddCategoryToBillboard 2,3;
-EXEC spAddBandToBillboard 1,2,1;
-EXEC spAddBandToBillboard 2,3,2;
+EXEC spAddBandToBillboard 1,1,1;
+EXEC spAddBandToBillboard 1,2,2;
 
 
+ @BillboardCategoryID INT,
+        @CategoryID INT,
+        @BandID INT
 
 EXEC spAddBillboard 'Jazz Fest','03/03/2017','04/04/17',3,'description';
 EXEC spAddBillboard 'Picnic Fest','04/04/2017','05/05/17',4,'description';
