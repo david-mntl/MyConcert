@@ -59,7 +59,6 @@ app.controller('festivalesController',['$scope','$http','Security','Notification
         $scope.idCancelarFestival =id;
     };
     $scope.cancelFestival = function () {
-        console.log("JOJOJ");
         var url = 'https://myconcert1.azurewebsites.net/api/Main/GET/spDeactivateFestival/'+$scope.idCancelarFestival;
         $http.get(url).success(function (data, status, headers, config) {
         }).error(function (data, status, headers, config) {

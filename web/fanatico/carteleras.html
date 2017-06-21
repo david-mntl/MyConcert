@@ -69,7 +69,7 @@
                         <div class="box-cartelera-info-text">{{cartelera.leftTime}} días restantes</div>
                     </div>
                 </div>
-                <a ng-if="userType == 2 && cartelera.state !='Cancelled'" href="#" class="box-cartelera-button">Votar</a>
+                <a ng-if="userType == 2 && cartelera.state !='Cancelled'" ng-click="openVoteWindow(cartelera.id)" class="box-cartelera-button">Votar</a>
                 <a ng-if="userType == 1 && cartelera.state !='Cancelled'" ng-click="showCreateFestivalModal(cartelera.localIndex)" class="box-cartelera-button" style="width: 120px ">Crear festival</a>
                 <a ng-if="userType == 1 && cartelera.state !='Cancelled'" data-toggle="modal" data-target="#cancelarCarteleraModal" ng-click="cancelarCarteleraAux(cartelera.id)" class="box-cartelera-button">Cancelar</a>
                 <h6><span style="font-size: 20px" ng-if="cartelera.state =='Cancelled'" class="label label-danger">Cancelado</span></h6>

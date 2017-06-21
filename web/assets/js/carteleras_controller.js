@@ -1,16 +1,8 @@
 var app = angular.module('mainModule', ['720kb.datepicker','spotify','angular-loading-bar','ngSecurity','ui-notification']);
 
 
-app.controller('cartelerasController',['$scope','$http','Security','$filter',"Notification","cartelerasModel",
-function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
-
-
-    $.clearInput = function () {
-        $('form').find('input[type=text], input[type=password], input[type=number], input[type=email], textarea').val('');
-    };
-    $('addCartelera').on('hidden', function () {
-        $.clearInput();
-    });
+app.controller('cartelerasController',['$scope','$http','Security','$filter',"Notification","$window",
+function ($scope,$http,Security,$filter,Notification,$window,$timeout) {
 
     $scope.idCancelar = 0;
     $scope.currentCategory = -1;
@@ -43,7 +35,6 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
 
     };
     $scope.cancelarCartelera = function(){
-        console.log("JOJOJ");
         var url = 'https://myconcert1.azurewebsites.net/api/Main/GET/spDeactivateBillboard/'+$scope.idCancelar;
         $http.get(url).success(function (data, status, headers, config) {
         }).error(function (data, status, headers, config) {
@@ -66,30 +57,75 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
         });
     };
 
-    $scope.addCartelera = function () {
-        for (i = 0; i<$scope.categoriasIncluidas.length; i++){
-            delete $scope.categoriasIncluidas[i].localID;
-            delete $scope.categoriasIncluidas[i].name;
+    $scope.verifyAddCarteleraForm = function () {
+        if(!$scope.isValid($scope.data.Name)){
+            if(!$scope.isValid($scope.data.Country)){
+                if($scope.compareDate($scope.data.Final,$scope.data.Begin)){
+                    if(!$scope.isValid($scope.data.Description)){
+                        if($scope.categoriasIncluidas.length > 0){
+                            for (i = 0; i < $scope.categoriasIncluidas.length; i++) {
+                                if($scope.categoriasIncluidas[i].bands.length == 0){
+                                    Notification.error({message: 'Por favor ingrese al menos una banda en la categoría '+$scope.categoriasIncluidas[i].name,title: 'Información inválida', delay: 2000});
+                                    return false;
+                                }
+                            }
+                            return true;
+                        }
+                        else{
+                            Notification.error({message: 'Por favor ingrese al menos una categoría',title: 'Información inválida', delay: 2000});
+                            return false;
+                        }
+                    }
+                    else{
+                        Notification.error({message: 'Por favor ingrese una descripción',title: 'Información inválida', delay: 2000});
+                        return false;
+                    }
+                }
+                else{
+                    Notification.error({message: 'La fecha de finalización es anterior a la fecha de inicio',title: 'Información inválida', delay: 2000});
+                    return false;
+                }
+            }
+            else {
+                Notification.error({message: 'Por favor ingrese un país valido para la cartelera', title: 'Error', delay: 2000});
+                return false;
+            }
+        }
+        else{
+            Notification.error({message: 'Por favor ingrese un nombre para la cartelera', title: 'Error', delay: 2000});
+            return false;
         }
 
-        var parameter = JSON.stringify({
-            name: $scope.data.Name,
-            sVoteDate : $scope.data.Begin,
-            eVoteDate : $scope.data.Final,
-            categories : $scope.categoriasIncluidas,
-            placeID :$scope.data.Country.id.toString(),
-            description : $scope.data.Description
-        });
-        console.log(parameter);
-
-        $http.post('https://myconcert1.azurewebsites.net/api/Funcs/AddBillboard', parameter).success(function (response, status, headers, config) {
-            //var response = JSON.parse(response);
-            console.log(response);
-        }).error(function (data, status, headers, config) {
-            Notification.error({message: 'No se puede agregar la cartelera', title: 'Error', delay: 2000});
-        });
+    };
 
 
+    $scope.addCartelera = function () {
+        if($scope.verifyAddCarteleraForm()) {
+            for (i = 0; i < $scope.categoriasIncluidas.length; i++) {
+                delete $scope.categoriasIncluidas[i].localID;
+                delete $scope.categoriasIncluidas[i].name;
+            }
+
+            var parameter = JSON.stringify({
+                name: $scope.data.Name,
+                sVoteDate: $scope.data.Begin,
+                eVoteDate: $scope.data.Final,
+                categories: $scope.categoriasIncluidas,
+                placeID: $scope.data.Country.id.toString(),
+                description: $scope.data.Description
+            });
+
+            $http.post('https://myconcert1.azurewebsites.net/api/Funcs/AddBillboard', parameter).success(function (response, status, headers, config) {
+                //var response = JSON.parse(response);
+                console.log(response);
+                Notification.success({message: 'Se ha creado una nueva cartelera.', title: 'Proceso completado', delay: 1000});
+                $window.location.reload();
+                //$('#addCartelera').modal('hide');
+
+            }).error(function (data, status, headers, config) {
+                Notification.error({message: 'No se puede agregar la cartelera', title: 'Error', delay: 2000});
+            });
+        }
 
     };
 
@@ -122,8 +158,8 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
         var foundItem = $filter('filter')($scope.categoriasIncluidas, { localID: $scope.currentCategory}, true)[0];
         var index = $scope.categoriasIncluidas.indexOf(foundItem );
 
-        if ($scope.categoriasIncluidas[index].bandas.indexOf(name) > -1) {
-            $scope.categoriasIncluidas[index].bandas.splice($scope.categoriasIncluidas[index].bandas.indexOf(name), 1);
+        if ($scope.categoriasIncluidas[index].bands.indexOf(name) > -1) {
+            $scope.categoriasIncluidas[index].bands.splice($scope.categoriasIncluidas[index].bands.indexOf(name), 1);
         }
         if ($scope.regBandas.indexOf(name) > -1) {
             $scope.regBandas.splice($scope.regBandas.indexOf(name), 1);
@@ -240,6 +276,7 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
                     }
                     category.bands = bands;
                     category.winningNumber = 0;
+                    category.id = response.categories[j].id;
                     category.done = false;
                     $scope.selectedCartelera.categories.push(category);
                 }
@@ -252,12 +289,13 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
         for(z=0; z < $scope.selectedCartelera.categories.length; z++){
             var category = new Object();
             category.name = $scope.selectedCartelera.categories[z].name;
+            category.id = $scope.selectedCartelera.categories[z].id;
             var bands = [];
             for(k=0; k < $scope.selectedCartelera.categories[z].winningNumber; k++){
                 var band = new Object();
                 band.id = $scope.selectedCartelera.categories[z].bands[k].id;
                 band.name = $scope.selectedCartelera.categories[z].bands[k].name;
-                band.money = $scope.selectedCartelera.categories[z].bands[k].votes;
+                band.rating = "5";
                 band.spotifyID = $scope.selectedCartelera.categories[z].bands[k].spotifyID;
                 bands.push(band);
             }
@@ -268,24 +306,21 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
 
         var parameter = JSON.stringify({
             billboardID: $scope.selectedCartelera.id,
+            name: $scope.selectedCartelera.name,
+            user: Security.getCurrentUserEmail(),
             categories: $scope.finalCategoriesToCreateFestival
         });
 
-
-        console.log("AQUI DEBERIA AGREGAR FESTIVAL");
-
-
+        console.log(parameter);
 
          $http.post('https://myconcert1.azurewebsites.net/api/Funcs/addCheffSugg', parameter).success(function (response, status, headers, config) {
+             console.log(response);
              var response = JSON.parse(response);
              //Ejemplo response: {"ID":"4","spotifyID":"2i0fdBIVqs33fA1HiynUPj","name":"Shaki"}
 
              var currentURL = 'http://myconcert1.azurewebsites.net/api/GET/bandInfo/'+response.ID+"/"+response.spotifyID;
-             console.log(currentURL);
 
              $http.get(currentURL).success(function (responseBand, status, headers, config) {
-
-                 console.log(responseBand);
                  var responseB = JSON.parse(responseBand);
 
                  $scope.chefBand = [];
@@ -310,30 +345,13 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
          console.log(data);
          });
 
-
-
-        /*$http.get("../assets/docs/bandd.txt").success(function (response) {
-            //$http.get("https://myconcert1.azurewebsites.net/api/Main/GET/FestivalInfo/"+pCarteleraID).success(function (responseStr) {
-            //var response = JSON.parse(response);
-
-            $scope.chefBand = [];
-            $scope.chefBand.id = response.id;
-            $scope.chefBand.name = response.name;
-            $scope.chefBand.image = response.image;
-            $scope.chefBand.followers = response.followers;
-            $scope.chefBand.popularity = response.popularity;
-            $scope.chefBand.rating = response.rating;
-            $scope.chefBand.members = response.members;
-            $scope.chefBand.genres = response.genres;
-            $scope.chefBand.songs = response.songs;
-        });*/
     };
 
     $scope.writeCreateFestival = function () {
-
         /** Añadir la recomendación del Chef **/
         var chefCategory = new Object();
         chefCategory.name = "Recomendación del Chef";
+        chefCategory.id = 1;
         var chefBands = [];
         var chefBand = new Object();
         chefBand.id = $scope.chefBand.id;
@@ -342,8 +360,6 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
         chefBands.push(chefBand);
         chefCategory.bands = chefBands;
         $scope.finalCategoriesToCreateFestival.push(chefCategory);
-
-
 
         var festival = JSON.stringify({
             name: $scope.selectedCartelera.name,
@@ -356,14 +372,17 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
             categories: $scope.finalCategoriesToCreateFestival
         });
 
-
         $http.post('https://myconcert1.azurewebsites.net/api/Funcs/AddFestival', festival).success(function (data, status, headers, config) {
-            console.log("FESTIVAL AGREGADO.");
-            console.log(data);
+            if(data == "ok"){
+                Notification.success({message: 'Se creado el festival'+$scope.selectedCartelera.name,title: 'Festival creado', delay: 2000});
+                $scope.closeCreateFestivalModal();
+            }
+            else{
+                Notification.error({message: 'Ha ocurrido un error al intentar crear el festival',title: 'Error', delay: 2000});
+            }
         }).error(function (data, status, headers, config) {
             console.log(data);
         });
-
     };
 
     $scope.changeCurrentCategory = function (pCurrentCategoryID) {
@@ -407,6 +426,14 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
     };
 
     //********* AUX FUNCTIONS ************
+    $scope.isValid = function(value) {
+        return !value
+    };
+
+    $scope.openVoteWindow = function (IDCartelera) {
+        window.location = "vote.html#?IDCartelera="+IDCartelera;
+    };
+
     $scope.playSong = function () {
         if($scope.data.SelectedSong != undefined && $scope.data.SelectedSong.url != "") {
             $scope.playingSong = true;
@@ -414,7 +441,7 @@ function ($scope,$http,Security,$filter,Notification,cartelerasModel,$timeout) {
             $scope.audio.play();
         }
         else
-            Notification.error({message: 'Por favor seleccione una canción',title: 'Error de Reprodución', delay: 2000});
+            Notification.error({message: 'Por favor seleccione una canción',title: 'Error de Reproducción', delay: 2000});
     };
 
     $scope.pauseSong = function() {

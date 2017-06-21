@@ -20,7 +20,7 @@
     <link href='../assets/styles/loading-bar.css' rel='stylesheet' />
     <link rel="stylesheet" href="../assets/styles/basicStyles.css" />
     <link rel="stylesheet" href="../assets/styles/font-awesome.min.css" />
-    <link rel="stylesheet" href="../assets/styles/modalStyle.css" />
+    <link rel="stylesheet" href="../assets/styles/zModalStyle.css" />
     <script>
         var counter = 0;
         function textCounter( field, maxlimit, text) {
@@ -52,7 +52,7 @@
             <i ng-click="toggleHowToCarteleras()" style="float:right; cursor: pointer;" class="fa fa-question fa-2x"></i>
             <div style="clear: both;">
                 <div class="navigation-buton-carteleras-left" ng-click="backwardCurrentSelection(1)"><i class="fa fa-caret-left fa-2x"></i></div>
-                <div class="box-cartelera" ng-repeat="cartelera in currentCarteleras">
+                <div class="box-cartelera" ng-repeat="cartelera in currentCarteleras track by cartelera.id">
                     <div class="box-cartelera-title">{{cartelera.name}}</div>
                     <div class="box-cartelera-image" ><image ng-if="cartelera.image != ''" ng-src={{cartelera.image}}></image></div>
                     <div class="box-cartelera-info">
@@ -71,12 +71,13 @@
             </div>
         </div>
 
+
         <div class="body-festivales">
             <div style="float:left;"><h2>Festivales</h2></div>
             <i ng-click="toggleHowToFestivales()" style="float:right; cursor: pointer;" class="fa fa-question fa-2x"></i>
             <div style="clear: both;">
                 <div class="navigation-buton-carteleras-left" ng-click="backwardCurrentSelection(2)"><i class="fa fa-caret-left fa-2x"></i></div>
-                <div class="box-cartelera" ng-repeat="festival in currentFestivales">
+                <div class="box-cartelera" ng-repeat="festival in currentFestivales track by festival.id">
                     <div class="box-cartelera-title">{{festival.name}}</div>
                     <div class="box-cartelera-image" ><image ng-if="festival.image" ng-src={{festival.image}}></image></div>
                     <div class="box-cartelera-info">

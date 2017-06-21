@@ -13,7 +13,6 @@
     <script src="../assets/js/jquery/jquery-1.11.1.min.js"></script>
     <script src="../assets/js/libs/sha256.js"></script>
 
-
     <script src="../assets/js/libs/angular-notify.js"></script>
     <script src="../assets/js/libs/angular-cookies.js"></script>
     <script src="../assets/js/libs/angular-ui-notification.min.js"></script>
@@ -44,14 +43,14 @@
     </div>
 
     <div class="bodyreg_cont">
-
         <div class="bodyreg_column">
             <div class="profile_image_holder">
                 <div class="profile_image_text"> <a class="txt_a">Foto de Perfil</a></div>
-                <div class="profile_image" ><image ng-src={{festival.image}}></image></div>
+                <div class="profile_image" ><image ng-src={{data.imageTemp}}></image></div>
                 <div class="profile_image_button" >
-                    <div class="hvr_profile_image_button" style="margin-right: auto; margin-left: auto;">
-                        <a ng-click="openUploadWindow()" class="txt_b">Adjuntar Foto</a><i class="fa fa-paperclip fa-1x"></i>
+                    <div class="hvr_profile_image_button" style="margin-right: 30px;">
+                        <!--<a ng-click="openUploadWindow()" class="register_button">Adjuntar Foto</a><i class="fa fa-paperclip fa-1x"></i>-->
+                        <button style="width: 100px; margin: auto" type="button" class="box-cartelera-button" ng-click="openUploadWindow()">Adjuntar Foto</button>
                     </div>
                     <div style="margin-left: -25px; margin-right: auto; margin-top: 15px; width: 200px">
                         <a class="text_b" style="float:left; color: white;">Los campos marcados con </a>
@@ -82,7 +81,6 @@
                     <select ng-disabled="data.ProfileType.id == 1" class="pInput pIBlue" style="width: 178px; float:left;" ng-model="data.Country" ng-options="country.name for country in countries track by country.id">
                         <option value="">País</option>
                     </select>
-                </div >
                 </div>
             </div>
             <div class="user_info_holder">
@@ -151,7 +149,7 @@
                 </div>
             </div>
             <div class="user_info_holder">
-                <button type="button" class="register_button" ng-click="sendRegisterForm()">Registarse</button>
+                <button type="button" class="button" ng-click="sendRegisterForm()">Registrarse</button>
             </div>
         </div>
     </div>

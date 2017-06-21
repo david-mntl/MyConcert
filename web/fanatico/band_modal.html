@@ -1,13 +1,13 @@
 
-<div id="myModal" class="modal" ng-show="visibleBandModal">
-    <div class="modal-content">
+<div id="myModal" class="zmodal" ng-show="visibleBandModal">
+    <div class="zmodal-content">
 
-        <div class="modal-header blue">
+        <div class="zmodal-header blue">
             <span ng-click="closeBandModal()" class="close">&times;</span>
             <div style="float: left; margin-top: 3px; display: inline-block; font-size: 22px; margin-right: 15px;">{{selectedBand.name}}</div>
             <i ng-repeat="star in completeStars" class="fa fa-star fa-2x" style="color: yellow"></i><i ng-repeat="star in blankStars" class="fa fa-star-o fa-2x" style="color: yellow"></i>
         </div>
-        <div class="modal-body">
+        <div class="zmodal-body">
             <div class="modal-band-image" ><image class="modal-band-image-inside" ng-if="selectedBand.image != ''" ng-src={{selectedBand.image}}></image></div>
             <!--<div class="modal-band-image" ><image style="width: 250px; height: 250px" ng-show="selectedBand.image" ng-src={{selectedBand.image}}></image></div>-->
             <div style="margin-left: 15px" class="modal-info-box">
@@ -89,7 +89,7 @@
         </div>
 
 
-        <div class="modal-footer blue">
+        <div class="zmodal-footer blue">
             <a>-</a>
         </div>
 

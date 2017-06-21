@@ -78,6 +78,10 @@ security.factory("Security", function($cookies,Notification){
         $cookies.put('tempEmail', pEmail,{path: '/'});
     };
 
+    facade.setTempCarteleraImage = function (pImage) {
+        $cookies.put('tempCImage', pImage,{path: '/'});
+    };
+
 
     facade.gotoProfile = function () {
         var user = $cookies.get('zUserName',{path: '/'});

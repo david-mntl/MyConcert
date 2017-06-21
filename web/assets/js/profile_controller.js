@@ -94,6 +94,9 @@ app.controller('mainController',['$scope','$http','$window','Security','Notifica
                 $scope.data.Email = response.Email;
                 $scope.data.Place = response.Residence;
                 $scope.data.Description = response.PersonalDescription;
+                $scope.data.image =  "../../fanatico/upload/uploads/"+response.Photo;
+                console.log("IMAGE",$scope.data.image);
+
                 /*$scope.data.GenresList = "";*/
                 if(response.genres.length > 0){
                     $scope.data.GenresList = response.genres[0].Name;
